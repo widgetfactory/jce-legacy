@@ -1,10 +1,8 @@
 <?php
 /**
- * @version   $Id: jce.php 110 2009-06-21 19:25:09Z happynoodleboy $
- * @package      JCE
- * @copyright    Copyright (C) 2005 - 2009 Ryan Demmer. All rights reserved.
- * @author    Ryan Demmer
- * @license      GNU/GPL
+ * @package   	JCE
+ * @copyright 	Copyright � 2009-2011 Ryan Demmer. All rights reserved.
+ * @license   	GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  * JCE is free software. This version may have been modified pursuant
  * to the GNU General Public License, and as distributed it includes or
  * is derivative of works licensed under the GNU General Public License or
@@ -12,16 +10,13 @@
  */
 
 // Do not allow direct access
-defined('_JEXEC') or die('Restricted access');
+defined('_JEXEC') or die('RESTRICTED');
 
 jimport('joomla.plugin.plugin');
 jimport('joomla.application.component.model');
 
 /**
  * JCE WYSIWYG Editor Plugin
- *
- * @author Ryan Demmer <ryandemmer@gmail.com>
- * @package Editor - JCE
  * @since 1.5
  */
 class plgEditorJCE extends JPlugin
@@ -51,6 +46,10 @@ class plgEditorJCE extends JPlugin
     {
         $app 		= JFactory::getApplication();
 		$language 	= JFactory::getLanguage();
+		
+		$document 	= JFactory::getDocument();
+		// set IE mode
+		//$document->setMetaData('X-UA-Compatible', 'IE=Edge', true);
         
     	// Check for existence of Admin Component
         if (!is_dir(JPATH_SITE . DS . 'components' . DS . 'com_jce') || !is_dir(JPATH_ADMINISTRATOR . DS . 'components' . DS . 'com_jce')) {
@@ -89,7 +88,7 @@ class plgEditorJCE extends JPlugin
      */
     public function onSetContent($editor, $html)
     {
-        return "WFEditor.setContent('" . $editor . "','" . $html . "');";
+    	return "WFEditor.setContent('" . $editor . "','" . $html . "');";
     }
     
     /**
