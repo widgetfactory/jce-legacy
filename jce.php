@@ -1,14 +1,14 @@
 <?php
+
 /**
  * @package   	JCE
- * @copyright 	Copyright � 2009-2011 Ryan Demmer. All rights reserved.
+ * @copyright 	Copyright © 2009-2011 Ryan Demmer. All rights reserved.
  * @license   	GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  * JCE is free software. This version may have been modified pursuant
  * to the GNU General Public License, and as distributed it includes or
  * is derivative of works licensed under the GNU General Public License or
  * other free or open source software licenses.
  */
-
 // Do not allow direct access
 defined('_JEXEC') or die('RESTRICTED');
 
@@ -19,21 +19,20 @@ jimport('joomla.application.component.model');
  * JCE WYSIWYG Editor Plugin
  * @since 1.5
  */
-class plgEditorJCE extends JPlugin
-{
+class plgEditorJCE extends JPlugin {
+
     /**
-	 * Constructor
-	 *
-	 * @access      public
-	 * @param       object  $subject The object to observe
-	 * @param       array   $config  An array that holds the plugin configuration
-	 * @since       1.5
-	 */
-    public function __construct(& $subject, $config)
-    {
+     * Constructor
+     *
+     * @access      public
+     * @param       object  $subject The object to observe
+     * @param       array   $config  An array that holds the plugin configuration
+     * @since       1.5
+     */
+    public function __construct(& $subject, $config) {
         parent::__construct($subject, $config);
     }
-    
+
     /**
      * Method to handle the onInit event.
      *  - Initializes the JCE WYSIWYG Editor
@@ -42,23 +41,21 @@ class plgEditorJCE extends JPlugin
      * @return string JavaScript Initialization string
      * @since 1.5
      */
-    public function onInit()
-    {
-        $app 		= JFactory::getApplication();
-		$language 	= JFactory::getLanguage();
-		
-		$document 	= JFactory::getDocument();
-		// set IE mode
-		//$document->setMetaData('X-UA-Compatible', 'IE=Edge', true);
-        
-    	// Check for existence of Admin Component
+    public function onInit() {
+        $app = JFactory::getApplication();
+        $language = JFactory::getLanguage();
+
+        $document = JFactory::getDocument();
+        // set IE mode
+        //$document->setMetaData('X-UA-Compatible', 'IE=Edge', true);
+        // Check for existence of Admin Component
         if (!is_dir(JPATH_SITE . DS . 'components' . DS . 'com_jce') || !is_dir(JPATH_ADMINISTRATOR . DS . 'components' . DS . 'com_jce')) {
             JError::raiseWarning('SOME_ERROR_CODE', 'WF_COMPONENT_MISSING');
         }
 
         $language->load('plg_editors_jce', JPATH_ADMINISTRATOR);
         $language->load('com_jce', JPATH_ADMINISTRATOR);
-        
+
         // set admin base path
         $base = JPATH_ADMINISTRATOR . DS . 'components' . DS . 'com_jce';
         // load constants and loader
@@ -67,40 +64,37 @@ class plgEditorJCE extends JPlugin
         JModel::addIncludePath($base . DS . 'models');
         $model = JModel::getInstance('editor', 'WFModel');
 
-        $model->buildEditor();        
+        $model->buildEditor();
     }
-    
+
     /**
      * JCE WYSIWYG Editor - get the editor content
      *
      * @vars string   The name of the editor
      */
-    public function onGetContent($editor)
-    {
+    public function onGetContent($editor) {
         //return "WFEditor.getContent('" . $editor . "');";
         return $this->onSave($editor);
     }
-    
+
     /**
      * JCE WYSIWYG Editor - set the editor content
      *
      * @vars string   The name of the editor
      */
-    public function onSetContent($editor, $html)
-    {
-    	return "WFEditor.setContent('" . $editor . "','" . $html . "');";
+    public function onSetContent($editor, $html) {
+        return "WFEditor.setContent('" . $editor . "','" . $html . "');";
     }
-    
+
     /**
      * JCE WYSIWYG Editor - copy editor content to form field
      *
      * @vars string   The name of the editor
      */
-    public function onSave($editor)
-    {
+    public function onSave($editor) {
         return "WFEditor.getContent('" . $editor . "');";
     }
-    
+
     /**
      * JCE WYSIWYG Editor - display the editor
      *
@@ -112,12 +106,11 @@ class plgEditorJCE extends JPlugin
      * @vars int The number of rows for the editor area
      * @vars mixed Can be boolean or array.
      */
-     public function onDisplay($name, $content, $width, $height, $col, $row, $buttons = true, $id = null, $asset = null, $author = null)
-     {
+    public function onDisplay($name, $content, $width, $height, $col, $row, $buttons = true, $id = null, $asset = null, $author = null) {
         if (empty($id)) {
-			$id = $name;
-		}
-        
+            $id = $name;
+        }
+
         // Only add "px" to width and height if they are not given as a percentage
         if (is_numeric($width)) {
             $width .= 'px';
@@ -125,66 +118,65 @@ class plgEditorJCE extends JPlugin
         if (is_numeric($height)) {
             $height .= 'px';
         }
-        
+
         if (empty($id)) {
             $id = $name;
         }
-        
-        $editor  = '<label for="' . $id . '" style="display:none;" aria-visible="false">' . $id . '_textarea</label><textarea id="' . $id . '" name="' . $name . '" cols="' . $col . '" rows="' . $row . '" style="width:' . $width . ';height:' . $height . ';" class="wfEditor source" wrap="off">' . $content . '</textarea>';
-		$editor .= $this->_displayButtons($id, $buttons, $asset, $author);
+
+        $editor = '<label for="' . $id . '" style="display:none;" aria-visible="false">' . $id . '_textarea</label><textarea id="' . $id . '" name="' . $name . '" cols="' . $col . '" rows="' . $row . '" style="width:' . $width . ';height:' . $height . ';" class="wfEditor mce_editable source" wrap="off">' . $content . '</textarea>';
+        $editor .= $this->_displayButtons($id, $buttons, $asset, $author);
 
 
-		return $editor;
-	}
-    
-    public function onGetInsertMethod($name)
-    {
+        return $editor;
     }
-    
-	private function _displayButtons($name, $buttons, $asset, $author)
-	{
-		// Load modal popup behavior
-		JHTML::_('behavior.modal', 'a.modal-button');
 
-		$args['name'] = $name;
-		$args['event'] = 'onGetInsertMethod';
+    public function onGetInsertMethod($name) {
+        
+    }
 
-		$return = '';
-		$results[] = $this->update($args);
+    private function _displayButtons($name, $buttons, $asset, $author) {
+        // Load modal popup behavior
+        JHTML::_('behavior.modal', 'a.modal-button');
 
-		foreach ($results as $result)
-		{
-			if (is_string($result) && trim($result)) {
-				$return .= $result;
-			}
-		}
+        $args['name'] = $name;
+        $args['event'] = 'onGetInsertMethod';
 
-		if (is_array($buttons) || (is_bool($buttons) && $buttons)) {
-			$results = $this->_subject->getButtons($name, $buttons, $asset, $author);
+        $return = '';
+        $results[] = $this->update($args);
 
-			/*
-			 * This will allow plugins to attach buttons or change the behavior on the fly using AJAX
-			 */
-			$return .= "\n<div id=\"editor-xtd-buttons\">\n";
+        foreach ($results as $result) {
+            if (is_string($result) && trim($result)) {
+                $return .= $result;
+            }
+        }
 
-			foreach ($results as $button)
-			{
-				/*
-				 * Results should be an object
-				 */
-				if ( $button->get('name') ) {
-					$modal		= ($button->get('modal')) ? 'class="modal-button"' : null;
-					$href		= ($button->get('link')) ? 'href="'.JURI::base().$button->get('link').'"' : null;
-					$onclick	= ($button->get('onclick')) ? 'onclick="'.$button->get('onclick').'"' : 'onclick="IeCursorFix(); return false;"';
-					$title      = ($button->get('title')) ? $button->get('title') : $button->get('text');
-					$return .= "<div class=\"button2-left\"><div class=\"".$button->get('name')."\"><a ".$modal." title=\"".$title."\" ".$href." ".$onclick." rel=\"".$button->get('options')."\">".$button->get('text')."</a></div></div>\n";
-				}
-			}
+        if (is_array($buttons) || (is_bool($buttons) && $buttons)) {
+            $results = $this->_subject->getButtons($name, $buttons, $asset, $author);
 
-			$return .= "</div>\n";
-		}
+            /*
+             * This will allow plugins to attach buttons or change the behavior on the fly using AJAX
+             */
+            $return .= "\n<div id=\"editor-xtd-buttons\">\n";
 
-		return $return;
-	}
+            foreach ($results as $button) {
+                /*
+                 * Results should be an object
+                 */
+                if ($button->get('name')) {
+                    $modal = ($button->get('modal')) ? 'class="modal-button"' : null;
+                    $href = ($button->get('link')) ? 'href="' . JURI::base() . $button->get('link') . '"' : null;
+                    $onclick = ($button->get('onclick')) ? 'onclick="' . $button->get('onclick') . '"' : 'onclick="IeCursorFix(); return false;"';
+                    $title = ($button->get('title')) ? $button->get('title') : $button->get('text');
+                    $return .= "<div class=\"button2-left\"><div class=\"" . $button->get('name') . "\"><a " . $modal . " title=\"" . $title . "\" " . $href . " " . $onclick . " rel=\"" . $button->get('options') . "\">" . $button->get('text') . "</a></div></div>\n";
+                }
+            }
+
+            $return .= "</div>\n";
+        }
+
+        return $return;
+    }
+
 }
+
 ?>
