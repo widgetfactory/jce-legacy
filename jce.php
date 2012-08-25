@@ -13,7 +13,6 @@
 defined('_JEXEC') or die('RESTRICTED');
 
 jimport('joomla.plugin.plugin');
-jimport('joomla.application.component.model');
 
 /**
  * JCE WYSIWYG Editor Plugin
@@ -49,20 +48,19 @@ class plgEditorJCE extends JPlugin {
         // set IE mode
         //$document->setMetaData('X-UA-Compatible', 'IE=Edge', true);
         // Check for existence of Admin Component
-        if (!is_dir(JPATH_SITE . DS . 'components' . DS . 'com_jce') || !is_dir(JPATH_ADMINISTRATOR . DS . 'components' . DS . 'com_jce')) {
+        if (!is_dir(JPATH_SITE . '/components/com_jce') || !is_dir(JPATH_ADMINISTRATOR . '/components/com_jce')) {
             JError::raiseWarning('SOME_ERROR_CODE', 'WF_COMPONENT_MISSING');
         }
 
         $language->load('plg_editors_jce', JPATH_ADMINISTRATOR);
         $language->load('com_jce', JPATH_ADMINISTRATOR);
 
-        // set admin base path
-        $base = JPATH_ADMINISTRATOR . DS . 'components' . DS . 'com_jce';
         // load constants and loader
-        require_once($base . DS . 'includes' . DS . 'base.php');
-        // load model
-        JModel::addIncludePath($base . DS . 'models');
-        $model = JModel::getInstance('editor', 'WFModel');
+        require_once(JPATH_ADMINISTRATOR . '/components/com_jce/includes/base.php');
+        
+        wfimport('admin.models.editor');
+
+        $model = new WFModelEditor();
 
         $model->buildEditor();
     }
