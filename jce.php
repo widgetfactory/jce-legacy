@@ -36,9 +36,10 @@ class plgEditorJCE extends JPlugin {
      * Method to handle the onInit event.
      *  - Initializes the JCE WYSIWYG Editor
      *
-     * @access public
-     * @return string JavaScript Initialization string
-     * @since 1.5
+     * @access  public
+     * @param   $toString Return javascript and css as a string
+     * @return  string JavaScript Initialization string
+     * @since   1.5
      */
     public function onInit() {
         $app = JFactory::getApplication();
@@ -57,12 +58,12 @@ class plgEditorJCE extends JPlugin {
 
         // load constants and loader
         require_once(JPATH_ADMINISTRATOR . '/components/com_jce/includes/base.php');
-        
+
         wfimport('admin.models.editor');
 
         $model = new WFModelEditor();
 
-        $model->buildEditor();
+        return $model->buildEditor();
     }
 
     /**
@@ -121,9 +122,8 @@ class plgEditorJCE extends JPlugin {
             $id = $name;
         }
 
-        $editor = '<label for="' . $id . '" style="display:none;" aria-visible="false">' . $id . '_textarea</label><textarea id="' . $id . '" name="' . $name . '" cols="' . $col . '" rows="' . $row . '" style="width:' . $width . ';height:' . $height . ';" class="wfEditor mce_editable source" wrap="off">' . $content . '</textarea>';
+        $editor  = '<label for="' . $id . '" style="display:none;" aria-visible="false">' . $id . '_textarea</label><textarea id="' . $id . '" name="' . $name . '" cols="' . $col . '" rows="' . $row . '" style="width:' . $width . ';height:' . $height . ';" class="wfEditor mce_editable source" wrap="off">' . $content . '</textarea>';
         $editor .= $this->_displayButtons($id, $buttons, $asset, $author);
-
 
         return $editor;
     }
@@ -171,6 +171,19 @@ class plgEditorJCE extends JPlugin {
 
             $return .= "</div>\n";
         }
+
+        return $return;
+    }
+
+    /**
+     *
+     * @return  string
+     */
+    private function _toogleButton($name) {
+        $return = '';
+        $return .= "\n<div class=\"toggle-editor\">\n";
+        $return .= "<div class=\"button2-left\"><div class=\"blank\"><a href=\"#\" onclick=\"tinyMCE.execCommand('mceToggleEditor', false, '" . $name . "');return false;\" title=\"" . JText::_('PLG_TINY_BUTTON_TOGGLE_EDITOR') . '">' . JText::_('PLG_TINY_BUTTON_TOGGLE_EDITOR') . "</a></div></div>";
+        $return .= "</div>\n";
 
         return $return;
     }
