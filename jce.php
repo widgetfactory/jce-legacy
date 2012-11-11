@@ -141,6 +141,10 @@ class plgEditorJCE extends JPlugin {
 
         $return = '';
         $results[] = $this->update($args);
+        
+        if (!defined('JUI')) {
+            define('JUI', is_dir(JPATH_SITE . '/media/jui'));
+        }
 
         foreach ($results as $result) {
             if (is_string($result) && trim($result)) {
@@ -153,9 +157,13 @@ class plgEditorJCE extends JPlugin {
 
             /*
              * This will allow plugins to attach buttons or change the behavior on the fly using AJAX
-             */
-            $return .= "\n<div id=\"editor-xtd-buttons\">\n";
-
+             */            
+            $return .= "\n<div id=\"editor-xtd-buttons\" class=\"btn-toolbar pull-left\">\n";
+            
+            if (JUI) {
+                $return .= "\n<div class=\"btn-toolbar\">\n";
+            }
+            
             foreach ($results as $button) {
                 /*
                  * Results should be an object
@@ -165,10 +173,23 @@ class plgEditorJCE extends JPlugin {
                     $href = ($button->get('link')) ? 'href="' . JURI::base() . $button->get('link') . '"' : null;
                     $onclick = ($button->get('onclick')) ? 'onclick="' . $button->get('onclick') . '"' : 'onclick="IeCursorFix(); return false;"';
                     $title = ($button->get('title')) ? $button->get('title') : $button->get('text');
+                    
+                    if (!JUI) {
+                        $return .= '<div class="button2-left"><div class="' . $button->get('name') . '">';
+                    }
+                    
+                    $return    .= '<a' . $modal . ' title="' . $title . '"' . $href . $onclick . ' rel="' . $button->get('options') . '"><i class="icon-' . $button->get('name') . '"></i> ' . $button->get('text') . '</a>';
+                
+                    if (!JUI) {
+                        $return .= '</div></div>';
+                    } 
+
                     $return .= "<div class=\"button2-left\"><div class=\"" . $button->get('name') . "\"><a " . $modal . " title=\"" . $title . "\" " . $href . " " . $onclick . " rel=\"" . $button->get('options') . "\">" . $button->get('text') . "</a></div></div>\n";
                 }
             }
-
+            if (JUI) {
+                 $return .= "</div>\n";
+            }
             $return .= "</div>\n";
         }
 
