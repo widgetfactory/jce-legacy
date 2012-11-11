@@ -174,20 +174,6 @@ class plgEditorJCE extends JPlugin {
 
         return $return;
     }
-
-    /**
-     *
-     * @return  string
-     */
-    private function _toogleButton($name) {
-        $return = '';
-        $return .= "\n<div class=\"toggle-editor\">\n";
-        $return .= "<div class=\"button2-left\"><div class=\"blank\"><a href=\"#\" onclick=\"tinyMCE.execCommand('mceToggleEditor', false, '" . $name . "');return false;\" title=\"" . JText::_('PLG_TINY_BUTTON_TOGGLE_EDITOR') . '">' . JText::_('PLG_TINY_BUTTON_TOGGLE_EDITOR') . "</a></div></div>";
-        $return .= "</div>\n";
-
-        return $return;
-    }
-
 }
 
 ?>
