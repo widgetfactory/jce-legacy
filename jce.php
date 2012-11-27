@@ -122,7 +122,7 @@ class plgEditorJCE extends JPlugin {
             $id = $name;
         }
 
-        $editor  = '<label for="' . $id . '" style="display:none;" aria-visible="false">' . $id . '_textarea</label><textarea id="' . $id . '" name="' . $name . '" cols="' . $col . '" rows="' . $row . '" style="width:' . $width . ';height:' . $height . ';" class="wfEditor mce_editable source" wrap="off">' . $content . '</textarea>';
+        $editor = '<label for="' . $id . '" style="display:none;" aria-visible="false">' . $id . '_textarea</label><textarea id="' . $id . '" name="' . $name . '" cols="' . $col . '" rows="' . $row . '" style="width:' . $width . ';height:' . $height . ';" class="wfEditor mce_editable source" wrap="off">' . $content . '</textarea>';
         $editor .= $this->_displayButtons($id, $buttons, $asset, $author);
 
         return $editor;
@@ -141,10 +141,8 @@ class plgEditorJCE extends JPlugin {
 
         $return = '';
         $results[] = $this->update($args);
-        
-        if (!defined('JUI')) {
-            define('JUI', is_dir(JPATH_SITE . '/media/jui'));
-        }
+
+        $jui = is_dir(JPATH_SITE . '/media/jui');
 
         foreach ($results as $result) {
             if (is_string($result) && trim($result)) {
@@ -157,44 +155,45 @@ class plgEditorJCE extends JPlugin {
 
             /*
              * This will allow plugins to attach buttons or change the behavior on the fly using AJAX
-             */            
-            $return .= "\n<div id=\"editor-xtd-buttons\" class=\"btn-toolbar pull-left\">\n";
-            
-            if (JUI) {
-                $return .= "\n<div class=\"btn-toolbar\">\n";
+             */
+            $return .= "\n<div id=\"editor-xtd-buttons\"";
+
+            if ($jui) {
+                $return .= " class=\"btn-toolbar pull-left\">\n\n<div class=\"btn-toolbar\"";
             }
-            
+
+            $return .= ">\n";
+
             foreach ($results as $button) {
                 /*
                  * Results should be an object
                  */
                 if ($button->get('name')) {
-                    $modal = ($button->get('modal')) ? 'class="modal-button"' : null;
-                    $href = ($button->get('link')) ? 'href="' . JURI::base() . $button->get('link') . '"' : null;
+                    $modal = ($button->get('modal')) ? ' class="modal-button btn"' : '';
+                    $href = ($button->get('link')) ? ' class="btn" href="' . JURI::base() . $button->get('link') . '"' : '';
                     $onclick = ($button->get('onclick')) ? 'onclick="' . $button->get('onclick') . '"' : 'onclick="IeCursorFix(); return false;"';
                     $title = ($button->get('title')) ? $button->get('title') : $button->get('text');
-                    
-                    if (!JUI) {
+
+                    if (!$jui) {
                         $return .= '<div class="button2-left"><div class="' . $button->get('name') . '">';
                     }
-                    
-                    $return    .= '<a' . $modal . ' title="' . $title . '"' . $href . $onclick . ' rel="' . $button->get('options') . '"><i class="icon-' . $button->get('name') . '"></i> ' . $button->get('text') . '</a>';
-                
-                    if (!JUI) {
-                        $return .= '</div></div>';
-                    } 
 
-                    $return .= "<div class=\"button2-left\"><div class=\"" . $button->get('name') . "\"><a " . $modal . " title=\"" . $title . "\" " . $href . " " . $onclick . " rel=\"" . $button->get('options') . "\">" . $button->get('text') . "</a></div></div>\n";
+                    $return .= '<a' . $modal . ' title="' . $title . '"' . $href . $onclick . ' rel="' . $button->get('options') . '"><i class="icon-' . $button->get('name') . '"></i> ' . $button->get('text') . '</a>';
+
+                    if (!$jui) {
+                        $return .= '</div></div>';
+                    }
                 }
             }
-            if (JUI) {
-                 $return .= "</div>\n";
+            if ($jui) {
+                $return .= "</div>\n";
             }
             $return .= "</div>\n";
         }
 
         return $return;
     }
+
 }
 
 ?>
