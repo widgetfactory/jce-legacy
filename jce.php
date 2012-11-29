@@ -171,14 +171,21 @@ class plgEditorJCE extends JPlugin {
                 if ($button->get('name')) {
                     $modal = ($button->get('modal')) ? ' class="modal-button btn"' : '';
                     $href = ($button->get('link')) ? ' class="btn" href="' . JURI::base() . $button->get('link') . '"' : '';
-                    $onclick = ($button->get('onclick')) ? 'onclick="' . $button->get('onclick') . '"' : 'onclick="IeCursorFix(); return false;"';
+                    $onclick = ($button->get('onclick')) ? ' onclick="' . $button->get('onclick') . '"' : ' onclick="IeCursorFix(); return false;"';
                     $title = ($button->get('title')) ? $button->get('title') : $button->get('text');
 
                     if (!$jui) {
                         $return .= '<div class="button2-left"><div class="' . $button->get('name') . '">';
                     }
 
-                    $return .= '<a' . $modal . ' title="' . $title . '"' . $href . $onclick . ' rel="' . $button->get('options') . '"><i class="icon-' . $button->get('name') . '"></i> ' . $button->get('text') . '</a>';
+                    $return .= '<a' . $modal . ' title="' . $title . '"' . $href . $onclick . ' rel="' . $button->get('options') . '">';
+                    
+                    // add icon class
+                    if ($jui) {
+                        $return .= '<i class="icon-' . $button->get('name') . '"></i> ';
+                    }
+                    
+                    $return .= $button->get('text') . '</a>';
 
                     if (!$jui) {
                         $return .= '</div></div>';
