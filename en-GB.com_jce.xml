@@ -11,9 +11,8 @@
 	<license>@@licence@@</license>
 	<description>English(United Kingdom) language pack for JCE 2.x</description>
 	<site folder="language/en-GB">
-		<file>en-GB.com_jce.ini</file>
-		
-		<!-- // Subscription plugin language files
+		<file>en-GB.com_jce.ini</file>	
+		<!-- // Subscription plugin language files // -->
 		<file>en-GB.com_jce_caption.ini</file> 
 		<file>en-GB.com_jce_emotions.ini</file>
 		<file>en-GB.com_jce_filemanager.ini</file>
@@ -22,22 +21,10 @@
 		<file>en-GB.com_jce_mediamanager.ini</file>
 		<file>en-GB.com_jce_mediamanager.ini</file>
 		<file>en-GB.com_jce_templatemanager.ini</file>
-		// -->
+		<file>en-GB.com_jce_microdata.ini</file>
+		<file>en-GB.com_jce_popups_rokbox.ini</file>
+		<file>en-GB.com_jce_popups_widgetkit.ini</file>
 	</site>
-	<tinymce folder="components/com_jce/editor/tiny_mce">
-		<file>langs/en.js</file>
-		<file>langs/en_dlg.js</file>
-		<file>themes/advanced/langs/en.js</file>
-		
-		<!-- // Subscription plugin language files
-		<file>plugins/emotions/langs/en_dlg.js</file>
-		<file>plugins/filemanager/langs/en_dlg.js</file>
-		<file>plugins/fullpage/langs/en_dlg.js</file>
-		<file>plugins/iframe/langs/en_dlg.js</file>
-		<file>plugins/mediamanager/langs/en_dlg.js</file>
-		<file>plugins/templatemanager/langs/en_dlg.js</file>
-		 // -->
-	</tinymce>
 	<administration folder="administrator/language/en-GB">
 		<file>en-GB.com_jce.ini</file>
 		<file>en-GB.com_jce.menu.ini</file>
