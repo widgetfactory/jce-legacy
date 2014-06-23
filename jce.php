@@ -133,70 +133,57 @@ class plgEditorJCE extends JPlugin {
     }
 
     private function _displayButtons($name, $buttons, $asset, $author) {
-        // Load modal popup behavior
-        JHTML::_('behavior.modal', 'a.modal-button');
-
-        $args['name'] = $name;
-        $args['event'] = 'onGetInsertMethod';
-
         $return = '';
-        $results[] = $this->update($args);
 
-        $version = new JVersion;
-        $JOOMLA3 = (float) $version->RELEASE >= 3;
+        $args = array(
+            'name' => $name,
+            'event' => 'onGetInsertMethod'
+        );
+
+        $results = (array) $this->update($args);
 
         foreach ($results as $result) {
             if (is_string($result) && trim($result)) {
                 $return .= $result;
             }
         }
+        
+        $version = new JVersion;
 
         if (is_array($buttons) || (is_bool($buttons) && $buttons)) {
-            $results = $this->_subject->getButtons($name, $buttons, $asset, $author);
+            $buttons = $this->_subject->getButtons($name, $buttons, $asset, $author);
 
-            /*
-             * This will allow plugins to attach buttons or change the behavior on the fly using AJAX
-             */
-            $return .= "\n<div id=\"editor-xtd-buttons\"";
-
-            if ($JOOMLA3) {
-                $return .= " class=\"btn-toolbar pull-left\">\n\n<div class=\"btn-toolbar\"";
-            }
-
-            $return .= ">\n";
-
-            foreach ($results as $button) {
+            if ($version->isCompatible('3.0')) {
+                $return .= JLayoutHelper::render('joomla.editors.buttons', $buttons);
+            } else {
+                // Load modal popup behavior
+                JHTML::_('behavior.modal', 'a.modal-button');
+                
                 /*
-                 * Results should be an object
+                 * This will allow plugins to attach buttons or change the behavior on the fly using AJAX
                  */
-                if ($button->get('name')) {
-                    $modal = ($button->get('modal')) ? ' class="modal-button btn"' : '';
-                    $href = ($button->get('link')) ? ' class="btn" href="' . JURI::base() . $button->get('link') . '"' : '';
-                    $onclick = ($button->get('onclick')) ? ' onclick="' . $button->get('onclick') . '"' : ' onclick="IeCursorFix(); return false;"';
-                    $title = ($button->get('title')) ? $button->get('title') : $button->get('text');
+                $return .= "\n<div id=\"editor-xtd-buttons\"";
+                $return .= ">\n";
 
-                    if ((float) $version->RELEASE < 3) {
+                foreach ($buttons as $button) {
+                    /*
+                     * Results should be an object
+                     */
+                    if ($button->get('name')) {
+                        $modal = ($button->get('modal')) ? ' class="modal-button btn"' : '';
+                        $href = ($button->get('link')) ? ' class="btn" href="' . JURI::base() . $button->get('link') . '"' : '';
+                        $onclick = ($button->get('onclick')) ? ' onclick="' . $button->get('onclick') . '"' : ' onclick="IeCursorFix(); return false;"';
+                        $title = ($button->get('title')) ? $button->get('title') : $button->get('text');
+
                         $return .= '<div class="button2-left"><div class="' . $button->get('name') . '">';
-                    }
-
-                    $return .= '<a' . $modal . ' title="' . $title . '"' . $href . $onclick . ' rel="' . $button->get('options') . '">';
-                    
-                    // add icon class
-                    if ($JOOMLA3) {
-                        $return .= '<i class="icon-' . $button->get('name') . '"></i> ';
-                    }
-                    
-                    $return .= $button->get('text') . '</a>';
-
-                    if (!$JOOMLA3) {
+                        $return .= '<a' . $modal . ' title="' . $title . '"' . $href . $onclick . ' rel="' . $button->get('options') . '">';
+                        $return .= $button->get('text') . '</a>';
                         $return .= '</div></div>';
                     }
                 }
-            }
-            if ($JOOMLA3) {
+
                 $return .= "</div>\n";
             }
-            $return .= "</div>\n";
         }
 
         return $return;
