@@ -154,6 +154,19 @@ class plgEditorJCE extends JPlugin {
             $buttons = $this->_subject->getButtons($name, $buttons, $asset, $author);
 
             if ($version->isCompatible('3.0')) {
+                // fix for some buttons that do not include the class
+                foreach($buttons as $button) {                    
+                    if (is_object($button)) {
+                        if (isset($button->class)) {
+                        	if (preg_match('#\bbtn\b#', $button->class) === false) {
+                        		$button->class .= " btn";
+                        	}
+                        } else {
+                            $button->class = "btn";
+                        }
+                    }
+                }
+
                 $return .= JLayoutHelper::render('joomla.editors.buttons', $buttons);
             } else {
                 // Load modal popup behavior
@@ -170,7 +183,7 @@ class plgEditorJCE extends JPlugin {
                      * Results should be an object
                      */
                     if ($button->get('name')) {
-                        $modal = ($button->get('modal')) ? ' class="modal-button btn"' : '';
+                        $modal = ($button->get('modal')) ? ' class="btn modal-button"' : '';
                         $href = ($button->get('link')) ? ' class="btn" href="' . JURI::base() . $button->get('link') . '"' : '';
                         $onclick = ($button->get('onclick')) ? ' onclick="' . $button->get('onclick') . '"' : ' onclick="IeCursorFix(); return false;"';
                         $title = ($button->get('title')) ? $button->get('title') : $button->get('text');
