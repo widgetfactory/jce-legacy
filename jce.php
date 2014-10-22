@@ -122,7 +122,7 @@ class plgEditorJCE extends JPlugin {
             $id = $name;
         }
 
-        $editor = '<label for="' . $id . '" style="display:none;" aria-visible="false">' . $id . '_textarea</label><textarea id="' . $id . '" name="' . $name . '" cols="' . $col . '" rows="' . $row . '" style="width:' . $width . ';height:' . $height . ';" class="wfEditor mce_editable source" wrap="off">' . $content . '</textarea>';
+        $editor  = '<textarea id="' . $id . '" name="' . $name . '" cols="' . $col . '" rows="' . $row . '" style="width:' . $width . ';height:' . $height . ';" class="wfEditor mce_editable source" wrap="off">' . $content . '</textarea>';
         $editor .= $this->_displayButtons($id, $buttons, $asset, $author);
 
         return $editor;
@@ -147,13 +147,11 @@ class plgEditorJCE extends JPlugin {
                 $return .= $result;
             }
         }
-        
-        $version = new JVersion;
 
         if (is_array($buttons) || (is_bool($buttons) && $buttons)) {
             $buttons = $this->_subject->getButtons($name, $buttons, $asset, $author);
 
-            if ($version->isCompatible('3.0')) {
+            if (class_exists('JLayoutHelper')) {
                 // fix for some buttons that do not include the class
                 foreach($buttons as $button) {                    
                     if (is_object($button)) {
