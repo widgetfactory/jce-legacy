@@ -145,13 +145,15 @@ class plgEditorJCE extends JPlugin {
         foreach ($results as $result) {
             if (is_string($result) && trim($result)) {
                 $return .= $result;
-            }
+}
         }
 
         if (is_array($buttons) || (is_bool($buttons) && $buttons)) {
             $buttons = $this->_subject->getButtons($name, $buttons, $asset, $author);
+            
+            $version = new JVersion;
 
-            if (class_exists('JLayoutHelper')) {
+            if ($version->isCompatible('3.0') && class_exists('JLayoutHelper')) {
                 // fix for some buttons that do not include the class
                 foreach($buttons as $button) {                    
                     if (is_object($button)) {
