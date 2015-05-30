@@ -26,6 +26,6 @@ components/com_jce/editor/tiny_mce/plugins/templatemanager
 #!components/com_jce/
 
 # admin
-#!administrator/components/com_jce/
+!administrator/components/com_jce/
 
 .DS_Store
