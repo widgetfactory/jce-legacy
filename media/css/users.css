@@ -1,0 +1,58 @@
+/**
+ * @package   	JCE
+ * @copyright 	Copyright (c) 2009-2015 Ryan Demmer. All rights reserved.
+ * @license   	GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
+ * JCE is free software. This version may have been modified pursuant
+ * to the GNU General Public License, and as distributed it includes or
+ * is derivative of works licensed under the GNU General Public License or
+ * other free or open source software licenses.
+ */
+html {
+    overflow: auto;
+}
+body {
+    height : 500px;
+    padding : 0;
+}
+
+#jce #users-list th:first-child {
+    width : 20px;
+    text-align: center;
+}
+
+#jce #users-list td:first-child {
+    text-align: center;
+    width : 20px;
+}
+
+#jce #users-list th:first-child + th, #jce #users-list td:first-child + td {
+    width : 300px;
+}
+
+#jce #users-list th:first-child + th + th, #jce #users-list td:first-child + td + td {
+    width : 230px;
+}
+
+#jce #users-list th:first-child + th + th + th, #jce #users-list td:first-child + td + td + td {
+    width : 125px;
+}
+
+#jce > div.container + div.btn-group {
+    position : absolute;
+    right : 10px;
+}
+
+#jce > div.container {
+    height : 420px;
+}
+
+#jce > div.container thead, tbody {
+    display: block;
+}
+
+#jce > div.container tbody {
+    max-height: 340px;
+    overflow-x: hidden;
+    overflow-y: auto;
+    width: 100%;
+}
