@@ -1,0 +1,178 @@
+/**
+ * @package   	JCE
+ * @copyright 	Copyright (c) 2009-2015 Ryan Demmer. All rights reserved.
+ * @license   	GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
+ * JCE is free software. This version may have been modified pursuant
+ * to the GNU General Public License, and as distributed it includes or
+ * is derivative of works licensed under the GNU General Public License or
+ * other free or open source software licenses.
+ * Based on tooltip idea by Filament Group - http://www.filamentgroup.com/lab/image_free_css_tooltip_pointers_a_use_for_polygonal_css/
+ *
+ */
+#jce-tooltip.jce-tooltip h4, #jce-tooltip.jce-tooltip p, #jce-tooltip.jce-tooltip ul {
+    font-size: 1em;
+    margin: 0;
+    padding:0;
+    word-wrap: normal;
+}
+#jce-tooltip.jce-tooltip ul {
+    margin: 0 0 0 20px;
+}
+#jce-tooltip.jce-tooltip h4 {
+    font-weight: bold;
+    font-size: 1.1em;
+}
+#jce-tooltip.jce-tooltip a {
+    text-decoration: underline;
+}
+/*Tooltip and Pointer CSS*/
+#jce-tooltip.jce-tooltip {
+    padding: .8em;
+    min-width: 10em;
+    max-width: 30em;
+    border-width: 2px !important;
+    position: absolute;
+    z-index: 9999;
+    visibility: hidden;
+    margin: 0;
+    font-size: 11px;
+    
+    border : 1px solid #ccc;
+    background: #fff;
+    border-radius: 3px;
+    -moz-border-radius: 3px;
+    -webkit-border-radius : 3px;
+}
+
+label.hasTip, span.hasTip, label.hastip, span.hastip, label.tooltip, span.tooltip, label.wf-tooltip, span.wf-tooltip {
+    cursor: help;
+}
+#jce-tooltip span.ui-icon-close {
+    position: absolute;
+    right: 0px;
+    top: 0px;
+    cursor: pointer;
+}
+#jce-tooltip span.ui-icon-close:after {
+    content: "\00d7";
+    display: block;
+    font-family: arial;
+    font-size: 16px;
+    font-weight: bold;
+    line-height: 10px;
+    padding: 6px;
+}
+/*#jce-tooltip canvas {
+    position: absolute;
+}
+#jce-tooltip canvas.top.center {
+    top : 100%;
+}
+#jce-tooltip canvas.bottom.center {
+    top : 0;
+    margin-top: -14px;
+}
+
+#jce-tooltip canvas.bottom.center, #jce-tooltip canvas.top.center {
+    left : 50%;
+    margin-left : -7px;
+}
+
+#jce-tooltip canvas.right {
+    left : 0;
+    margin-left: -14px;
+}
+
+#jce-tooltip canvas.left {
+    left : 100%;
+}
+
+#jce-tooltip canvas.center.right, #jce-tooltip canvas.center.left {
+    top : 50%;
+    margin-top : -7px;
+}*/
+
+
+#jce-tooltip .jce-tooltip-pointer, #jce-tooltip .jce-tooltip-pointer:after, #jce-tooltip .jce-tooltip-pointer-inner {
+    border-color: transparent;
+    border-style: solid;
+    display: inline-block;
+    height: 0;
+    position: absolute;
+    width: 0;
+}
+
+#jce-tooltip .jce-tooltip-pointer:after {
+    content: "";
+    z-index: -1;
+}
+#jce-tooltip .jce-tooltip-pointer.top, #jce-tooltip .jce-tooltip-pointer.top .jce-tooltip-pointer-inner {
+    border-top-color: #FFFFFF;
+    border-width: 7px 7px 0;
+    bottom: -7px;
+    left: 50%;
+    margin-left: -7px;
+}
+
+#jce-tooltip .jce-tooltip-pointer.top .jce-tooltip-pointer-inner {
+    bottom : 0;
+}
+
+#jce-tooltip .jce-tooltip-pointer.top:after {
+    border-top-color: #ccc;
+    border-width: 8px 8px 0;
+    bottom: -3px;
+    left: -8px;
+}
+#jce-tooltip .jce-tooltip-pointer.right, #jce-tooltip .jce-tooltip-pointer.right .jce-tooltip-pointer-inner {
+    border-right-color: #FFFFFF;
+    border-width: 7px 7px 7px 0;
+    left: -7px;
+    margin-top: -7px;
+    top: 50%;
+}
+#jce-tooltip .jce-tooltip-pointer.right .jce-tooltip-pointer-inner {
+    left : 0;
+}
+#jce-tooltip .jce-tooltip-pointer.right:after {
+    border-right-color: #ccc;
+    border-width: 8px 8px 8px 0;
+    bottom: -8px;
+    left: -3px;
+}
+#jce-tooltip .jce-tooltip-pointer.bottom, #jce-tooltip .jce-tooltip-pointer.bottom .jce-tooltip-pointer-inner {
+    border-bottom-color: #FFFFFF;
+    border-width: 0 7px 7px;
+    left: 50%;
+    margin-left: -7px;
+    top: -7px;
+}
+#jce-tooltip .jce-tooltip-pointer.bottom .jce-tooltip-pointer-inner {
+    top : 0;
+}
+#jce-tooltip .jce-tooltip-pointer.bottom:after {
+    border-bottom-color: #ccc;
+    border-width: 0 8px 8px;
+    left: -8px;
+    top: -3px;
+}
+#jce-tooltip .jce-tooltip-pointer.left, #jce-tooltip .jce-tooltip-pointer.left .jce-tooltip-pointer-inner {
+    border-left-color: #FFFFFF;
+    border-width: 7px 0 7px 7px;
+    margin-top: -7px;
+    right: -7px;
+    top: 50%;
+}
+#jce-tooltip .jce-tooltip-pointer.left .jce-tooltip-pointer-inner {
+    right : 0;
+}
+#jce-tooltip .jce-tooltip-pointer.left:after {
+    border-left-color: #ccc;
+    border-width: 8px 0 8px 8px;
+    bottom: -8px;
+    right: -3px;
+}
+
+#jce-tooltip.wf-colorpicker {
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+}
