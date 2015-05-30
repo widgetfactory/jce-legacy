@@ -1,15 +1,31 @@
 # Ignore everything
 *
 
+administrator/components/*
+components/*
+plugins/editors/*
+
+components/com_jce/editor/tiny_mce/plugins/captions
+components/com_jce/editor/tiny_mce/plugins/emotions
+components/com_jce/editor/tiny_mce/plugins/filemanager
+components/com_jce/editor/tiny_mce/plugins/fullpage
+components/com_jce/editor/tiny_mce/plugins/iframe
+components/com_jce/editor/tiny_mce/plugins/imgmanager_ext
+components/com_jce/editor/tiny_mce/plugins/mediamanager
+components/com_jce/editor/tiny_mce/plugins/microdata
+components/com_jce/editor/tiny_mce/plugins/templatemanager
+
 # config
 !.gitignore
-!/.tx
+!.tx
 
 # plugin
-!/plugins/editors/jce
+#!plugins/editors/jce
 
 # site
-!/components/com_jce
+#!components/com_jce/
 
 # admin
-!/administrator/components/com_jce
+#!administrator/components/com_jce/
+
+.DS_Store
