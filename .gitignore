@@ -23,9 +23,10 @@ components/com_jce/editor/tiny_mce/plugins/templatemanager
 #!plugins/editors/jce
 
 # site
-#!components/com_jce/
+!components/com_jce/
 
 # admin
 !administrator/components/com_jce/
 
 .DS_Store
+.project
