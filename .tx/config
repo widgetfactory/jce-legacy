@@ -1,0 +1,97 @@
+[main]
+host = https://www.transifex.com
+
+[jce.en-gbcom_jceini_1]
+source_file = language/en-GB/en-GB.com_jce.ini
+source_lang = en
+type = INI
+
+[jce.en-gbcom_jce_captionini]
+source_file = language/en-GB/en-GB.com_jce_caption.ini
+source_lang = en
+type = INI
+
+[jce.en-gbcom_jce_emotionsini]
+source_file = language/en-GB/en-GB.com_jce_emotions.ini
+source_lang = en
+type = INI
+
+[jce.en-gbcom_jce_filemanagerini]
+source_file = language/en-GB/en-GB.com_jce_filemanager.ini
+source_lang = en
+type = INI
+
+[jce.en-gbcom_jce_fullpageini]
+source_file = language/en-GB/en-GB.com_jce_fullpage.ini
+source_lang = en
+type = INI
+
+[jce.en-gbcom_jce_iframeini]
+source_file = language/en-GB/en-GB.com_jce_iframe.ini
+source_lang = en
+type = INI
+
+[jce.en-gbcom_jce_imgmanager_extini]
+source_file = language/en-GB/en-GB.com_jce_imgmanager_ext.ini
+source_lang = en
+type = INI
+
+[jce.en-gbcom_jce_mediamanagerini]
+source_file = language/en-GB/en-GB.com_jce_mediamanager.ini
+source_lang = en
+type = INI
+
+[jce.en-gbcom_jce_microdataini]
+source_file = language/en-GB/en-GB.com_jce_microdata.ini
+source_lang = en
+type = INI
+
+[jce.en-gbcom_jce_templatemanagerini]
+source_file = language/en-GB/en-GB.com_jce_templatemanager.ini
+source_lang = en
+type = INI
+
+[jce.en-gbcom_jceini]
+source_file = administrator/language/en-GB/en-GB.com_jce.ini
+source_lang = en
+type = INI
+
+[jce.en-gbcom_jcemenuini]
+source_file = administrator/language/en-GB/en-GB.com_jce.menu.ini
+source_lang = en
+type = INI
+
+[jce.en-gbcom_jcesysini]
+source_file = administrator/language/en-GB/en-GB.com_jce.sys.ini
+source_lang = en
+type = INI
+
+[jce.en-gbplg_editors_jceini]
+source_file = administrator/language/en-GB/en-GB.plg_editors_jce.ini
+source_lang = en
+type = INI
+
+[jce.en-gbplg_editors_jcesysini]
+source_file = administrator/language/en-GB/en-GB.plg_editors_jce.sys.ini
+source_lang = en
+type = INI
+
+[jce.en-gbplg_quickicon_jcefilebrowser]
+source_file = administrator/language/en-GB/en-GB.plg_quickicon_jcefilebrowser.ini
+source_lang = en
+type = INI
+
+[jce.en-gbplg_quickicon_jcefilebrowsersysini]
+source_file = administrator/language/en-GB/en-GB.plg_quickicon_jcefilebrowser.sys.ini
+source_lang = en
+type = INI
+
+[jce.en-gbplg_system_jcemediaboxini]
+source_file = administrator/language/en-GB/en-GB.plg_system_jcemediabox.ini
+source_lang = en
+type = INI
+
+[jce.en-gbplg_system_jcemediaboxsysini]
+source_file = administrator/language/en-GB/en-GB.plg_system_jcemediabox.sys.ini
+source_lang = en
+type = INI

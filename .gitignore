@@ -1,0 +1,11 @@
+# Ignore everything
+*/*
+*
+
+# But not these files...
+!.gitignore
+!/.tx
+
+!/plugins/editors/jce
+!/components/com_jce
+!/administrator/components/com_jce
