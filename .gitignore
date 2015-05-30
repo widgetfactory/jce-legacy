@@ -1,11 +1,15 @@
 # Ignore everything
-*/*
 *
 
-# But not these files...
+# config
 !.gitignore
 !/.tx
 
+# plugin
 !/plugins/editors/jce
+
+# site
 !/components/com_jce
+
+# admin
 !/administrator/components/com_jce
