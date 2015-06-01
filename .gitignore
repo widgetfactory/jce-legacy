@@ -27,6 +27,11 @@ nbproject
 build.xml
 plugin_build.xml
 
+header.tinymce.txt
+header.codemirror.txt
+header.css.txt
+header.js.txt
+
 components/com_jce/editor/tiny_mce/plugins/caption/
 components/com_jce/editor/tiny_mce/plugins/emotions/
 components/com_jce/editor/tiny_mce/plugins/filemanager/
