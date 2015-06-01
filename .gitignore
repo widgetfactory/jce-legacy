@@ -24,6 +24,9 @@ plugins/editors/*
 .settings
 nbproject
 
+build.xml
+plugin_build.xml
+
 components/com_jce/editor/tiny_mce/plugins/caption/
 components/com_jce/editor/tiny_mce/plugins/emotions/
 components/com_jce/editor/tiny_mce/plugins/filemanager/
