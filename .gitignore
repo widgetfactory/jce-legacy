@@ -22,7 +22,7 @@ plugins/editors/*
 .project
 .buildpath
 .settings
-nbproject
+
 build.xml
 plugin_build.xml
 
@@ -58,3 +58,5 @@ components/com_jce/editor/extensions/popups/rokbox.xml
 components/com_jce/editor/extensions/popups/widgetkit
 components/com_jce/editor/extensions/popups/widgetkit.php
 components/com_jce/editor/extensions/popups/widgetkit.xml
+
+nbproject/
