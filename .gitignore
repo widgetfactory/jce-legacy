@@ -23,7 +23,6 @@ plugins/editors/*
 .buildpath
 .settings
 nbproject
-
 build.xml
 plugin_build.xml
 
