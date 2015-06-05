@@ -26,6 +26,9 @@ plugins/editors/*
 build.xml
 plugin_build.xml
 
+Gruntfile.js
+package.json
+
 header.tinymce.txt
 header.codemirror.txt
 header.css.txt
