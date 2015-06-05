@@ -2,6 +2,8 @@
 *
 
 administrator/components/*
+administrator/language/en-GB/*
+language/en-GB/*
 components/*
 plugins/editors/*
 
@@ -14,9 +16,11 @@ plugins/editors/*
 
 # site
 !components/com_jce/
+!language/en-GB/
 
 # admin
 !administrator/components/com_jce/
+!administrator/language/en-GB/
 
 .DS_Store
 .project
@@ -63,7 +67,4 @@ components/com_jce/editor/extensions/popups/widgetkit.php
 components/com_jce/editor/extensions/popups/widgetkit.xml
 
 nbproject/
-
-components/com_jce/nbproject/private/private.xml
-
 components/com_jce/nbproject/private/private.xml
