@@ -70,5 +70,7 @@ components/com_jce/editor/extensions/popups/widgetkit
 components/com_jce/editor/extensions/popups/widgetkit.php
 components/com_jce/editor/extensions/popups/widgetkit.xml
 
-nbproject/
+nbproject
+components/com_jce/nbproject/
+components/com_jce/nbproject/private/
 components/com_jce/nbproject/private/private.xml
