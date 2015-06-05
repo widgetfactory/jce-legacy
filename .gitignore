@@ -16,11 +16,15 @@ plugins/editors/*
 
 # site
 !components/com_jce/
-!language/en-GB/
+!language/en-GB/en-GB.com_jce*
 
 # admin
 !administrator/components/com_jce/
 !administrator/language/en-GB/
+!administrator/language/en-GB/en-GB.com_jce*
+!administrator/language/en-GB/en-GB.plg_quickicon_jce*
+!administrator/language/en-GB/en-GB.plg_editors_jce*
+!administrator/language/en-GB/en-GB.plg_system_jce*
 
 .DS_Store
 .project
