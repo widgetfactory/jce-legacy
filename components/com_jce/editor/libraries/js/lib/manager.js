@@ -623,7 +623,7 @@
 
                     h += '<li class="folder ' + classes.join(' ') + '" title="' + e.name + '"' +
                             data.join(' ') +
-                            '><span class="checkbox" role="checkbox" aria-checked="false"></span><a href="javascript:;">' + e.name + '</a><span class="date" aria-hidden="true">' + $.String.formatDate(e.properties.modified) + '</span></li>';
+                            '><span class="checkbox" role="checkbox" aria-checked="false"></span><a href="javascript:;">' + e.name + '</a><span class="date" aria-hidden="true">' + $.String.formatDate(e.properties.modified, self.options.date_format) + '</span></li>';
                 });
 
             }
@@ -659,7 +659,7 @@
 
                     h += '<li class="file ' + $.String.getExt(e.name) + ' ' + classes.join(' ') + '" title="' + e.name + '"' +
                             data.join(' ') +
-                            '><span class="checkbox" role="checkbox" aria-checked="false"></span><a href="javascript:;">' + e.name + '</a><span class="date" aria-hidden="true">' + $.String.formatDate(e.properties.modified) + '</span><span class="size" aria-hidden="true">' + $.String.formatSize(e.properties.size) + '</span></li>';
+                            '><span class="checkbox" role="checkbox" aria-checked="false"></span><a href="javascript:;">' + e.name + '</a><span class="date" aria-hidden="true">' + $.String.formatDate(e.properties.modified, self.options.date_format) + '</span><span class="size" aria-hidden="true">' + $.String.formatSize(e.properties.size) + '</span></li>';
                 });
 
             } else {
