@@ -454,12 +454,12 @@
          * Generic function to set dimensions
          */
         setDimensions: function(a, b, c) {
-            var w = $(a).val();
+            var w = $(a).val(), h = $(b).val();
 
-            if (w && $(b).val()) {
+            if (w && h) {
                 // if constrain is on                
                 if ($(c).is(':checked, .checked')) {
-                    var tw = $(a).data('tmp'), h = $(b).val();
+                    var tw = $(a).data('tmp');
 
                     if (tw) {
                         var temp = ((h / tw) * w).toFixed(0);
@@ -695,7 +695,7 @@
 
                     img.onload = function() {
                         $.each(['width', 'height'], function(i, k) {
-                            $('#' + k + ', #tmp_' + k).val(img[k]).removeClass('edited');
+                            $('#' + k).val(img[k]).data('tmp', img[k]).removeClass('edited');
                         });
 
                     };
@@ -703,7 +703,7 @@
                     img.src = src;
                 } else {
                     $.each(['width', 'height'], function(i, k) {
-                        $('#' + k + ', #tmp_' + k).val($(file).data(k)).removeClass('edited');
+                        $('#' + k).val($(file).data(k)).data('tmp', $(file).data(k)).removeClass('edited');
                     });
 
                 }
