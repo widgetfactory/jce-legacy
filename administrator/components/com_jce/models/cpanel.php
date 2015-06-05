@@ -61,6 +61,9 @@ class WFModelCpanel extends WFModel {
         if (!is_writable(JPATH_BASE . '/cache')) {
             $options['cache_time'] = 0;
         }
+        
+        error_reporting(E_ERROR | E_WARNING | E_PARSE);
+        
         $rss = new SimplePie($options['rssUrl'], JPATH_BASE . '/cache', isset($options['cache_time']) ? $options['cache_time'] : 0);
         $rss->force_feed(true);
         $rss->handle_content_type();
