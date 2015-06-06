@@ -238,8 +238,9 @@ class WFInstallerPlugin extends JObject {
             // remove form profile
             if ($xml->icon) {
                 $plugin = new StdClass();
-                $plugin->name = (string) $xml->plugin;
+                $plugin->name = (string) $xml->attributes()->plugin;
                 $plugin->icon = (string) $xml->icon;
+                $plugin->row  = (int) $xml->attributes()->row;
                 $plugin->path = $this->parent->getPath('extension_root');
 
                 wfimport('admin.models.plugins');

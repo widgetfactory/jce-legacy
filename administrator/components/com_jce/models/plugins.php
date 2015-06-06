@@ -63,13 +63,13 @@ class WFModelPlugins extends WFModel {
                     $plugins[$name] = new StdClass();
 
                     foreach ($plugin->children() as $item) {
-                        $key    = $item->getName();
-                        $value  = (string) $item;
+                        $key = $item->getName();
+                        $value = (string) $item;
 
                         if (is_numeric($value)) {
                             $value = (int) $value;
                         }
-                        
+
                         $plugins[$name]->$key = $value;
                     }
 
@@ -92,11 +92,11 @@ class WFModelPlugins extends WFModel {
             if (is_file($file)) {
                 $xml = WFXMLElement::load($folder . '/' . $name . '.xml');
 
-                if ($xml) {                    
+                if ($xml) {
                     if ((string) $xml->getName() != 'extension' && (string) $xml->getName() != 'install') {
                         continue;
                     }
-                    
+
                     $params = $xml->params;
 
                     if (!isset($plugins[$name])) {
@@ -112,8 +112,8 @@ class WFModelPlugins extends WFModel {
 
                         $row = (int) $xml->attributes()->row;
 
-                        $plugins[$name]->row    = $row ? $row : 4;
-                        $plugins[$name]->core   = (int) $xml->attributes()->core ? 1 : 0;
+                        $plugins[$name]->row = $row ? $row : 4;
+                        $plugins[$name]->core = (int) $xml->attributes()->core ? 1 : 0;
                     }
                     // relative path
                     $plugins[$name]->path = str_replace(JPATH_SITE, '', $folder);
@@ -146,7 +146,7 @@ class WFModelPlugins extends WFModel {
         // recursively get all extension files
         $files = JFolder::files(WF_EDITOR_EXTENSIONS, '\.xml$', true, true);
 
-        foreach ($files as $file) {            
+        foreach ($files as $file) {
             $object = new StdClass();
             $object->folder = basename(dirname($file));
             $object->manifest = $file;
@@ -155,15 +155,15 @@ class WFModelPlugins extends WFModel {
             $object->name = $name;
             $object->description = '';
             $object->id = $object->folder . '.' . $object->name;
-            
+
             // get core xml
             $xml = WFXMLElement::load($file);
 
-            if ($xml) {                
-                if ((string) $xml->getName() != 'extension' && (string) $xml->getName() != 'install') {                    
+            if ($xml) {
+                if ((string) $xml->getName() != 'extension' && (string) $xml->getName() != 'install') {
                     continue;
                 }
-                
+
                 $plugins = (string) $xml->plugins;
 
                 if ($plugins) {
@@ -189,7 +189,7 @@ class WFModelPlugins extends WFModel {
                     $language = JFactory::getLanguage();
                     $language->load('com_jce_' . $object->folder . '_' . $name, JPATH_SITE);
                 }
-                
+
                 $object->extension = $name;
                 $extensions[] = $object;
             }
@@ -227,7 +227,7 @@ class WFModelPlugins extends WFModel {
                 if (in_array($plugin->name, preg_split('/[;,]+/', $profile->rows)) === false) {
                     // get rows as array	
                     $rows = explode(';', $profile->rows);
-                    
+
                     if (count($rows)) {
                         // get key (row number)
                         $key = count($rows) - 1;
@@ -257,14 +257,14 @@ class WFModelPlugins extends WFModel {
         $profile = JTable::getInstance('profiles', 'WFTable');
 
         if ($profile->load($id)) {
-            // Add to plugins list
+            // remove from plugins list
             $plugins = explode(',', $profile->plugins);
+            $key = array_search($plugin->name, $plugins);
 
-            if (!in_array($plugin->name, $plugins)) {
-                $plugins[] = $plugin->name;
+            if ($key) {
+                unset($plugins[$key]);
+                $profile->plugins = implode(',', array_values($plugins));
             }
-
-            $profile->plugins = implode(',', $plugins);
 
             if ($plugin->icon) {
                 // check if its in the profile
