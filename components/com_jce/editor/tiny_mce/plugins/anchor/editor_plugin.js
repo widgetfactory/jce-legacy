@@ -129,7 +129,7 @@
             attrib = 'name';
 
             // set as id for html5
-            if (ed.settings.schema == 'html5') {
+            if (ed.settings.schema === 'html5-strict') {
                 attrib = 'id';
             }
 
