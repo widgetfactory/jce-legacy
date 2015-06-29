@@ -326,17 +326,22 @@ class WFJoomlaFileSystem extends WFFileSystem {
             'modified' => $date
         );
 
-        if (preg_match('#\.(jpg|jpeg|bmp|gif|tiff|png)#i', $file) && $count <= 100) {
-            $props = @getimagesize($path);
+        if (preg_match('#\.(jpg|jpeg|bmp|gif|tiff|png)#i', $file)) {
+            $data['preview'] = WFUtility::cleanPath($url, '/');
+            
+            $image = array();
 
-            $width = $props[0];
-            $height = $props[1];
+            if ($count <= 100) {
+                $props = @getimagesize($path);
 
-            $image = array(
-                'width' => $width,
-                'height' => $height,
-                'preview' => WFUtility::cleanPath($url, '/')
-            );
+                $width = $props[0];
+                $height = $props[1];
+
+                $image = array(
+                    'width'     => $width,
+                    'height'    => $height
+                );
+            }
 
             return array_merge_recursive($data, $image);
         }
