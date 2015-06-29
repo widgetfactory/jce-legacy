@@ -30,6 +30,7 @@ plugins/editors/*
 .project
 .buildpath
 .settings
+.idea
 
 build.xml
 plugin_build.xml
