@@ -467,6 +467,8 @@
                     }
                 }
             }
+            
+            $(a).data('tmp', w);
         },
         setStyles: function() {
             var self = this, ed = tinyMCEPopup, $img = $('#sample');
