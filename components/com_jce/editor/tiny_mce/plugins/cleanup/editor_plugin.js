@@ -35,20 +35,17 @@
                     // add support for "bootstrap" icons
                     var elements = ed.schema.elements;
 
-                    if (ed.getParam('pad_empty_tags', true) === false) {
-                        each(split('p h1 h2 h3 h4 h5 h6 th td pre div address caption a'), function (name) {
-                            if (elements[name]) {
-                                elements[name].paddEmpty = false;
+                    if (!ed.getParam('pad_empty_tags', true)) {
+                        each(elements, function(v, k) {
+                            if (v.paddEmpty) {
+                                v.paddEmpty = false;
                             }
                         });
                     }
 
                     if (!ed.getParam('table_pad_empty_cells', true)) {
-                        each(split('th td'), function (name) {
-                            if (elements[name]) {
-                                elements[name].paddEmpty = false;
-                            }
-                        });
+                        elements['th'].paddEmpty = false;
+                        elements['td'].paddEmpty = false;
                     }
                 }
 
@@ -146,14 +143,14 @@
 
                     while (i--) {
                         node = nodes[i], cls = node.attr('class');
-                        // padd it with a space if its empty
+                        // padd it with a space if its empty and has a class, eg: <i class="icon-ok"></i>
                         if (cls && !node.firstChild) {
                             node.attr('data-mce-bootstrap', '1');
                             node.append(new Node('#text', '3')).value = '\u00a0';
                         }
                     }
                 });
-
+                // cleanup padded "bootstrap" tags
                 ed.serializer.addAttributeFilter('data-mce-bootstrap', function (nodes, name) {
                     var i = nodes.length, node, fc;
 
