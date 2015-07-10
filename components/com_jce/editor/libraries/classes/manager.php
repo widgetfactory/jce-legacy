@@ -124,8 +124,8 @@ class WFMediaManager extends WFEditorPlugin {
 
         $textcase = $this->getParam('editor.websafe_textcase');
 
-        if (!empty($textcase)) {
-            $textcase = array_shift($textcase);
+        if (!empty($textcase) && is_array($textcase)) {
+            $textcase = count($textcase) > 1 ? 'all' : array_shift($textcase);
         }
 
         $config = array(
