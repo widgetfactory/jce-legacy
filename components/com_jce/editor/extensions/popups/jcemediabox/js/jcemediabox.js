@@ -244,12 +244,24 @@ WFPopups.addPopup('jcemediabox', {
         }
 
         // parameter format eg: title[title]
-        if (/\w+\[[^\]]+\]/.test(s)) {            
-            s = s.replace(/([\w-]+)\[([^\]]+)\](;)?/g, function (a, b, c, d) {
+        if (/\w+\[[^\]]+\]/.test(s)) { 
+            var data = {};
+            
+            tinymce.each(tinymce.explode(s, ';'), function(p) {
+                var args = p.match(/([\w-]+)\[(.*)\]$/);
+                
+                if (args && args.length === 3) {
+                    data[args[1]] = args[2];
+                }
+            });
+            
+            return data;
+
+            /*s = s.replace(/([\w-]+)\[([^\]]+)\](;)?/g, function (a, b, c, d) {
                 return '"' + b + '":"' + tinymce.DOM.encode(c) + '"' + (d ? ',' : '');
             });
 
-            return $.parseJSON('{' + trim(s) + '}');
+            return $.parseJSON('{' + trim(s) + '}');*/
         }
     },
     /**
@@ -439,9 +451,9 @@ WFPopups.addPopup('jcemediabox', {
                 }
             }
             
-            if (k == 'title' || k == 'caption' || k == 'group') {
+            /*if (k == 'title' || k == 'caption' || k == 'group') {
                 v = encodeURIComponent(v);
-            }
+            }*/
 
             data[k] = v;
         });
@@ -451,7 +463,7 @@ WFPopups.addPopup('jcemediabox', {
             var v = $('input.value', this).val();
 
             if (k !== '' && v !== '') {
-                data[k] = encodeURIComponent(v);
+                data[k] = v;//encodeURIComponent(v);
             }
         });
 
@@ -481,12 +493,17 @@ WFPopups.addPopup('jcemediabox', {
             rel = rel.replace(/([a-z0-9]+)(\[([^\]]+)\]);?/gi, '');
         }
 
-        // map object properties to options array
-        var props = $.map(data, function (v, k) {
-            return k + '[' + v + ']';
+        // sett data to data-mediabox attributes
+        $.each(data, function(k, v) {
+            ed.dom.setAttrib(n, 'data-mediabox-' + k, ed.dom.encode(v));
         });
 
-        if (this.params.attribute == 'data-mediabox') {
+        // map object properties to options array
+        /*var props = $.map(data, function (v, k) {
+            return k + '[' + v + ']';
+        });*/
+
+        /*if (this.params.attribute == 'data-mediabox') {
             ed.dom.setAttrib(n, 'data-mediabox', props.join(';'));
         } else {
             rel = ' ' + props.join(';');
@@ -494,7 +511,7 @@ WFPopups.addPopup('jcemediabox', {
             // remove HTML5 data attributes if any
             ed.dom.setAttrib(n, 'data-json', '');
             ed.dom.setAttrib(n, 'data-mediabox', '');
-        }
+        }*/
 
         // set data to rel attribute
         ed.dom.setAttrib(n, 'rel', $.trim(rel));
