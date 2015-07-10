@@ -327,7 +327,7 @@
                         value: $(el).val(),
                         'class': $(el).attr('class')
                     }).insertAfter(el).change(function () {
-                        $(el).val(this.value);
+                        $(el).val(this.value).change();
                     });
 
                 } else {
