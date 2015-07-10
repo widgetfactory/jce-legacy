@@ -575,8 +575,10 @@
          * Check if a name is websafe
          */
         _isWebSafe: function(name) {
-            //return !/[^a-zA-Z0-9:\.\_\-]/.test(name);
-            return name === $.String.safe(name, this.options.websafe_mode, this.options.websafe_spaces, this.options.websafe_textcase);
+            // get websafe name
+            var safe = $.String.safe(name, this.options.websafe_mode, this.options.websafe_spaces, this.options.websafe_textcase);            
+            // only check lowercase as both upper and lower are websafe
+            return name.toLowerCase() === safe.toLowerCase();
         },
         _isViewable: function(name) {
             var button = this._getButton('file', 'view');
