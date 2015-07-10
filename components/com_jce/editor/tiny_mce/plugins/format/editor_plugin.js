@@ -8,8 +8,8 @@
  * other free or open source software licenses.
  */
 (function() {
-    var VK = tinymce.VK;
-    var blocks = 'section,nav,article,aside,h1,h2,h3,h4,h5,h6,header,footer,address,main,p,pre,blockquote,figure,figcaption,div,dl,dt,dd';
+    var VK = tinymce.VK, each = tinymce.each, map = tinymce.map;
+    var blocks = [];
 
     tinymce.create('tinymce.plugins.FormatPlugin', {
         init: function(ed, url) {
@@ -17,13 +17,16 @@
             this.editor = ed;
 
             function isBlock(n, s) {
-                s = s || blocks;
-                return new RegExp('^(' + s.replace(/,/g, '|') + ')$', 'i').test(n.nodeName);
+                return ed.dom.isBlock(n);
             }
 
-            ed.onPreInit.add(function(ed) {
+            ed.onPreInit.add(function(ed) {                
+                each(ed.schema.getBlockElements(), function(v, k) {
+                    blocks.push(k.toLowerCase());
+                });
+
                 // Register default block formats
-                tinymce.each('aside figure dl'.split(/\s/), function(name) {
+                each('aside figure dl'.split(/\s/), function(name) {
                     ed.formatter.register(name, {block: name, remove: 'all', wrapper: true});
                 });
                 // div container
@@ -86,7 +89,7 @@
                             }
 
                             ed.undoManager.add();
-                            p = ed.dom.getParent(n, blocks) || '';
+                            p = ed.dom.getParent(n, blocks.join(',')) || '';
                             if (p) {
                                 ed.formatter.toggle(p.nodeName.toLowerCase());
                             }
@@ -99,12 +102,10 @@
 
                         break;
                     case 'RemoveFormat':
-                        var s = 'p,div,address,pre,h1,h2,h3,h4,h5,h6,code,samp,span,section,article,aside,figure,dl,dt,dd';
-
                         if (!v) {
-                            if (isBlock(n, s)) {
+                            if (ed.dom.iBlock(n)) {
                                 ed.undoManager.add();
-                                p = ed.dom.getParent(n, blocks);
+                                p = ed.dom.getParent(n, blocks.join(','));
 
                                 if (p) {
                                     ed.formatter.toggle(p.nodeName.toLowerCase());
@@ -223,16 +224,14 @@
             var p, n = ed.selection.getNode();
 
             // Find parent element just before the document body
-            p = ed.dom.getParents(n, blocks);
+            p = ed.dom.getParents(n, blocks.join(','));
 
             if (p && p.length > 1) {
                 // set defualt content and get the element to use
-                var h = '&nbsp;', tag = ed.getParam('forced_root_block');
-
-                if (!tag && ed.getParam('force_p_newlines')) {
-                    tag = 'p';
-                } else {
-                    tag = 'br';
+                var tag = ed.getParam('forced_root_block', 'p');
+                
+                if (!tag) {
+                    tag = ed.getParam('force_p_newlines') ? 'p' : 'br';
                 }
 
                 // prevent default action
@@ -247,15 +246,7 @@
                 }
 
                 // create element
-                var el = ed.dom.create(tag);
-
-                // create bogus br element
-                if (tag === 'br') {
-                    h = '<br data-mce-bogus="1" />';
-                }
-
-                // set HTML
-                ed.dom.setHTML(el, h);
+                var el = ed.dom.create(tag, {}, '\u00a0');
 
                 if (e.keyCode === VK.ENTER) {
                     // insert after parent element

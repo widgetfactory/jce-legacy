@@ -7,7 +7,7 @@
  * is derivative of works licensed under the GNU General Public License or
  * other free or open source software licenses.
  */
-(function() {
+(function () {
     var each = tinymce.each, extend = tinymce.extend, Node = tinymce.html.Node;
 
     function split(str, delim) {
@@ -17,10 +17,10 @@
     var fontIconRe = /<([a-z0-9]+)([^>]+)class="([^"]*)(glyph|uk-)?(fa|icon)-([\w-]+)([^"]*)"([^>]*)>(&nbsp;|\u00a0)?<\/\1>/gi;
 
     var emptyRx = /<(ol|ul|sub|sup|blockquote|span|font|a|table|tbody|tr|strong|em|b|i)\b([^>]+)><\/\1>/gi;
-    var paddedRx = /<(p|h1|h2|h3|h4|h5|h6|pre|div|address|caption)\b([^>]+)>(&nbsp;|\u00a0)<\/\1>/gi;
-        
+    var paddedRx = /<(p|h1|h2|h3|h4|h5|h6|pre|div|address|caption|a)\b([^>]+)>(&nbsp;|\u00a0)<\/\1>/gi;
+
     tinymce.create('tinymce.plugins.CleanupPlugin', {
-        init: function(ed, url) {
+        init: function (ed, url) {
             var self = this;
             this.editor = ed;
 
@@ -29,26 +29,20 @@
                 ed.settings.validate = false;
             }
 
-            ed.onPreInit.add(function() {
+            ed.onPreInit.add(function () {
 
                 if (ed.settings.validate) {
                     // add support for "bootstrap" icons
                     var elements = ed.schema.elements;
 
-                    /*each(split('span,a,em,i'), function(name) {
-                        if (elements[name]) {
-                            elements[name].removeEmptyAttrs = true;
-                        }
-                    });*/
-                    
                     if (ed.getParam('pad_empty_tags', true) === false) {
-                        each(split('p h1 h2 h3 h4 h5 h6 th td pre div address caption'), function (name) {
+                        each(split('p h1 h2 h3 h4 h5 h6 th td pre div address caption a'), function (name) {
                             if (elements[name]) {
                                 elements[name].paddEmpty = false;
                             }
                         });
                     }
-                    
+
                     if (!ed.getParam('table_pad_empty_cells', true)) {
                         each(split('th td'), function (name) {
                             if (elements[name]) {
@@ -81,7 +75,7 @@
                             }
                         }
 
-                        each(tinymce.explode(invalidAttribValue), function(item) {
+                        each(tinymce.explode(invalidAttribValue), function (item) {
                             var re, matches = /([a-z\*]+)\[([a-z]+)([\^\$]?=)["']([^"']+)["']\]/i.exec(item);
 
                             if (matches && matches.length == 5) {
@@ -104,12 +98,12 @@
                                 }
                                 // all tags
                                 if (tag == '*') {
-                                    ed.parser.addAttributeFilter(attrib, function(nodes, name) {
+                                    ed.parser.addAttributeFilter(attrib, function (nodes, name) {
                                         replaceAttributeValue(nodes, name, re);
                                     });
                                     // specific tag
                                 } else {
-                                    ed.parser.addNodeFilter(tag, function(nodes, name) {
+                                    ed.parser.addNodeFilter(tag, function (nodes, name) {
                                         replaceAttributeValue(nodes, attrib, re);
                                     });
                                 }
@@ -117,7 +111,7 @@
                         });
                     }
                 } else {
-                    ed.serializer.addNodeFilter(ed.settings.invalid_elements, function(nodes, name) {
+                    ed.serializer.addNodeFilter(ed.settings.invalid_elements, function (nodes, name) {
                         var i = nodes.length, node;
 
                         if (ed.schema.isValidChild('body', name)) {
@@ -128,7 +122,7 @@
                         }
                     });
 
-                    ed.parser.addNodeFilter(ed.settings.invalid_elements, function(nodes, name) {
+                    ed.parser.addNodeFilter(ed.settings.invalid_elements, function (nodes, name) {
                         var i = nodes.length, node;
 
                         if (ed.schema.isValidChild('body', name)) {
@@ -147,23 +141,20 @@
                 }
 
                 // try and keep empty a tags that are not anchors, process bootstrap icons
-                ed.parser.addNodeFilter('a,i,span', function(nodes, name) {
+                ed.parser.addNodeFilter('a,i,span', function (nodes, name) {
                     var i = nodes.length, node, cls;
 
                     while (i--) {
                         node = nodes[i], cls = node.attr('class');
-
-                        if (cls) {
+                        // padd it with a space if its empty
+                        if (cls && !node.firstChild) {
                             node.attr('data-mce-bootstrap', '1');
-                            // padd it with a space if its empty
-                            if (!node.firstChild) {
-                                node.append(new Node('#text', '3')).value = '\u00a0';
-                            }
+                            node.append(new Node('#text', '3')).value = '\u00a0';
                         }
                     }
                 });
 
-                ed.serializer.addAttributeFilter('data-mce-bootstrap', function(nodes, name) {
+                ed.serializer.addAttributeFilter('data-mce-bootstrap', function (nodes, name) {
                     var i = nodes.length, node, fc;
 
                     while (i--) {
@@ -177,7 +168,7 @@
                 });
 
                 // disable onclick etc.
-                ed.parser.addAttributeFilter('onclick,ondblclick', function(nodes, name) {
+                ed.parser.addAttributeFilter('onclick,ondblclick', function (nodes, name) {
                     var i = nodes.length, node;
 
                     while (i--) {
@@ -188,7 +179,7 @@
                     }
                 });
 
-                ed.serializer.addAttributeFilter('data-mce-onclick,data-mce-ondblclick', function(nodes, name) {
+                ed.serializer.addAttributeFilter('data-mce-onclick,data-mce-ondblclick', function (nodes, name) {
                     var i = nodes.length, node, k;
 
                     while (i--) {
@@ -199,7 +190,7 @@
                     }
                 });
 
-                ed.serializer.addNodeFilter('br', function(nodes, name) {
+                ed.serializer.addNodeFilter('br', function (nodes, name) {
                     var i = nodes.length, node, k;
 
                     if (i) {
@@ -215,7 +206,7 @@
                 });
 
                 // remove br in Gecko
-                ed.parser.addNodeFilter('br', function(nodes, name) {
+                ed.parser.addNodeFilter('br', function (nodes, name) {
                     var i = nodes.length, node, k;
 
                     if (i) {
@@ -233,7 +224,7 @@
             });
             // run cleanup with default settings
             if (ed.settings.validate === false && ed.settings.verify_html === false) {
-                ed.addCommand('mceCleanup', function() {
+                ed.addCommand('mceCleanup', function () {
                     var s = ed.settings, se = ed.selection, bm;
                     bm = se.getBookmark();
 
@@ -264,7 +255,7 @@
             }
 
             // Cleanup callback
-            ed.onBeforeSetContent.add(function(ed, o) {
+            ed.onBeforeSetContent.add(function (ed, o) {
                 // remove br tag added by Firefox
                 o.content = o.content.replace(/^<br>/, '');
 
@@ -289,7 +280,7 @@
             });
 
             // Cleanup callback
-            ed.onPostProcess.add(function(ed, o) {
+            ed.onPostProcess.add(function (ed, o) {
                 if (o.set) {
                     // Geshi
                     o.content = self.convertFromGeshi(o.content);
@@ -311,7 +302,7 @@
 
                         if (!ed.getParam('remove_tag_padding')) {
                             // pad empty elements
-                            o.content = o.content.replace(/<(p|h1|h2|h3|h4|h5|h6|th|td|pre|div|address|caption)([^>]*)><\/\1>/gi, '<$1$2>&nbsp;</$1>');
+                            o.content = o.content.replace(/<(p|h1|h2|h3|h4|h5|h6|th|td|pre|div|address|caption|a)\b([^>]*)><\/\1>/gi, '<$1$2>&nbsp;</$1>');
                         }
                     }
 
@@ -337,7 +328,7 @@
                 }
             });
 
-            ed.onSaveContent.add(function(ed, o) {
+            ed.onSaveContent.add(function (ed, o) {
                 // Convert entities to characters
                 if (ed.getParam('cleanup_pluginmode')) {
 
@@ -348,7 +339,7 @@
                         '&apos;': "'"
                     };
 
-                    o.content = o.content.replace(/&(#39|apos|amp|quot);/gi, function(a) {
+                    o.content = o.content.replace(/&(#39|apos|amp|quot);/gi, function (a) {
                         return entities[a];
                     });
                 }
@@ -360,8 +351,8 @@
                 cmd: 'mceCleanup'
             });
         },
-        convertFromGeshi: function(h) {
-            h = h.replace(/<pre xml:lang="([^"]+)"([^>]*)>(.*?)<\/pre>/g, function(a, b, c, d) {
+        convertFromGeshi: function (h) {
+            h = h.replace(/<pre xml:lang="([^"]+)"([^>]*)>(.*?)<\/pre>/g, function (a, b, c, d) {
                 var attr = '';
 
                 if (c && /\w/.test(c)) {
@@ -373,8 +364,8 @@
 
             return h;
         },
-        convertToGeshi: function(h) {
-            h = h.replace(/<pre([^>]+)data-geshi-lang="([^"]+)"([^>]*)>(.*?)<\/pre>/g, function(a, b, c, d, e) {
+        convertToGeshi: function (h) {
+            h = h.replace(/<pre([^>]+)data-geshi-lang="([^"]+)"([^>]*)>(.*?)<\/pre>/g, function (a, b, c, d, e) {
                 var s = b + d;
                 s = s.replace(/data-geshi-/gi, '').replace(/\s+/g, ' ').replace(/\s$/, '');
 
@@ -383,7 +374,7 @@
 
             return h;
         },
-        getInfo: function() {
+        getInfo: function () {
             return {
                 longname: 'Cleanup',
                 author: 'Ryan Demmer',
