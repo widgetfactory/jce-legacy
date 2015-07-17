@@ -2199,7 +2199,7 @@
                 $(info).append('<dt>' + name + '</dt><dd>' + ext + self._translate(type, $.String.ucfirst(type)) + '</dd><dd id="info-properties"><dl></dl></dd>');
 
                 // additional data for file items
-                if (type == 'file') {
+                if ($(item).data('preview')) {
                     $(info).append('<dd id="info-preview"></dd>');
                 }
 
