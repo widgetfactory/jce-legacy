@@ -152,8 +152,8 @@ class plgEditorJCE extends JPlugin {
             $buttons = $this->_subject->getButtons($name, $buttons, $asset, $author);
 
             $version = new JVersion;
-            // only available in Joomla 3.4.1+
-            if ($version->isCompatible('3.4.1')) {
+            // only available in Joomla 3.2+
+            if ($version->isCompatible('3.2')) {
                 // fix for some buttons that do not include the class
                 foreach ($buttons as $button) {
                     if (is_object($button)) {
