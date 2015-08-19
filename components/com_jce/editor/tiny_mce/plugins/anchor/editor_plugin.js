@@ -75,7 +75,7 @@
                 // Convert anchor elements to image placeholder
                 ed.parser.addNodeFilter('a', function(nodes) {
                     for (var i = 0, len = nodes.length; i < len; i++) {
-                        var node = nodes[i], fc = node.firstChild, href = node.attr('href'), cls = node.attr('class') || '', name = node.attr('name') || node.attr('id');
+                        var node = nodes[i], href = node.attr('href'), cls = node.attr('class') || '', name = node.attr('name') || node.attr('id');
 
                         if ((!href || href.charAt(0) == '#') && name) {
                             if (!cls || /mceItemAnchor/.test(cls) === false) {
@@ -129,7 +129,7 @@
             attrib = 'name';
 
             // set as id for html5
-            if (ed.settings.schema === 'html5-strict') {
+            if (ed.settings.schema !== 'html4') {
                 attrib = 'id';
             }
 
@@ -154,7 +154,7 @@
                 if (ed.selection.isCollapsed()) {
                     at[attrib] = v;
 
-                    ed.execCommand('mceInsertContent', 0, ed.dom.createHTML('a', {id: '__mce_tmp'}));
+                    ed.execCommand('mceInsertContent', 0, ed.dom.createHTML('a', {id: '__mce_tmp'}, '\uFEFF'));
 
                     n = ed.dom.get('__mce_tmp');
 
