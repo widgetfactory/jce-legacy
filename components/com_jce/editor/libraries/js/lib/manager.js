@@ -2307,7 +2307,7 @@
                         $('dd', $('#info-preview')).removeClass('loader').addClass('preview-error');
                     };
 
-                    src = /:\/\//.test(src) ? src : $.String.encodeURI(src) + new Date().getTime();
+                    src = /:\/\//.test(src) ? src : $.String.encodeURI(src) + '?' + new Date().getTime();
 
                     img.src = src;
                 }
