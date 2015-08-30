@@ -18,6 +18,8 @@ plugins/editors/*
 !components/com_jce/
 !language/en-GB/en-GB.com_jce*
 
+language/en-GB/en-GB.com_jce_popups*
+
 # admin
 !administrator/components/com_jce/
 !administrator/language/en-GB/
@@ -70,6 +72,12 @@ components/com_jce/editor/extensions/popups/rokbox.xml
 components/com_jce/editor/extensions/popups/widgetkit
 components/com_jce/editor/extensions/popups/widgetkit.php
 components/com_jce/editor/extensions/popups/widgetkit.xml
+components/com_jce/editor/extensions/popups/widgetkit2
+components/com_jce/editor/extensions/popups/widgetkit2.php
+components/com_jce/editor/extensions/popups/widgetkit2.xml
+components/com_jce/editor/extensions/popups/rokbox_build.xml
+components/com_jce/editor/extensions/popups/widgetkit1_build.xml
+components/com_jce/editor/extensions/popups/widgetkit2_build.xml
 
 nbproject
 components/com_jce/nbproject/
