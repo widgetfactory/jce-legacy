@@ -293,14 +293,23 @@ var LinkDialog = {
             ed.dom.setAttribs(el, args);
             // create link on selection or update existing link
         } else {
-            // insert link on selection
-            ed.execCommand('mceInsertLink', false, {'href': args.href, 'data-mce-tmp': '1'});
+            if (txt) {
+                ed.execCommand('mceInsertContent', false, '<a href="' + args.href + '" data-mce-tmp="1">' + txt + '</a>', {
+                    skip_undo: 1
+                });
+            } else {
+                // insert link on selection
+                ed.execCommand('mceInsertLink', false, {'href': args.href, 'data-mce-tmp': '1'});
+            }
 
             // restore styles
             ed.dom.setAttrib(n, 'style', ed.dom.getAttrib(n, 'data-mce-style'));
 
             // get link
             var elms = ed.dom.select('a[data-mce-tmp]');
+
+            // set to null to remove
+            args['data-mce-tmp'] = null;
 
             tinymce.each(elms, function(elm, i) {
                 // set attributes
@@ -309,16 +318,6 @@ var LinkDialog = {
                 // remove id on multiple links
                 if (i > 0 && args.id) {
                     ed.dom.setAttrib(elm, 'id', '');
-                }
-
-                if (txt) {
-                    var s = elm.firstChild;
-
-                    while (s && s.nodeType !== 3) {
-                        s = s.firstChild;
-                    }
-
-                    s.parentNode.replaceChild(document.createTextNode(txt), s);
                 }
             });
 
