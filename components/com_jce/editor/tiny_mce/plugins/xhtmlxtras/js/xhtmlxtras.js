@@ -20,7 +20,7 @@ var XHTMLXtrasDialog = {
             n = ed.dom.getParent(n, element);
         }
 
-        TinyMCE_Utils.fillClassList('class');
+        TinyMCE_Utils.fillClassList('classlist');
         
         $.Plugin.init();
 
@@ -33,6 +33,10 @@ var XHTMLXtrasDialog = {
                                 
                     if (/on(click|dblclick)/.test(k)) {
                         k = 'data-mce-' + k;
+                    }
+                    
+                    if (k === "classes" || k === "classlist") {
+                        k = "class";
                     }
 
                     $(this).val(ed.dom.getAttrib(n, k));
@@ -60,6 +64,10 @@ var XHTMLXtrasDialog = {
         if (!tinymce.is(n, 'img')) {
             $('input.media').parent('td').parent('tr').hide();
         }
+        
+        $('#classlist').change(function() {
+            $.Plugin.setClasses(this.value);
+        });
     },
 
     insert : function() {
@@ -72,11 +80,15 @@ var XHTMLXtrasDialog = {
 		
         var args = {};
 
-        $(':input').each(function() {
+        $(':input').not('#classlist').each(function() {
             var k = $(this).attr('id'), v = $(this).val();
                         
             if (/on(click|dblclick)/.test(k)) {
                 k = 'data-mce-' + k;
+            }
+            
+            if (k === "classes") {
+                k = "class";
             }
 
             args[k] = v;
