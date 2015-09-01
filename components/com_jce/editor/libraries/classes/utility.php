@@ -141,6 +141,9 @@ abstract class WFUtility {
      */
     public static function makeSafe($subject, $mode = 'utf-8', $allowspaces = false, $case = '') {
         $search = array();
+        
+        // trim
+        $subject = trim($subject);
 
         // replace spaces with underscore
         if (!$allowspaces) {
