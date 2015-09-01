@@ -14,8 +14,7 @@ defined('_JEXEC') or die('RESTRICTED');
 abstract class WFUtility {
 
     public static function getExtension($path) {
-        $dot = strrpos($path, '.') + 1;
-        return substr($path, $dot);
+        return array_pop(explode('.', $path));
     }
 
     public static function stripExtension($path) {
