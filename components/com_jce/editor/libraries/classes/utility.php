@@ -142,7 +142,11 @@ abstract class WFUtility {
         $search = array();
         
         // trim
-        $subject = trim($subject);
+        if (is_array($subject)) {
+            $subject = array_map('trim', $subject);
+        } else {
+            $subject = trim($subject);
+        }
 
         // replace spaces with underscore
         if (!$allowspaces) {
