@@ -886,12 +886,15 @@ class WFFileBrowser extends JObject {
 
         // xss check
         $xss_check = JFile::read($file['tmp_name'], false, 256);
-
+        
+        $tags = array('?', '?=', 'php', '%', '%=');
+        
         // check for hidden php tags
-        if (stripos($xss_check, '<?') !== false) {
-            @unlink($file['tmp_name']);
-
-            throw new InvalidArgumentException('INVALID CODE IN FILE');
+        foreach (explode(',', $tags) as $tag) {
+            if (stripos($xss_check, '<' . $tag . ' ') !== false) {
+                @unlink($file['tmp_name']);
+                throw new InvalidArgumentException('INVALID TAG IN FILE');
+            }
         }
 
         // check for html tags in some files (IE XSS bug)
