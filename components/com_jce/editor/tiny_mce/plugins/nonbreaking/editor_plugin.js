@@ -21,7 +21,7 @@
             });
 
             // Register buttons
-            ed.addButton('nonbreaking', {title : 'nonbreaking.nonbreaking_desc', cmd : 'mceNonBreaking'});
+            ed.addButton('nonbreaking', {title : 'nonbreaking.desc', cmd : 'mceNonBreaking'});
 
             if (ed.getParam('nonbreaking_force_tab')) {
                 ed.onKeyDown.add(function(ed, e) {
@@ -35,7 +35,7 @@
                 });
             }
 
-            ed.addShortcut('ctrl+shift+s', 'nonbreaking.nonbreaking_desc', 'mceNonBreaking');
+            ed.addShortcut('ctrl+shift+s', 'nonbreaking.desc', 'mceNonBreaking');
         },
 
         getInfo : function() {
