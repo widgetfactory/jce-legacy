@@ -826,9 +826,13 @@ class WFFileBrowser extends JObject {
         if (empty($file)) {
             throw new InvalidArgumentException('INVALID UPLOAD DATA');
         }
+        // tmp name must exist
+        if (empty($file['tmp_name'])) {
+            throw new InvalidArgumentException('INVALID UPLOAD DATA');
+        }
 
         // check for tmp_name and is valid uploaded file
-        if (!isset($file['tmp_name']) || !is_uploaded_file($file['tmp_name'])) {
+        if (!is_uploaded_file($file['tmp_name'])) {
             @unlink($file['tmp_name']);
 
             throw new InvalidArgumentException('INVALID UPLOAD DATA');
@@ -846,14 +850,6 @@ class WFFileBrowser extends JObject {
             
             throw new InvalidArgumentException('INVALID FILE NAME');
         }
-
-        //clearstatcache();
-        // check the file sizes match
-        /* if ((int) @filesize($file['tmp_name']) !== (int) $file['size']) {
-          @unlink($file['tmp_name']);
-
-          throw new InvalidArgumentException('INVALID FILE SIZE');
-          } */
 
         // get extension
         $ext = WFUtility::getExtension($file['name']);
@@ -916,8 +912,6 @@ class WFFileBrowser extends JObject {
     
     /**
      * Check upload file name for extensions
-     * Adapted from: https://github.com/joomla/joomla-cms/blob/staging/libraries/cms/helper/media.php
-     * @copyright   Copyright (C) 2005 - 2015 Open Source Matters, Inc. All rights reserved.
      * @param type $name
      * @return boolean
      */
@@ -925,18 +919,17 @@ class WFFileBrowser extends JObject {
         if (empty($name)) {
             return false;
         }
-        
-        $filetypes = explode('.', $name);
 
-        // Media file names should never have executable extensions buried in them.
+        // list of invalid extensions
         $executable = array(
             'php', 'php3', 'php4', 'php5', 'js', 'exe', 'phtml', 'java', 'perl', 'py', 'asp', 'dll', 'go', 'ade', 'adp', 'bat', 'chm', 'cmd', 'com', 'cpl', 'hta', 'ins', 'isp',
             'jse', 'lib', 'mde', 'msc', 'msp', 'mst', 'pif', 'scr', 'sct', 'shb', 'sys', 'vb', 'vbe', 'vbs', 'vxd', 'wsc', 'wsf', 'wsh'
         );
         
-        $check = array_intersect($filetypes, $executable);
+        $match = implode('|', $executable);
         
-        if (!empty($check)) {
+        // check for extension in file name, eg: image.php.jpg or as extension, eg: image.php
+        if (preg_match('#\.(' . $match . ')\.#i', $name) || preg_match('#\.(' . $match . ')$#i', $name)) {
             return false;
         }
 
@@ -951,7 +944,6 @@ class WFFileBrowser extends JObject {
         // Check for request forgeries
         WFToken::checkToken() or die();
 
-        //JError::setErrorHandling(E_ALL, 'callback', array('WFError', 'raiseError'));
         // check for feature access	
         if (!$this->checkFeature('upload')) {
             JError::raiseError(403, 'Access to this resource is restricted');
@@ -959,6 +951,13 @@ class WFFileBrowser extends JObject {
 
         $filesystem = $this->getFileSystem();
         jimport('joomla.filesystem.file');
+        
+        header('Content-Type: text/json;charset=UTF-8');
+        header("Expires: Wed, 4 Apr 1984 13:00:00 GMT");
+        header("Last-Modified: " . gmdate("D, d M_Y H:i:s") . " GMT");
+        header("Cache-Control: no-store, no-cache, must-revalidate");
+        header("Cache-Control: post-check=0, pre-check=0", false);
+        header("Pragma: no-cache");
 
         // get uploaded file
         $file = JRequest::getVar('file', '', 'files', 'array');
@@ -968,18 +967,34 @@ class WFFileBrowser extends JObject {
 
         $wf = WFEditor::getInstance();
 
-        // HTTP headers for no cache etc
-        //header('Content-type: text/plain; charset=UTF-8');
-
-        header('Content-Type: text/json;charset=UTF-8');
-        header("Expires: Wed, 4 Apr 1984 13:00:00 GMT");
-        header("Last-Modified: " . gmdate("D, d M_Y H:i:s") . " GMT");
-        header("Cache-Control: no-store, no-cache, must-revalidate");
-        header("Cache-Control: post-check=0, pre-check=0", false);
-        header("Pragma: no-cache");
-
         // get file name
         $name = JRequest::getVar('name', $file['name']);
+        
+        // decode name
+        $name = rawurldecode($name);
+        
+        // check file name
+        WFUtility::checkPath($name);
+
+        if ($this->validateFileName($name) === false) {
+            throw new InvalidArgumentException('INVALID FILE NAME');
+        }
+
+        // get extension from file name
+        $ext = WFUtility::getExtension($file['name']);
+        
+        // make extension lowercase
+        $ext = strtolower($ext);
+
+        // strip extension
+        $name = WFUtility::stripExtension($name);
+        // make file name 'web safe'
+        $name = WFUtility::makeSafe($name, $this->get('websafe_mode', 'utf-8'), $this->get('websafe_spaces'), $this->get('websafe_textcase'));
+
+        // check name
+        if ($this->validateFileName($name) === false) {
+            throw new InvalidArgumentException('INVALID FILE NAME');
+        }
 
         // target directory
         $dir = JRequest::getVar('upload-dir');
@@ -1004,31 +1019,6 @@ class WFFileBrowser extends JObject {
             if (($size / 1024 / 1024) > $upload['total_size']) {
                 throw new InvalidArgumentException(WFText::_('WF_MANAGER_FILE_SIZE_LIMIT_ERROR'));
             }
-        }
-
-        // decode name
-        $name = rawurldecode($name);
-        // check file name
-        WFUtility::checkPath($name);
-
-        if ($this->validateFileName($name) === false) {
-            throw new InvalidArgumentException('INVALID FILE NAME');
-        }
-
-        // get extension from file name
-        $ext = WFUtility::getExtension($file['name']);
-        
-        // make extension lowercase
-        $ext = strtolower($ext);
-
-        // strip extension
-        $name = WFUtility::stripExtension($name);
-        // make file name 'web safe'
-        $name = WFUtility::makeSafe($name, $this->get('websafe_mode', 'utf-8'), $this->get('websafe_spaces'), $this->get('websafe_textcase'));
-
-        // empty name
-        if ($this->validateFileName($name) === false) {
-            throw new InvalidArgumentException('INVALID FILE NAME');
         }
 
         // add random string
