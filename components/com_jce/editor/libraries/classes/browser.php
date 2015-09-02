@@ -824,8 +824,6 @@ class WFFileBrowser extends JObject {
     private function validateUploadedFile($file) {
         // check the POST data array
         if (empty($file)) {
-            @unlink($file['tmp_name']);
-
             throw new InvalidArgumentException('INVALID UPLOAD DATA');
         }
 
@@ -894,20 +892,10 @@ class WFFileBrowser extends JObject {
         $xss_check = JFile::read($file['tmp_name'], false, 256);
 
         // check for hidden php tags
-        if (stripos($xss_check, '<?php') !== false) {
+        if (stripos($xss_check, '<?') !== false) {
             @unlink($file['tmp_name']);
 
             throw new InvalidArgumentException('INVALID CODE IN FILE');
-        }
-
-        // check for hidden short php tags
-        if (preg_match('#\.(inc|phps|class|php|php(3|4)|txt|dat|tpl|tmpl)$#i', $file['name'])) {
-
-            if (stripos($xss_check, '<?') !== false) {
-                @unlink($file['tmp_name']);
-
-                throw new InvalidArgumentException('INVALID CODE IN FILE');
-            }
         }
 
         // check for html tags in some files (IE XSS bug)
@@ -934,13 +922,25 @@ class WFFileBrowser extends JObject {
      * @return boolean
      */
     private function validateFileName($name) {        
+        if (empty($name)) {
+            return false;
+        }
+        
+        $filetypes = explode('.', $name);
+
         // Media file names should never have executable extensions buried in them.
         $executable = array(
-            'php', 'js', 'exe', 'phtml', 'java', 'perl', 'py', 'asp', 'dll', 'go', 'ade', 'adp', 'bat', 'chm', 'cmd', 'com', 'cpl', 'hta', 'ins', 'isp',
+            'php', 'php3', 'php4', 'php5', 'js', 'exe', 'phtml', 'java', 'perl', 'py', 'asp', 'dll', 'go', 'ade', 'adp', 'bat', 'chm', 'cmd', 'com', 'cpl', 'hta', 'ins', 'isp',
             'jse', 'lib', 'mde', 'msc', 'msp', 'mst', 'pif', 'scr', 'sct', 'shb', 'sys', 'vb', 'vbe', 'vbs', 'vxd', 'wsc', 'wsf', 'wsh'
         );
         
-        return preg_match('#\.(' . implode('|', $executable) . ')\b#', $name);
+        $check = array_intersect($filetypes, $executable);
+        
+        if (!empty($check)) {
+            return false;
+        }
+
+        return true;
     }
 
     /**
@@ -1015,8 +1015,11 @@ class WFFileBrowser extends JObject {
             throw new InvalidArgumentException('INVALID FILE NAME');
         }
 
-        // get extension
-        $ext = WFUtility::getExtension($name);
+        // get extension from file name
+        $ext = WFUtility::getExtension($file['name']);
+        
+        // make extension lowercase
+        $ext = strtolower($ext);
 
         // strip extension
         $name = WFUtility::stripExtension($name);
@@ -1024,12 +1027,7 @@ class WFFileBrowser extends JObject {
         $name = WFUtility::makeSafe($name, $this->get('websafe_mode', 'utf-8'), $this->get('websafe_spaces'), $this->get('websafe_textcase'));
 
         // empty name
-        if ($name == '') {
-            throw new InvalidArgumentException('INVALID FILE NAME');
-        }
-
-        // check for extension in file name
-        if (preg_match('#\.(php|php(3|4|5)|phtml|pl|py|jsp|asp|htm|html|shtml|sh|cgi)\b#i', $name)) {
+        if ($this->validateFileName($name) === false) {
             throw new InvalidArgumentException('INVALID FILE NAME');
         }
 
