@@ -140,7 +140,7 @@ abstract class WFUtility {
      */
     public static function makeSafe($subject, $mode = 'utf-8', $allowspaces = false, $case = '') {
         $search = array();
-        
+
         // trim
         if (is_array($subject)) {
             $subject = array_map('trim', $subject);
@@ -291,6 +291,18 @@ abstract class WFUtility {
         return $value;
     }
 
+    /**
+     * Checks an uploaded for suspicious naming and potential PHP contents which could indicate a hacking attempt.
+     */
+    public static function isSafeFile($file, $options = array()) {
+        if (class_exists('JFilterInput') && method_exists(JFilterInput, 'isSafeFile')) {
+            return JFilterInput::isSafeFile($file, $options);
+        }
+        
+        require_once(dirname(__FILE__) . '/uploadshield.php');
+        
+        return WFUploadShield::isSafeFile($file, $options);
+    }
 }
 
 ?>
