@@ -27,7 +27,7 @@ var XHTMLXtrasDialog = {
         if(n) {            
             var text = n.textContent || n.innerText || '';
             
-            if (se.isCollapsed() || text == se.getContent({format : 'text'})) {
+            if (!se.isCollapsed() || text == se.getContent({format : 'text'})) {
                 $(':input').each(function() {
                     var k = $(this).attr('id');
                                 
@@ -53,7 +53,7 @@ var XHTMLXtrasDialog = {
         }).toggle(!!element);
        
         // hide HTML5 fields
-        if (ed.settings.schema !== 'html5' && ed.settings.validate === true) {
+        if (ed.settings.schema === 'html4' && ed.settings.validate === true) {
             $('input.html5').parent('td').parent('tr').hide();
         }
         // hide for non-form nodes
