@@ -34,9 +34,15 @@ final class WFFileBrowserPlugin extends WFMediaManager {
         } else {
             $browser->setFileTypes('images=jpg,jpeg,png,gif');
         }
+        
+        $filter = JRequest::getString('filter');
 
-        if (JRequest::getString('filter')) {
-            $browser->setFileTypes('files=' . JRequest::getString('filter'));
+        if ($filter) {
+            if ($filter === "images") {
+                $browser->setFileTypes('images=jpg,jpeg,png,gif');
+            } else {
+                $browser->setFileTypes('files=' . JRequest::getString('filter'));
+            }
         }
         // remove insert button
         $browser->removeButton('file', 'insert');
@@ -55,7 +61,7 @@ final class WFFileBrowserPlugin extends WFMediaManager {
         if ($document->get('standalone') == 1) {
             $document->addScript(array('browser'), 'component');
             
-            $element = JRequest::getCmd('element', '');
+            $element = JRequest::getCmd('element', JRequest::getCmd('fieldid', ''));
 
             $options = array(
                 'plugin' => array(
