@@ -75,15 +75,22 @@ class PlgSystemJce extends JPlugin {
         $name = $form->getName();
 
         // quick check to make sure we are in the right form
-        if ($name !== 'com_content.article') {
+        if ($name !== 'com_content.article' && $name !== 'com_categories.categorycom_content') {
             return true;
         }
 
         $link = $this->getLink();
 
         if ($link) {
-            $form->setFieldAttribute('image_intro', 'link', $link, 'images');
-            $form->setFieldAttribute('image_fulltext', 'link', $link, 'images');
+            switch($name) {
+                case 'com_content.article':
+                    $form->setFieldAttribute('image_intro', 'link', $link, 'images');
+                    $form->setFieldAttribute('image_fulltext', 'link', $link, 'images');
+                    break;
+                case 'com_categories.categorycom_content':
+                    $form->setFieldAttribute('image', 'link', $link, 'params');
+                    break;
+            }
         }
 
         return true;
