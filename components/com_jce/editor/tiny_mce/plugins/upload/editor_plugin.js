@@ -11,10 +11,10 @@
  * * Based on plupload - http://www.plupload.com
  */
 
-(function() {
+(function () {
     var each = tinymce.each, extend = tinymce.extend, JSON = tinymce.util.JSON;
     var isWin = navigator.platform.indexOf('Win') !== -1, isSafari = tinymce.isWebKit && navigator.vendor.indexOf('Apple') !== -1;
-    var Node = tinymce.html.Node;
+    var Node = tinymce.html.Node, RangeUtils = tinymce.dom.RangeUtils;
 
     var mimes = {};
 
@@ -23,7 +23,7 @@
     }
 
     // Parses the default mime types string into a mimes lookup map (from plupload.js)
-    (function(mime_data) {
+    (function (mime_data) {
         var items = mime_data.split(/,/), i, y, ext;
 
         for (i = 0; i < items.length; i += 2) {
@@ -157,10 +157,10 @@
     tinymce.create('tinymce.plugins.Upload', {
         files: [],
         plugins: [],
-        init: function(ed, url) {
+        init: function (ed, url) {
             function cancel() {
                 // Block browser default drag over
-                ed.dom.bind(ed.getBody(), 'dragover', function(e) {
+                ed.dom.bind(ed.getBody(), 'dragover', function (e) {
                     var dataTransfer = e.dataTransfer;
 
                     // cancel dropped files
@@ -169,7 +169,7 @@
                     }
                 });
 
-                ed.dom.bind(ed.getBody(), 'drop', function(e) {
+                ed.dom.bind(ed.getBody(), 'drop', function (e) {
                     var dataTransfer = e.dataTransfer;
 
                     // cancel dropped files
@@ -183,9 +183,9 @@
             self.editor = ed;
             self.plugin_url = url;
 
-            ed.onPreInit.add(function() {
+            ed.onPreInit.add(function () {
                 // get list of supported plugins
-                each(ed.plugins, function(o, k) {
+                each(ed.plugins, function (o, k) {
                     if (ed.getParam(k + '_upload') && tinymce.is(o.getUploadURL, 'function') && tinymce.is(o.insertUploadedFile, 'function')) {
                         self.plugins.push(o);
                     }
@@ -195,7 +195,7 @@
                     ed.dom.loadCSS(url + "/css/content.css");
                 }
                 // find and convert upload markers
-                ed.parser.addNodeFilter('img', function(nodes) {
+                ed.parser.addNodeFilter('img', function (nodes) {
                     var i = nodes.length, node, cls, data;
 
                     while (i--) {
@@ -212,7 +212,7 @@
                     }
                 });
                 // remove upload markers
-                ed.serializer.addNodeFilter('img', function(nodes) {
+                ed.serializer.addNodeFilter('img', function (nodes) {
                     var i = nodes.length, node, cls;
 
                     while (i--) {
@@ -232,10 +232,10 @@
                 });
             });
 
-            ed.onInit.add(function() {                
+            ed.onInit.add(function () {
                 // check for support - basically IE 10+, Firefox 4+, Chrome 7+, Safari 5+
                 if (!window.FormData) {
-                    cancel();                    
+                    cancel();
                     return;
                 }
 
@@ -245,8 +245,8 @@
                     return;
                 }
 
-                function bindUploadEvents(ed) {                                        
-                    each(ed.dom.select('img.mceItemUploadMarker', ed.getBody()), function(n) {
+                function bindUploadEvents(ed) {
+                    each(ed.dom.select('img.mceItemUploadMarker', ed.getBody()), function (n) {
                         if (self.plugins.length == 0) {
                             ed.dom.remove(n);
                         } else {
@@ -256,88 +256,88 @@
                 }
 
                 // update events when content is inserted
-                ed.selection.onSetContent.add(function() {
+                ed.selection.onSetContent.add(function () {
                     bindUploadEvents(ed);
                 });
                 // update events when content is set
-                ed.onSetContent.add(function() {
+                ed.onSetContent.add(function () {
                     bindUploadEvents(ed);
                 });
-                
+
                 // update events when fullscreen is activated
                 if (ed.onFullScreen) {
-                    ed.onFullScreen.add(function(editor) {                    
+                    ed.onFullScreen.add(function (editor) {
                         bindUploadEvents(editor);
                     });
                 }
 
                 // fake drag & drop in Windows Safari
-                if (isSafari && isWin) {
-                    ed.dom.bind(ed.getBody(), 'dragenter', function(e) {
-                        var dataTransfer = e.dataTransfer;
+                /*if (isSafari && isWin) {
+                 ed.dom.bind(ed.getBody(), 'dragenter', function(e) {
+                 var dataTransfer = e.dataTransfer;
+                 
+                 // cancel dropped files
+                 if (dataTransfer && dataTransfer.files && dataTransfer.files.length) {
+                 
+                 var dropInputElm;
+                 
+                 // Get or create drop zone
+                 dropInputElm = ed.dom.get(ed.getBody().id + "_dragdropupload");
+                 
+                 if (!dropInputElm) {
+                 dropInputElm = ed.dom.add(ed.getBody(), "input", {
+                 'type': 'file',
+                 'id': ed.getBody().id + "_dragdropupload",
+                 'multiple': 'multiple',
+                 'style': {
+                 position: 'absolute',
+                 display: 'block',
+                 top: 0,
+                 left: 0,
+                 width: '100%',
+                 height: '100%',
+                 opacity: '0'
+                 }
+                 });
+                 }
+                 
+                 ed.dom.bind(dropInputElm, 'change', function(e) {
+                 // Add the selected files from file input
+                 each(dropInputElm.files, function(file) {
+                 if (tinymce.inArray(self.files, file) == -1) {
+                 self.addFile(file);
+                 }
+                 });
+                 
+                 // Remove input element
+                 ed.dom.unbind(dropInputElm, 'change');
+                 ed.dom.remove(dropInputElm);
+                 
+                 // upload...
+                 each(self.files, function(file) {
+                 self.upload(file);
+                 });
+                 });
+                 }
+                 });
+                 
+                 ed.dom.bind(ed.getBody(), 'drop', function(e) {
+                 var dataTransfer = e.dataTransfer;
+                 
+                 // cancel dropped files
+                 if (dataTransfer && dataTransfer.files && dataTransfer.files.length) {
+                 e.preventDefault();
+                 }
+                 });
+                 
+                 return;
+                 }*/
 
-                        // cancel dropped files
-                        if (dataTransfer && dataTransfer.files && dataTransfer.files.length) {
-
-                            var dropInputElm;
-
-                            // Get or create drop zone
-                            dropInputElm = ed.dom.get(ed.getBody().id + "_dragdropupload");
-
-                            if (!dropInputElm) {
-                                dropInputElm = ed.dom.add(ed.getBody(), "input", {
-                                    'type': 'file',
-                                    'id': ed.getBody().id + "_dragdropupload",
-                                    'multiple': 'multiple',
-                                    'style': {
-                                        position: 'absolute',
-                                        display: 'block',
-                                        top: 0,
-                                        left: 0,
-                                        width: '100%',
-                                        height: '100%',
-                                        opacity: '0'
-                                    }
-                                });
-                            }
-
-                            ed.dom.bind(dropInputElm, 'change', function(e) {
-                                // Add the selected files from file input
-                                each(dropInputElm.files, function(file) {
-                                    if (tinymce.inArray(self.files, file) == -1) {
-                                        self.addFile(file);
-                                    }
-                                });
-
-                                // Remove input element
-                                ed.dom.unbind(dropInputElm, 'change');
-                                ed.dom.remove(dropInputElm);
-
-                                // upload...
-                                each(self.files, function(file) {
-                                    self.upload(file);
-                                });
-                            });
-                        }
-                    });
-
-                    ed.dom.bind(ed.getBody(), 'drop', function(e) {
-                        var dataTransfer = e.dataTransfer;
-
-                        // cancel dropped files
-                        if (dataTransfer && dataTransfer.files && dataTransfer.files.length) {
-                            e.preventDefault();
-                        }
-                    });
-
+                // Disable in Opera and Windows Safari
+                if (window.Opera || (isSafari && isWin)) {
                     return;
                 }
-                
-                // Opera drag&drop does not work... :(
-                if (window.Opera) {
-                    return;
-                }
-                
+
                 function cancelEvent(e) {
                     e.preventDefault();
                     e.stopPropagation();
@@ -349,21 +349,27 @@
                 }
 
                 // Attach drop handler and grab files
-                ed.dom.bind(ed.getBody(), 'drop', function(e) {
+                ed.dom.bind(ed.getBody(), 'drop', function (e) {
                     var dataTransfer = e.dataTransfer;
 
                     // Add dropped files
                     if (dataTransfer && dataTransfer.files && dataTransfer.files.length) {
-                        each(dataTransfer.files, function(file) {
+                        each(dataTransfer.files, function (file) {
+                            var rng = RangeUtils.getCaretRangeFromPoint(e.clientX, e.clientY, ed.getDoc());
+                            if (rng) {
+                                ed.selection.setRng(rng);
+                                rng = null;
+                            }
+
                             self.addFile(file);
                         });
 
                         cancelEvent(e);
                     }
-                    
+
                     // upload...
                     if (self.files.length) {
-                        each(self.files, function(file) {
+                        each(self.files, function (file) {
                             self.upload(file);
                         });
                     }
@@ -388,7 +394,7 @@
                 filters: []
             };
 
-            self.FileUploaded.add(function(file, o) {
+            self.FileUploaded.add(function (file, o) {
                 var n = file.marker, s, w, h;
 
                 function showError(error) {
@@ -459,7 +465,7 @@
                 }
             });
 
-            self.UploadError.add(function(o) {
+            self.UploadError.add(function (o) {
                 ed.windowManager.alert(o.code + ' : ' + o.message);
 
                 if (o.file && o.file.marker) {
@@ -468,12 +474,11 @@
 
             });
         },
-                
         /*
          * Bind events to upload marker and create upload input
          * @param marker Marker / Placeholder element 
          */
-        _bindUploadMarkerEvents: function(ed, marker) {
+        _bindUploadMarkerEvents: function (ed, marker) {
             var self = this, dom = tinymce.DOM;
 
             function removeUpload() {
@@ -481,7 +486,7 @@
                     'top': '',
                     'left': '',
                     'display': 'none',
-                    'zIndex' : ''
+                    'zIndex': ''
                 });
             }
 
@@ -495,7 +500,7 @@
             if (!input) {
                 var btn = dom.add(dom.doc.body, 'div', {
                     'id': 'wf_upload_button',
-                    'title' : ed.getLang('upload.button_description', 'Click to upload a file')
+                    'title': ed.getLang('upload.button_description', 'Click to upload a file')
                 }, '<label for="wf_upload_input">' + ed.getLang('upload.label', 'Upload') + '</label>');
 
                 // create upload input
@@ -506,12 +511,12 @@
             }
 
             // add upload on mouseover
-            ed.dom.bind(marker, 'mouseover', function(e) {               
-                
+            ed.dom.bind(marker, 'mouseover', function (e) {
+
                 if (ed.dom.getAttrib(marker, 'data-mce-selected')) {
                     return;
                 }
-                
+
                 var vp = ed.dom.getViewPort(ed.getWin());
                 var p1 = dom.getRect(ed.getContentAreaContainer());
                 var p2 = ed.dom.getRect(marker);
@@ -527,17 +532,17 @@
 
                 var x = Math.max(p2.x - vp.x, 0) + p1.x;
                 var y = Math.max(p2.y - vp.y, 0) + p1.y - Math.max(st - p2.y, 0);
-                
+
                 var zIndex = ed.id == 'mce_fullscreen' ? dom.get('mce_fullscreen_container').style.zIndex : 0;
 
                 dom.setStyles('wf_upload_button', {
                     'top': y + p2.h / 2 - 27,
                     'left': x + p2.w / 2 - 54,
                     'display': 'block',
-                    'zIndex' : zIndex + 1
+                    'zIndex': zIndex + 1
                 });
 
-                input.onchange = function() {
+                input.onchange = function () {
                     if (input.files) {
                         var file = input.files[0];
 
@@ -556,16 +561,16 @@
             });
 
             // remove upload on mouseout
-            ed.dom.bind(marker, 'mouseout', function(e) {
+            ed.dom.bind(marker, 'mouseout', function (e) {
                 // don't remove if over upload input
-                if (!e.relatedTarget && e.clientY > 0) {                    
+                if (!e.relatedTarget && e.clientY > 0) {
                     return;
                 }
 
                 removeUpload();
             });
         },
-        _createUploadMarker: function(n) {
+        _createUploadMarker: function (n) {
             var self = this, ed = this.editor, src = n.attr('src') || '', style = {}, styles, cls = [];
 
             // get alt from src if not base64 encoded
@@ -623,10 +628,10 @@
          * @param {Object} items Name/value object to serialize as a querystring.
          * @return {String} String with url + serialized query string items.
          */
-        buildUrl: function(url, items) {
+        buildUrl: function (url, items) {
             var query = '';
 
-            each(items, function(value, name) {
+            each(items, function (value, name) {
                 query += (query ? '&' : '') + encodeURIComponent(name) + '=' + encodeURIComponent(value);
             });
 
@@ -636,9 +641,9 @@
 
             return url;
         },
-        addFile: function(file) {
+        addFile: function (file) {
             var ed = this.editor, self = this, fileNames = {}, url;
-            
+
             // check for extension in file name, eg. image.php.jpg
             if (/\.(php|php(3|4|5)|phtml|pl|py|jsp|asp|htm|html|shtml|sh|cgi)\./i.test(file.name)) {
                 ed.windowManager.alert(ed.getLang('upload.file_extension_error', 'File type not supported'));
@@ -646,7 +651,7 @@
             }
 
             // get first url for the file type
-            each(self.plugins, function(o, k) {
+            each(self.plugins, function (o, k) {
                 if (!file.upload_url) {
                     if (url = o.getUploadURL(file)) {
                         file.upload_url = url;
@@ -658,20 +663,20 @@
             if (file.upload_url) {
                 if (tinymce.is(file.uploader.getUploadConfig, 'function')) {
                     // check file type and size
-                    var config  = file.uploader.getUploadConfig();
-                    var type    = file.type.replace(/[a-z0-9]+\/([a-z0-9]{2,4})/i, '$1'); 
-                    
+                    var config = file.uploader.getUploadConfig();
+                    var type = file.type.replace(/[a-z0-9]+\/([a-z0-9]{2,4})/i, '$1');
+
                     // lowercase
                     type = type.toLowerCase();
-                    
+
                     if (tinymce.inArray(config.filetypes, type) == -1) {
                         ed.windowManager.alert(ed.getLang('upload.file_extension_error', 'File type not supported'));
                         return false;
                     }
 
-                    if (file.size) {                        
+                    if (file.size) {
                         var max = parseInt(config.max_size) || 1024;
-                        
+
                         if (file.size > max * 1024) {
                             ed.windowManager.alert(ed.getLang('upload.file_size_error', 'File size exceeds maximum allowed size'));
                             return false;
@@ -709,16 +714,16 @@
 
                 // add files to queue
                 self.files.push(file);
-                
+
                 return true;
             } else {
                 ed.windowManager.alert(ed.getLang('upload.file_extension_error', 'File type not supported'));
                 return false;
             }
-            
+
             return false;
         },
-        upload: function(file) {
+        upload: function (file) {
             var self = this, ed = this.editor;
 
             var args = {
@@ -737,7 +742,7 @@
 
                 // progress
                 if (xhr.upload) {
-                    xhr.upload.onprogress = function(e) {
+                    xhr.upload.onprogress = function (e) {
                         if (e.lengthComputable) {
                             file.loaded = Math.min(file.size, e.loaded);
                             self.UploadProgress.dispatch(file);
@@ -745,7 +750,7 @@
                     };
                 }
 
-                xhr.onreadystatechange = function() {
+                xhr.onreadystatechange = function () {
                     var httpStatus;
 
                     if (xhr.readyState == 4 && self.state !== state.STOPPED) {
@@ -782,7 +787,7 @@
                 };
                 // get name
                 var name = file.target_name || file.name;
-                
+
                 // remove some common characters
                 name = name.replace(/[\+\\\/\?\#%&<>"\'=\[\]\{\},;@\^\(\)£€$]/g, '');
 
@@ -793,12 +798,12 @@
                 xhr.open("post", url, true);
 
                 // Set custom headers
-                each(self.settings.headers, function(value, name) {
+                each(self.settings.headers, function (value, name) {
                     xhr.setRequestHeader(name, value);
                 });
 
                 // Add multipart params
-                each(extend(args, self.settings.multipart_params), function(value, name) {
+                each(extend(args, self.settings.multipart_params), function (value, name) {
                     formData.append(name, value);
                 });
 
@@ -825,7 +830,7 @@
             // send the file object
             sendFile(file);
         },
-        getInfo: function() {
+        getInfo: function () {
             return {
                 longname: 'Drag & Drop and Placeholder Upload',
                 author: 'Ryan Demmer',
