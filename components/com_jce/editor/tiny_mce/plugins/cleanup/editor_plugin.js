@@ -65,7 +65,7 @@
                                 if (new RegExp(re).test(node.attr(name))) {
                                     node.attr(name, "");
                                     // remove temp attribute
-                                    if (name === 'src' || name === 'href') {
+                                    if (name === 'src' || name === 'href' || name === 'style') {
                                         node.attr('data-mce-' + name, "");
                                     }
                                 }
@@ -73,7 +73,7 @@
                         }
 
                         each(tinymce.explode(invalidAttribValue), function (item) {
-                            var re, matches = /([a-z\*]+)\[([a-z]+)([\^\$]?=)["']([^"']+)["']\]/i.exec(item);
+                            var re, matches = /([a-z\*]+)\[([a-z]+)([\^\$~]?=)["']([^"']+)["']\]/i.exec(item);
 
                             if (matches && matches.length == 5) {
                                 var tag = matches[1], attrib = matches[2], expr = matches[3], value = matches[4];
@@ -92,17 +92,22 @@
                                     case '$=':
                                         re = '(' + value + ')$';
                                         break;
+                                    case '~=':
+                                        re = value;
+                                        break;
                                 }
-                                // all tags
-                                if (tag == '*') {
-                                    ed.parser.addAttributeFilter(attrib, function (nodes, name) {
-                                        replaceAttributeValue(nodes, name, re);
-                                    });
-                                    // specific tag
-                                } else {
-                                    ed.parser.addNodeFilter(tag, function (nodes, name) {
-                                        replaceAttributeValue(nodes, attrib, re);
-                                    });
+                                if (re) {                                    
+                                    // all tags
+                                    if (tag == '*') {
+                                        ed.parser.addAttributeFilter(attrib, function (nodes, name) {
+                                            replaceAttributeValue(nodes, name, re);
+                                        });
+                                        // specific tag
+                                    } else {
+                                        ed.parser.addNodeFilter(tag, function (nodes, name) {
+                                            replaceAttributeValue(nodes, attrib, re);
+                                        });
+                                    }
                                 }
                             }
                         });
