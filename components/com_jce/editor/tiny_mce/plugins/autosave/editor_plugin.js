@@ -16,9 +16,9 @@
 /*eslint no-func-assign:0 */
 
 (function (tinymce) {
-    var Dispatcher = tinymce.util.Dispatcher, localStorage = window.localStorage;
+    var Dispatcher = tinymce.util.Dispatcher, Storage = window.sessionStorage;
     
-    if (!localStorage) {
+    if (!Storage) {
         return;
     }
     
@@ -99,10 +99,10 @@
             }
 
             function removeDraft(fire) {
-                var content = localStorage.getItem(prefix + "draft");
+                var content = Storage.getItem(prefix + "draft");
 
-                localStorage.removeItem(prefix + "draft");
-                localStorage.removeItem(prefix + "time");
+                Storage.removeItem(prefix + "draft");
+                Storage.removeItem(prefix + "time");
 
                 // Dispatch remove event if we had any contents
                 if (fire !== false && content) {
@@ -117,8 +117,8 @@
                     var content = ed.getContent({format: 'raw', no_events: true});
                     var expires = new Date().getTime();
 
-                    localStorage.setItem(prefix + "draft", content);
-                    localStorage.setItem(prefix + "time", expires);
+                    Storage.setItem(prefix + "draft", content);
+                    Storage.setItem(prefix + "time", expires);
 
                     self.onStoreDraft.dispatch(self, {
                         expires: expires,
@@ -129,7 +129,7 @@
 
             function restoreDraft() {
                 if (hasDraft()) {
-                    var content = localStorage.getItem(prefix + "draft");
+                    var content = Storage.getItem(prefix + "draft");
 
                     ed.setContent(content, {format: 'raw'});
 
