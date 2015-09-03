@@ -103,7 +103,7 @@
                         break;
                     case 'RemoveFormat':
                         if (!v) {
-                            if (ed.dom.iBlock(n)) {
+                            if (ed.dom.isBlock(n)) {
                                 ed.undoManager.add();
                                 p = ed.dom.getParent(n, blocks.join(','));
 
