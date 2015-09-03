@@ -1024,9 +1024,10 @@ abstract class WFInstall {
         JTable::addIncludePath(JPATH_LIBRARIES . '/joomla/database/table');
 
         $packages = array(
-            'editor' => array('jce'),
+            'editor'    => array('jce'),
+            'system'    => array('jce'),
             'quickicon' => array('jcefilebrowser'),
-            'module' => array('mod_jcefilebrowser')
+            'module'    => array('mod_jcefilebrowser')
         );
 
         foreach ($packages as $folder => $element) {
@@ -1037,7 +1038,7 @@ abstract class WFInstall {
                 }
                 // Joomla! 1.5  
             } else {
-                if ($folder == 'quickicon') {
+                if ($folder == 'quickicon' || $folder == 'system') {
                     continue;
                 }
             }
@@ -1078,6 +1079,18 @@ abstract class WFInstall {
                     $module->ordering = 100;
                     $module->published = 1;
                     $module->store();
+                }
+                
+                // enable jce system plugin
+                if ($folder == 'system') {
+                    $plugin = JTable::getInstance('extension');
+
+                    foreach ($element as $item) {
+                        $id = $plugin->find(array('type' => 'plugin', 'folder' => $folder, 'element' => $item));
+
+                        $plugin->load($id);
+                        $plugin->publish();
+                    }
                 }
 
                 // rename editor manifest
