@@ -222,8 +222,11 @@ WFPopups.addPopup('jcemediabox', {
             ed.dom.removeClass(n, v);
         });
 
-        // remove data attribute
-        ed.dom.setAttrib(n, 'data-mediabox', '');
+        // remove data attributes
+        ed.dom.setAttrib(n, 'data-mediabox', null);
+        ed.dom.setAttrib(n, 'data-mediabox-title', null);
+        ed.dom.setAttrib(n, 'data-mediabox-caption', null);
+        ed.dom.setAttrib(n, 'data-mediabox-group', null);
     },
     /**
      * Convert parameter string to JSON object
@@ -336,8 +339,19 @@ WFPopups.addPopup('jcemediabox', {
         }
 
         var params = [];
+        
+        if ($.isEmptyObject(data)) {
+            $.each(ed.dom.getAttribs(n), function(i, at) {
+                var name = at.name;
+                
+                if (name && name.indexOf('data-mediabox-') !== -1) {
+                    var k = name.replace('data-mediabox-', '');
+                    data[k] = ed.dom.getAttrib(n, name);
+                }
+            });
+        }
 
-        if (/::/.test(data.title)) {
+        if (data.title && /::/.test(data.title)) {
             var parts = data.title.split('::');
             if (parts.length > 1) {
                 data.caption = parts[1];
