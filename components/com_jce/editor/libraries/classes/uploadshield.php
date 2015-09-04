@@ -119,7 +119,7 @@ abstract class WFUploadShield {
                 // 2. PHP-in-extension check (.php, .php.xxx[.yyy[.zzz[...]]], .xxx[.yyy[.zzz[...]]].php)
                 if (!empty($options['forbidden_extensions'])) {
                     $explodedName = explode('.', $intendedName);
-                    array_reverse($explodedName);
+                    $explodedName = array_reverse($explodedName);
                     array_pop($explodedName);
                     array_map('strtolower', $explodedName);
 
