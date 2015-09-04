@@ -2187,9 +2187,7 @@
                 
                 $(self.element).next('span.loader').remove();
 
-                if (type == 'file') {
-                    self._trigger('onFileClick', this, item);
-                    
+                if (type == 'file') {                    
                     name = $.String.stripExt(title);
                     ext = $.String.getExt(title) + ' ';
                 }
