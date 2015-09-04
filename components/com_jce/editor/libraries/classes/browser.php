@@ -896,32 +896,6 @@ class WFFileBrowser extends JObject {
             }
         }
     }
-    
-    /**
-     * Check upload file name for extensions
-     * @param type $name
-     * @return boolean
-     */
-    private function validateFileName($name) {        
-        if (empty($name)) {
-            return false;
-        }
-
-        // list of invalid extensions
-        $executable = array(
-            'php', 'php3', 'php4', 'php5', 'js', 'exe', 'phtml', 'java', 'perl', 'py', 'asp', 'dll', 'go', 'ade', 'adp', 'bat', 'chm', 'cmd', 'com', 'cpl', 'hta', 'ins', 'isp',
-            'jse', 'lib', 'mde', 'msc', 'msp', 'mst', 'pif', 'scr', 'sct', 'shb', 'sys', 'vb', 'vbe', 'vbs', 'vxd', 'wsc', 'wsf', 'wsh'
-        );
-        
-        $match = implode('|', $executable);
-        
-        // check for extension in file name, eg: image.php.jpg or as extension, eg: image.php
-        if (preg_match('#\.(' . $match . ')\.#i', $name) || preg_match('#\.(' . $match . ')$#i', $name)) {
-            return false;
-        }
-
-        return true;
-    }
 
     /**
      * Upload a file.
@@ -961,7 +935,7 @@ class WFFileBrowser extends JObject {
         $name = rawurldecode($name);
         
         // check name
-        if ($this->validateFileName($name) === false) {
+        if (WFUtility::validateFileName($name) === false) {
             throw new InvalidArgumentException('INVALID FILE NAME');
         }
         
@@ -980,7 +954,7 @@ class WFFileBrowser extends JObject {
         $name = WFUtility::makeSafe($name, $this->get('websafe_mode', 'utf-8'), $this->get('websafe_spaces'), $this->get('websafe_textcase'));
 
         // check name
-        if ($this->validateFileName($name) === false) {
+        if (WFUtility::validateFileName($name) === false) {
             throw new InvalidArgumentException('INVALID FILE NAME');
         }
 
@@ -1146,7 +1120,7 @@ class WFFileBrowser extends JObject {
         WFUtility::checkPath($destination);
 
         // check for extension in destination name
-        if ($this->validateFileName($destination) === false) {
+        if (WFUtility::validateFileName($destination) === false) {
             JError::raiseError(403, 'INVALID FILE NAME');
         }
 
@@ -1200,6 +1174,11 @@ class WFFileBrowser extends JObject {
 
         // check destination path
         WFUtility::checkPath($destination);
+        
+        // check for extension in destination name
+        if (WFUtility::validateFileName($destination) === false) {
+            JError::raiseError(403, 'INVALID FILE NAME');
+        }
 
         foreach ($items as $item) {
             // decode
@@ -1258,6 +1237,11 @@ class WFFileBrowser extends JObject {
         // check destination path
         WFUtility::checkPath($destination);
 
+        // check for extension in destination name
+        if (WFUtility::validateFileName($destination) === false) {
+            JError::raiseError(403, 'INVALID FILE NAME');
+        }
+
         foreach ($items as $item) {
             // decode
             $item = rawurldecode($item);
@@ -1313,8 +1297,15 @@ class WFFileBrowser extends JObject {
         $new = rawurldecode($new);
 
         $filesystem = $this->getFileSystem();
+        
+        $name = WFUtility::makeSafe($new, $this->get('websafe_mode'), $this->get('websafe_spaces'), $this->get('websafe_textcase'));
+                
+        // check for extension in destination name
+        if (WFUtility::validateFileName($name) === false) {
+            JError::raiseError(403, 'INVALID FILE NAME');
+        }
 
-        $result = $filesystem->createFolder($dir, WFUtility::makeSafe($new, $this->get('websafe_mode'), $this->get('websafe_spaces'), $this->get('websafe_textcase')), $args);
+        $result = $filesystem->createFolder($dir, $name, $args);
 
         if ($result instanceof WFFileSystemResult) {
             if (!$result->state) {
