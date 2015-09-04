@@ -944,9 +944,6 @@ class WFFileBrowser extends JObject {
         
         // get extension from file name
         $ext = WFUtility::getExtension($file['name']);
-        
-        // make extension lowercase
-        $ext = strtolower($ext);
 
         // strip extension
         $name = WFUtility::stripExtension($name);
