@@ -1177,7 +1177,7 @@ class WFFileBrowser extends JObject {
         
         // check for extension in destination name
         if (WFUtility::validateFileName($destination) === false) {
-            JError::raiseError(403, 'INVALID FILE NAME');
+            JError::raiseError(403, 'INVALID PATH NAME');
         }
 
         foreach ($items as $item) {
@@ -1239,7 +1239,7 @@ class WFFileBrowser extends JObject {
 
         // check for extension in destination name
         if (WFUtility::validateFileName($destination) === false) {
-            JError::raiseError(403, 'INVALID FILE NAME');
+            JError::raiseError(403, 'INVALID PATH NAME');
         }
 
         foreach ($items as $item) {
@@ -1302,7 +1302,7 @@ class WFFileBrowser extends JObject {
                 
         // check for extension in destination name
         if (WFUtility::validateFileName($name) === false) {
-            JError::raiseError(403, 'INVALID FILE NAME');
+            JError::raiseError(403, 'INVALID FOLDER NAME');
         }
 
         $result = $filesystem->createFolder($dir, $name, $args);
