@@ -70,14 +70,14 @@ class PlgSystemJce extends JPlugin {
 
             return false;
         }
-        
+
         $config = JFactory::getConfig();
-        $user   = JFactory::getUser();
-        
+        $user = JFactory::getUser();
+
         if ($user->getParam('editor', $config->get('editor')) !== "jce") {
             return true;
         }
-        
+
         if (!JPluginHelper::getPlugin('editors', 'jce')) {
             return true;
         }
@@ -93,14 +93,17 @@ class PlgSystemJce extends JPlugin {
         $link = $this->getLink();
 
         if ($link) {
-            switch($name) {
-                case 'com_content.article':
-                    $form->setFieldAttribute('image_intro', 'link', $link, 'images');
-                    $form->setFieldAttribute('image_fulltext', 'link', $link, 'images');
-                    break;
-                case 'com_categories.categorycom_content':
-                    $form->setFieldAttribute('image', 'link', $link, 'params');
-                    break;
+            $fields = $form->getFieldset();
+
+            foreach ($fields as $field) {
+                $type = $field->getAttribute('type');
+
+                if (strtolower($type) === "media") {
+                    $name = $field->getAttribute('name');
+                    $group = (string) $field->group;
+
+                    $form->setFieldAttribute($name, 'link', $link, $group);
+                }
             }
         }
 
