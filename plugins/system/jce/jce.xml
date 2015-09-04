@@ -1,19 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<extension version="3.1" type="plugin" group="system" method="upgrade">
-	<name>System - JCE</name>
-	<author>Ryan Demmer</author>
-	<creationDate>September 2015</creationDate>
-	<copyright>(C) 2015 Widget Factory Limited. All rights reserved.</copyright>
-	<license>GNU General Public License version 2 or later</license>
-	<authorEmail>info@widgetfactorylimited.co.uk</authorEmail>
-	<authorUrl>www.widgetfactorylimited.co.uk</authorUrl>
-	<version>1.0.0</version>
-	<description>System - JCE</description>
-
-	<files>
-            <filename plugin="jce">jce.php</filename>
-            <folder>form</folder>
-	</files>
-	<languages></languages>
-	<config></config>
+<extension version="1.6" type="plugin" group="system" method="upgrade">
+    <name>plg_system_jce</name>
+    <version>@@version@@</version>
+    <creationDate>@@date@@</creationDate>
+    <author>Ryan Demmer</author>
+    <authorEmail>@@e-mail@@</authorEmail>
+    <authorUrl>http://www.joomlacontenteditor.net</authorUrl>
+    <copyright>@@copyright@@</copyright>
+    <license>GNU/GPL Version 2 - http://www.gnu.org/licenses/gpl-2.0.html</license>
+    <description>PLG_JCE_XML_DESCRIPTION</description>    
+    <files>
+        <file plugin="jce">jce.php</file>
+    </files>
 </extension>

@@ -6,7 +6,7 @@
     <author>Ryan Demmer</author>
     <authorEmail>@@e-mail@@</authorEmail>
     <authorUrl>http://www.joomlacontenteditor.net</authorUrl>
-    <copyright>2006-2010 Ryan Demmer</copyright>
+    <copyright>@@copyright@@</copyright>
     <license>GNU/GPL Version 2 - http://www.gnu.org/licenses/gpl-2.0.html</license>
     <description>WF_EDITOR_PLUGIN_DESC</description>    
     <files>
