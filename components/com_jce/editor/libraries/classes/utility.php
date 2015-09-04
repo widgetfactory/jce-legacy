@@ -47,6 +47,11 @@ abstract class WFUtility {
     }
 
     private static function checkCharValue($string) {
+        // null byte check
+        if (strstr($string, "\x00")) {
+            return false;
+        }
+        
         if (preg_match('#([^\w\.\-~\/\\\\\s ])#i', $string, $matches)) {
             foreach ($matches as $match) {
                 // not a safe UTF-8 character
@@ -318,23 +323,22 @@ abstract class WFUtility {
             'php', 'php3', 'php4', 'php5', 'js', 'exe', 'phtml', 'java', 'perl', 'py', 'asp', 'dll', 'go', 'ade', 'adp', 'bat', 'chm', 'cmd', 'com', 'cpl', 'hta', 'ins', 'isp',
             'jse', 'lib', 'mde', 'msc', 'msp', 'mst', 'pif', 'scr', 'sct', 'shb', 'sys', 'vb', 'vbe', 'vbs', 'vxd', 'wsc', 'wsf', 'wsh'
         );
-        
         // get file parts, eg: ['image', 'jpg']
         $parts = explode('.', $name);
         // reverse so that name is last array item
-        array_reverse($parts);
+        $parts = array_reverse($parts);        
         // remove name
         array_pop($parts);
         // lowercase it
         array_map('strtolower', $parts);
 
         // check for extension in file name, eg: image.php.jpg or as extension, eg: image.php
-        foreach($parts as $part) {
-            if (in_array($part, $executable)) {
+        foreach($executable as $ext) {
+            if (in_array($ext, $parts)) {
                 return false;
             }
         }
-
+            
         return true;
     }
 }
