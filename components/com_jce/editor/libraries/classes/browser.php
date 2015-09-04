@@ -843,7 +843,7 @@ class WFFileBrowser extends JObject {
             throw new InvalidArgumentException('INVALID UPLOAD DATA');
         }
         
-        if ($this->validateFileName($file['name']) === false) {
+        if (WFUtility::validateFileName($file['name']) === false) {
             @unlink($file['tmp_name']);
             throw new InvalidArgumentException('INVALID UPLOAD DATA');
         }
