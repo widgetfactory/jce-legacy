@@ -12,7 +12,7 @@ var BrowserDialog = {
     settings : {},
 	
     init : function(ed) {
-        var action = "insert";
+        var self = this, action = "insert";
 		
         $('button#insert').click(function(e) {
             BrowserDialog.insert();
@@ -37,14 +37,13 @@ var BrowserDialog = {
 		
         $('<input type="hidden" id="src" value="'+ src +'" />').appendTo(document.body);
 	
-        // Create File Browser
-        WFFileBrowser.init('#src', {        	
+        WFBrowserWidget.init({        	
             onFileClick : function(e, file) {
-                BrowserDialog.selectFile(file);
+                self.selectFile(file);
             },
 
             onFileInsert : function(e, file) {
-                BrowserDialog.selectFile(file);
+                self.selectFile(file);
             },
             
             expandable : false
@@ -83,4 +82,14 @@ var BrowserDialog = {
         $('#src').val(src);
     }
 };
-tinyMCEPopup.onInit.add(BrowserDialog.init, BrowserDialog);
+
+var WFBrowserWidget = {
+    init: function(settings) {
+        // Create File Browser
+        WFFileBrowser.init('#src', settings);
+    }
+};
+
+if (typeof tinyMCEPopup !=="undefined") {
+    tinyMCEPopup.onInit.add(BrowserDialog.init, BrowserDialog);
+}

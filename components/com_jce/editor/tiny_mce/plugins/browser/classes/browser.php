@@ -57,6 +57,8 @@ final class WFFileBrowserPlugin extends WFMediaManager {
 
         $document = WFDocument::getInstance();
         $settings = $this->getSettings();
+        
+        $document->addScript(array('browser'), 'plugins');
 
         if ($document->get('standalone') == 1) {
             $document->addScript(array('browser'), 'component');
@@ -75,7 +77,6 @@ final class WFFileBrowserPlugin extends WFMediaManager {
             $document->addScriptDeclaration('jQuery(document).ready(function($){$.WFBrowserWidget.init(' . json_encode($options) . ');});');
 
         } else {
-            $document->addScript(array('browser'), 'plugins');
             $document->addScriptDeclaration('BrowserDialog.settings=' . json_encode($settings) . ';');
         }
     }
