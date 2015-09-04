@@ -303,6 +303,40 @@ abstract class WFUtility {
         
         return WFUploadShield::isSafeFile($file, $options);
     }
+    /**
+     * Check file name for extensions
+     * @param type $name
+     * @return boolean
+     */
+    public static function validateFileName($name) {
+        if (empty($name)) {
+            return false;
+        }
+
+        // list of invalid extensions
+        $executable = array(
+            'php', 'php3', 'php4', 'php5', 'js', 'exe', 'phtml', 'java', 'perl', 'py', 'asp', 'dll', 'go', 'ade', 'adp', 'bat', 'chm', 'cmd', 'com', 'cpl', 'hta', 'ins', 'isp',
+            'jse', 'lib', 'mde', 'msc', 'msp', 'mst', 'pif', 'scr', 'sct', 'shb', 'sys', 'vb', 'vbe', 'vbs', 'vxd', 'wsc', 'wsf', 'wsh'
+        );
+        
+        // get file parts, eg: ['image', 'jpg']
+        $parts = explode('.', $name);
+        // reverse so that name is last array item
+        array_reverse($parts);
+        // remove name
+        array_pop($parts);
+        // lowercase it
+        array_map('strtolower', $parts);
+
+        // check for extension in file name, eg: image.php.jpg or as extension, eg: image.php
+        foreach($parts as $part) {
+            if (in_array($part, $executable)) {
+                return false;
+            }
+        }
+
+        return true;
+    }
 }
 
 ?>
