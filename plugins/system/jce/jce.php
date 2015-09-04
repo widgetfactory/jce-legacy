@@ -70,6 +70,17 @@ class PlgSystemJce extends JPlugin {
 
             return false;
         }
+        
+        $config = JFactory::getConfig();
+        $user   = JFactory::getUser();
+        
+        if ($user->getParam('editor', $config->get('editor')) !== "jce") {
+            return true;
+        }
+        
+        if (!JPluginHelper::getPlugin('editors', 'jce')) {
+            return true;
+        }
 
         // Check we are manipulating a valid form.
         $name = $form->getName();
