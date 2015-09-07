@@ -125,7 +125,8 @@ class com_jceInstallerScript {
         jimport('joomla.installer.installer');
 
         $plugins = array(
-            'editors' => array('jce'),
+            'editors'   => array('jce'),
+            'system'    => array('jce'),
             'quickicon' => array('jcefilebrowser')
         );
 
