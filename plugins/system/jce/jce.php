@@ -65,6 +65,12 @@ class PlgSystemJce extends JPlugin {
      * @since   1.6
      */
     public function onContentPrepareForm($form, $data) {
+        $version = new JVersion;
+        
+        if (!$version->isCompatible('3.4')) {
+            return true;
+        }
+
         if (!($form instanceof JForm)) {
             $this->_subject->setError('JERROR_NOT_A_FORM');
 
@@ -82,14 +88,6 @@ class PlgSystemJce extends JPlugin {
             return true;
         }
 
-        // Check we are manipulating a valid form.
-        $name = $form->getName();
-
-        // quick check to make sure we are in the right form
-        if ($name !== 'com_content.article' && $name !== 'com_categories.categorycom_content') {
-            return true;
-        }
-
         $link = $this->getLink();
 
         if ($link) {
@@ -99,8 +97,8 @@ class PlgSystemJce extends JPlugin {
                 $type = $field->getAttribute('type');
 
                 if (strtolower($type) === "media") {
-                    $name = $field->getAttribute('name');
-                    $group = (string) $field->group;
+                    $name   = $field->getAttribute('name');
+                    $group  = (string) $field->group;
 
                     $form->setFieldAttribute($name, 'link', $link, $group);
                 }
