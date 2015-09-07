@@ -858,9 +858,11 @@ class WFFileBrowser extends JObject {
             @unlink($file['tmp_name']);
             throw new InvalidArgumentException(WFText::_('WF_MANAGER_UPLOAD_INVALID_EXT_ERROR'));
         }
+        
+        $isImage = preg_match('#\.(jpeg|jpg|jpe|png|gif|wbmp|bmp|tiff|tif|webp|psd|swc|iff|jpc|jp2|jpx|jb2|xbm|ico|xcf|odg)$#i', $file['name']);
 
         // validate image
-        if (preg_match('#\.(jpeg|jpg|jpe|png|gif|wbmp|bmp|tiff|tif)$#i', $file['name'])) {
+        if ($isImage) {
             if (@getimagesize($file['tmp_name']) === false) {
                 @unlink($file['tmp_name']);
 
@@ -869,6 +871,14 @@ class WFFileBrowser extends JObject {
         }
 
         $upload = $this->get('upload');
+        $size   = (int) filesize($file['tmp_name']) / 1024;
+        
+        // validate size
+        if ($size > (int) $upload['max_size']) {
+            @unlink($file['tmp_name']);
+            
+            throw new InvalidArgumentException(WFText::sprintf('WF_MANAGER_UPLOAD_SIZE_ERROR', $size, $upload['max_size']));
+        }
 
         // validate mimetype
         if ($upload['validate_mimetype']) {
@@ -881,8 +891,8 @@ class WFFileBrowser extends JObject {
             }
         }
 
-        // check for html tags in some files (IE XSS bug)
-        if (!preg_match('#\.(txt|htm|html|xml)$#i', $file['name'])) {
+        // check for html tags in image files (IE XSS bug)
+        if ($isImage) {
             $data = JFile::read($file['tmp_name'], false, 256);
             $tags = 'a,abbr,acronym,address,area,b,base,bdo,big,blockquote,body,br,button,caption,cite,code,col,colgroup,dd,del,dfn,div,dl,dt,em,fieldset,form,h1,h2,h3,h4,h5,h6,head,hr,html,i,img,input,ins,kbd,label,legend,li,link,map,meta,noscript,object,ol,optgroup,option,p,param,pre,q,samp,script,select,small,span,strong,style,sub,sup,table,tbody,td,textarea,tfoot,th,thead,title,tr,tt,ul,var';
 
