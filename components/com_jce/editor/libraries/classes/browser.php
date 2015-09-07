@@ -871,6 +871,10 @@ class WFFileBrowser extends JObject {
         $upload = $this->get('upload');
         $size   = round(filesize($file['tmp_name']) / 1024);
         
+        if (empty($upload['max_size'])) {
+            $upload['max_size'] = 1024;
+        }
+        
         // validate size
         if ($size > (int) $upload['max_size']) {
             @unlink($file['tmp_name']);
