@@ -1033,16 +1033,9 @@ abstract class WFInstall {
         foreach ($packages as $folder => $element) {
             // Joomla! 2.5
             if (defined('JPATH_PLATFORM')) {
-                $version = new JVersion;
-
                 if ($folder == 'module') {
                     continue;
-                }
-                
-                if ($folder == 'system' && !$version->isCompatible('3.4')) {
-                    continue;
-                }
-                
+                }                
                 // Joomla! 1.5  
             } else {
                 if ($folder == 'quickicon' || $folder == 'system') {
