@@ -869,13 +869,13 @@ class WFFileBrowser extends JObject {
         }
 
         $upload = $this->get('upload');
-        $size   = (int) filesize($file['tmp_name']) / 1024;
+        $size   = round(filesize($file['tmp_name']) / 1024);
         
         // validate size
         if ($size > (int) $upload['max_size']) {
             @unlink($file['tmp_name']);
             
-            throw new InvalidArgumentException(WFText::sprintf('WF_MANAGER_UPLOAD_SIZE_ERROR', $size, $upload['max_size']));
+            throw new InvalidArgumentException(WFText::sprintf('WF_MANAGER_UPLOAD_SIZE_ERROR', $file['name'], $size, $upload['max_size']));
         }
 
         // validate mimetype
