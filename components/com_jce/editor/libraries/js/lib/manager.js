@@ -101,7 +101,7 @@
                             return self._changeDir(u);
                         } else {
                             self._setSelectedItems(e, true);
-                            //self._trigger('onFileClick', e, p);
+                            self._trigger('onFileClick', e, p);
                         }
 
                         break;
