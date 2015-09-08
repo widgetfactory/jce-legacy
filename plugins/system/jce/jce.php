@@ -32,17 +32,6 @@ class PlgSystemJce extends JPlugin {
     }
 
     protected function getLink() {
-        require_once(JPATH_ADMINISTRATOR . '/components/com_jce/models/model.php');
-
-        // check for class to prevent fatal errors
-        if (!class_exists('WFModel')) {
-            return false;
-        }
-
-        if (WFModel::authorize('browser') === false) {
-            return false;
-        }
-
         require_once(JPATH_ADMINISTRATOR . '/components/com_jce/helpers/browser.php');
 
         $link = WFBrowserHelper::getBrowserLink('', 'images');
@@ -52,6 +41,17 @@ class PlgSystemJce extends JPlugin {
         }
 
         return false;
+    }
+
+    public function onAfterDispatch() {
+        $version = new JVersion;
+
+        if (!$version->isCompatible('3.4')) {
+            return true;
+        }
+
+        $document = JFactory::getDocument();
+        $document->addScriptDeclaration('(function($){$(window).ready(function(){$(".wf-media-input").removeAttr("readonly")})})(jQuery);');
     }
 
     /**
@@ -66,7 +66,7 @@ class PlgSystemJce extends JPlugin {
      */
     public function onContentPrepareForm($form, $data) {
         $version = new JVersion;
-        
+
         if (!$version->isCompatible('3.4')) {
             return true;
         }
@@ -99,13 +99,12 @@ class PlgSystemJce extends JPlugin {
                 if (strtolower($type) === "media") {
                     $name   = $field->getAttribute('name');
                     $group  = (string) $field->group;
-
                     $form->setFieldAttribute($name, 'link', $link, $group);
+                    $form->setFieldAttribute($name, 'class', 'input-large wf-media-input', $group);
                 }
             }
         }
 
         return true;
     }
-
 }
