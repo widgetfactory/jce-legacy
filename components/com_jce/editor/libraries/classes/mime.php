@@ -533,6 +533,7 @@ abstract class WFMimeType {
         'audio/x-pn-realaudio' => 'ram ra',
         'audio/x-pn-realaudio-plugin' => 'rmp',
         'audio/x-wav' => 'wav',
+        'audio/webm' => 'webm',
         'chemical/x-cdx' => 'cdx',
         'chemical/x-cif' => 'cif',
         'chemical/x-cmdf' => 'cmdf',
@@ -644,6 +645,7 @@ abstract class WFMimeType {
         'video/x-ms-wvx' => 'wvx',
         'video/x-msvideo' => 'avi',
         'video/x-sgi-movie' => 'movie',
+        'video/webm' => 'webm',
         'x-conference/x-cooltalk' => 'ice'
     );
 
