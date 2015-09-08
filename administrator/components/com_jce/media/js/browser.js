@@ -58,12 +58,16 @@
 
                 $('button#cancel').show().click(function (e) {
                     self.close();
-
                     e.preventDefault();
                 });
-                var src = doc.getElementById(this.options.element).value || '';
 
-                $('#src').val(src).change();
+                var src = '', el = doc.getElementById(this.options.element);
+
+                if (el) {
+                    src = el.value;
+                }
+
+                $('#src').val(src);
             }
 
             $.extend(this.options.manager, {
@@ -72,7 +76,7 @@
                     var src = $(file).data('url');
 
                     src = src.charAt(0) == '/' ? src.substring(1) : src;
-                    $('#src').val(src).change();
+                    $('#src').val(src);
                 }
             });
 
