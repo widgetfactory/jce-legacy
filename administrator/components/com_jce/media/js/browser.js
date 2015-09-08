@@ -63,18 +63,48 @@
                 });
                 var src = doc.getElementById(this.options.element).value || '';
 
-                $('#src').val(src);
+                $('#src').val(src).change();
             }
+
+            $.extend(this.options.manager, {
+                onFileClick : function(e, file) {
+                    var name = file.title;
+                    var src = $(file).data('url');
+
+                    src = src.charAt(0) == '/' ? src.substring(1) : src;
+                    $('#src').val(src).change();
+                }
+            });
 
             // Create File Browser
             WFBrowserWidget.init($.extend(this.options.manager, {}));
         },
+
+        clean: function(s) {
+            // trim
+            s = $.trim(s);
+
+            // remove multiple period characters
+            s = s.replace(/(\.){2,}/g, '');
+
+            // trim period characters
+            s = s.replace(/^\.|\.$/g, '');
+
+            // trim
+            s = $.trim(s);
+
+            return s;
+        },
+
         insert: function () {
             if (this.options.element) {
                 var src = WFFileBrowser.getSelectedItems(0);
                 var win = window.parent;
 
-                var v = $(src).data('url') || '';
+                var v = $('#src').val() || '';
+
+                // trim url
+                v = $.trim(v);
 
                 if (win.jQuery) {
                     win.jQuery('#' + this.options.element).val(v).change();
