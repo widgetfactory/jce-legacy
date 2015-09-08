@@ -841,8 +841,14 @@ class WFModelEditor extends WFModelBase {
                 $global_custom = str_replace('$template', $template, $global_custom);
 
                 foreach (explode(',', $global_custom) as $tmp) {
-                    $file = JPATH_SITE . '/' . $tmp;
-                    $list = array();
+                    $tmp    = trim($tmp);
+
+                    if (empty($tmp)) {
+                        continue;
+                    }
+
+                    $file   = JPATH_SITE . '/' . $tmp;
+                    $list   = array();
 
                     // check if path is a file
                     if (is_file($file)) {
