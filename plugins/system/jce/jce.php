@@ -80,8 +80,18 @@ class PlgSystemJce extends JPlugin {
         // get form name.
         $name = $form->getName();
 
+        $valid = array(
+            'com_content.article', 
+            'com_categories.categorycom_content', 
+            'com_templates.style', 
+            'com_tags.tag', 
+            'com_banners.banner', 
+            'com_contact.contact', 
+            'com_newsfeeds.newsfeed'
+        );
+
         // only allow some forms :(
-        if ($name !== 'com_content.article' && $name !== 'com_categories.categorycom_content' && $name !== 'com_templates.style') {
+        if (!in_array($name, $valid)) {
             return true;
         }
 
