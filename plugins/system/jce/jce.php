@@ -76,6 +76,14 @@ class PlgSystemJce extends JPlugin {
 
             return false;
         }
+        
+        // get form name.
+        $name = $form->getName();
+
+        // only allow some forms :(
+        if ($name !== 'com_content.article' && $name !== 'com_categories.categorycom_content' && $name !== 'com_templates.style') {
+            return true;
+        }
 
         $config = JFactory::getConfig();
         $user = JFactory::getUser();
