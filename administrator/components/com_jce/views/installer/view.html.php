@@ -45,7 +45,7 @@ class WFViewInstaller extends WFView {
         WFToolbarHelper::help('installer.about');
 
         $options = array(
-            'extensions' => array('zip'),
+            'extensions' => array('zip', 'tar', 'gz'),
             'width' => 300,
             'button' => 'install_button',
             'task' => 'install',
