@@ -34,13 +34,9 @@ class PlgSystemJce extends JPlugin {
     protected function getLink() {
         require_once(JPATH_ADMINISTRATOR . '/components/com_jce/helpers/browser.php');
 
-        $link = WFBrowserHelper::getBrowserLink('', 'images');
+        $link = WFBrowserHelper::getMediaFieldLink('', 'images');
 
-        if ($link) {
-            return $link;
-        }
-
-        return false;
+        return $link;
     }
 
     public function onAfterDispatch() {
