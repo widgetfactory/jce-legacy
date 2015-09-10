@@ -72,10 +72,7 @@
 
             $.extend(this.options.manager, {
                 onFileClick : function(e, file) {
-                    var name = file.title;
                     var src = $(file).data('url');
-
-                    src = src.charAt(0) == '/' ? src.substring(1) : src;
                     $('#src').val(src);
                 }
             });
