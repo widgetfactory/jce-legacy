@@ -55,7 +55,8 @@
 #jce span.upload_clear {
     cursor: pointer;
     display: inline-block;
-    margin: 6px 0 0 0;
+    line-height: inherit;
+    margin: 4px 0 0;
     position: absolute;
     right: 6px;
 }
