@@ -47,23 +47,13 @@ class WFSpellCheckerPlugin extends WFEditorPlugin {
             $params = $this->getParams();
 
             $config = array(
-                'general.engine' => $params->get('spellchecker.engine', 'googlespell'),
                 // PSpell settings
                 'PSpell.mode' => $params->get('spellchecker.pspell_mode', 'PSPELL_FAST'),
                 'PSpell.spelling' => $params->get('spellchecker.pspell_spelling', ''),
                 'PSpell.jargon' => $params->get('spellchecker.pspell_jargon', ''),
                 'PSpell.encoding' => $params->get('spellchecker.pspell_encoding', ''),
-                'PSpell.dictionary' => JPATH_BASE . '/' . $params->get('spellchecker.pspell_dictionary', ''),
-                // PSpellShell settings
-                'PSpellShell.mode' => $params->get('spellchecker.pspellshell_mode', 'PSPELL_FAST'),
-                'PSpellShell.aspell' => $params->get('spellchecker.pspellshell_aspell', '/usr/bin/aspell'),
-                'PSpellShell.tmp' => $params->get('spellchecker.pspellshell_tmp', '/tmp')
+                'PSpell.dictionary' => JPATH_BASE . '/' . $params->get('spellchecker.pspell_dictionary', '')
             );
-            
-            // default to googlespell if browser
-            if ($config['general.engine'] == 'browser') {
-                $config['general.engine'] = 'googlespell';
-            }
         }
 
         return $config;
