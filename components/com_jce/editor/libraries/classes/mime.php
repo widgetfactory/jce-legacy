@@ -701,7 +701,9 @@ abstract class WFMimeType {
             $mime = self::getMime($mimetype);
 
             if ($mime) {
-                return in_array($extension, $mime);
+                if (!in_array($extension, $mime)) {
+                    return false;
+                }
             }
         }
 
