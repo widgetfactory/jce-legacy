@@ -47,7 +47,7 @@ class PlgSystemJce extends JPlugin {
         }
 
         $document = JFactory::getDocument();
-        $document->addScriptDeclaration('(function($){$(window).ready(function(){$(".wf-media-input").removeAttr("readonly");})})(jQuery);');
+        $document->addScriptDeclaration('(function($){$(window).ready(function(){$(".wf-media-input").removeAttr("readonly");});})(jQuery);');
     }
 
     /**
