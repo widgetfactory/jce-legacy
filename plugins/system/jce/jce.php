@@ -39,17 +39,6 @@ class PlgSystemJce extends JPlugin {
         return $link;
     }
 
-    public function onAfterDispatch() {
-        $version = new JVersion;
-
-        if (!$version->isCompatible('3.4')) {
-            return true;
-        }
-
-        $document = JFactory::getDocument();
-        $document->addScriptDeclaration('(function($){$(window).ready(function(){$(".wf-media-input").removeAttr("readonly");});})(jQuery);');
-    }
-
     /**
      * adds additional fields to the user editing form
      *
@@ -103,6 +92,7 @@ class PlgSystemJce extends JPlugin {
         }
 
         $link = $this->getLink();
+        $hasMedia = false;
 
         if ($link) {
             $fields = $form->getFieldset();
@@ -115,7 +105,17 @@ class PlgSystemJce extends JPlugin {
                     $group  = (string) $field->group;
                     $form->setFieldAttribute($name, 'link', $link, $group);
                     $form->setFieldAttribute($name, 'class', 'input-large wf-media-input', $group);
+
+                    $hasMedia = true;
                 }
+            }
+
+            if ($hasMedia) {
+                // Include jQuery
+                JHtml::_('jquery.framework');
+
+                $document = JFactory::getDocument();
+                $document->addScriptDeclaration('jQuery(document).ready(function($){$(".wf-media-input").removeAttr("readonly");});');
             }
         }
 
