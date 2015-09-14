@@ -8,9 +8,16 @@
 (function(exports) {
     "use strict";
 
-    var html = "", s = "";
-     
-    var baseDir = '/20x/components/com_jce/editor/libraries/js';
+    var html = "", baseDir = "", s = "";
+
+    var scripts = document.getElementsByTagName('script');
+    for (var i = 0; i < scripts.length; i++) {
+        var src = scripts[i].src;
+
+        if (src.indexOf('/plugin.full.js') != -1) {
+            baseDir = src.substring(0, src.lastIndexOf('/'));
+        }
+    }
 
     function writeScripts() {
         document.write(html);
