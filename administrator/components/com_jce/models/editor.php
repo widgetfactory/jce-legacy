@@ -595,6 +595,11 @@ class WFModelEditor extends WFModelBase {
                     $plugins[] = 'importcss';
                 }
 
+                // add hr
+                if (in_array('hr', $plugins) === false && strpos($this->profile->rows, 'hr') !== false) {
+                    $plugins[] = 'hr';
+                }
+
                 // add advlists plugin if lists are loaded
                 if (in_array('lists', $plugins)) {
                     $plugins[] = 'advlist';

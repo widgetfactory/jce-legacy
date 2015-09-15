@@ -965,6 +965,28 @@ abstract class WFInstall {
             }
         }
 
+        // transfer hr to a plugin
+        if (version_compare($version, '2.5.8', '<')) {
+            $profiles = self::getProfiles();
+            $table = JTable::getInstance('Profiles', 'WFTable');
+
+            if (!empty($profiles)) {
+                foreach ($profiles as $item) {
+                    $table->load($item->id);
+
+                    $plugins = explode(',', $table->plugins);
+
+                    if (strpos($table->rows, 'hr') !== false) {
+                        $plugins[] = 'hr';
+                    }
+
+                    $table->plugins = implode(',', $plugins);
+
+                    $table->store();
+                }
+            }
+        }
+
         return true;
     }
 

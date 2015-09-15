@@ -42,7 +42,7 @@
             cleanup: ['cleanup_desc', 'mceCleanup'],
             help: ['help_desc', 'mceHelp'],
             code: ['code_desc', 'mceCodeEditor'],
-            hr: ['hr_desc', 'InsertHorizontalRule'],
+            //hr: ['hr_desc', 'InsertHorizontalRule'],
             removeformat: ['removeformat_desc', 'RemoveFormat'],
             sub: ['sub_desc', 'subscript'],
             sup: ['sup_desc', 'superscript'],
