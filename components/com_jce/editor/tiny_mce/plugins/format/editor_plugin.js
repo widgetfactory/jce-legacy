@@ -129,44 +129,46 @@
 
                         break;
 
-                    /*case 'InsertHorizontalRule':
-                        if (n.nodeName === "P") {                            
+                    case 'InsertHorizontalRule':
+                        if (ed.dom.isBlock(n)) {
                             // insert hr marker
-                            ed.execCommand('mceInsertContent', false, '<hr id="mce-hr-marker" />');
-                            
+                            var hr = ed.dom.create('hr');
+
+                            ed.dom.insertAfter(hr, n);
+
                             // add to undo stack
                             ed.undoManager.add();
 
-                            var m = ed.dom.get('mce-hr-marker');
-                            
                             // remove id
-                            ed.dom.setAttrib(m, 'id', '');
+                            ed.dom.setAttrib(hr, 'id', null);
                             
                             // get marker sibling
-                            var ns = m.nextSibling;
+                            var ns = hr.nextSibling;
 
                             // check if paragraph has a sibling and it is a block element. If not, create a new paragraph after it
                             if (!ed.dom.isBlock(ns)) {
                                 var el = ed.getParam('forced_root_block') || 'br';
                                 
-                                ns = ed.dom.add(ed.getBody(), el);
+                                ns = ed.dom.create(el);
+
+                                ed.dom.insertAfter(ns, hr);
 
                                 if (el !== 'br') {
                                     if (!tinymce.isIE || tinymce.isIE11) {
                                         ns.innerHTML = '<br data-mce-bogus="1">';
                                     }
                                 }
-
-                                // move cursor to beginning of new paragraph
-                                ed.selection.setCursorLocation(ns, 0);
                             }
-                            
+
+                            // move cursor to the end of block element
+                            ed.selection.setCursorLocation(ns, ns.childNodes.length);
+
                             // trigger nodeChanged event to update path etc.
                             ed.nodeChanged();
 
                             o.terminate = true;
                         }
-                        break;*/
+                        break;
                 }
             });
 
