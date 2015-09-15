@@ -65,11 +65,10 @@
             });*/
 
             ed.onInit.add(function() {
-                if (!ed.settings.compress.css)
+                if (!ed.settings.compress.css) {
                     ed.dom.loadCSS(url + "/css/content.css");
-                
-                
-                
+                }
+
                 // Display "a#name" instead of "img" in element path
                 if (ed.theme && ed.theme.onResolveName) {
                     ed.theme.onResolveName.add( function(theme, o) {
@@ -143,7 +142,7 @@
             });
             
             ed.onPreInit.add( function() {            	
-                // Convert video elements to image placeholder
+
                 ed.parser.addNodeFilter('hr', function(nodes) {
                     for (var i = 0; i < nodes.length; i++) {
                         var node = nodes[i], id = node.attr('id') || '', cls = node.attr('class') || '';
@@ -161,7 +160,6 @@
                     }
                 });
 
-                // Convert image placeholders to video elements
                 ed.serializer.addNodeFilter('hr', function(nodes, name, args) {
                     for (var i = 0; i < nodes.length; i++) {
                         var node = nodes[i];
