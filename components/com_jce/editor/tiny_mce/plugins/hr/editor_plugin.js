@@ -9,7 +9,8 @@
  */
 (function () {
     var blocks = 'H1,H2,H3,H4,H5,H6,P,DIV,ADDRESS,PRE,FORM,TABLE,OL,UL,CAPTION,BLOCKQUOTE,CENTER,DL,DIR,FIELDSET,NOSCRIPT,NOFRAMES,MENU,ISINDEX,SAMP,SECTION,ARTICLE,HGROUP,ASIDE,FIGURE';
-
+    var VK = tinymce.VK, BACKSPACE = VK.BACKSPACE, DELETE = VK.DELETE;
+    
     tinymce.create('tinymce.plugins.HorizontalRulePlugin', {
         init: function (ed, url) {
             var self = this;
@@ -88,6 +89,33 @@
             ed.addButton('hr', {
                 title: 'advanced.hr_desc',
                 cmd: 'InsertHorizontalRule'
+            });
+
+            function isHR(n) {
+                return n.nodeName === "HR" && /mceItem(PageBreak|ReadMore)/.test(n.className) === false;
+            }
+
+            ed.onNodeChange.add(function(ed, cm, n) {
+                var s = isHR(n);
+
+                cm.setActive('hr', s);
+
+                ed.dom.removeClass(ed.dom.select('hr.mceItemSelected:not(.mceItemPageBreak,.mceItemReadMore)'), 'mceItemSelected');
+
+                if (s) {
+                    ed.dom.addClass(n, 'mceItemSelected');
+                }
+            });
+
+            ed.onKeyDown.add(function(ed, e) {
+                if (e.keyCode == BACKSPACE || e.keyCode == DELETE) {
+                    var s = ed.selection, n = s.getNode();
+
+                    if (isHR(n)) {
+                        ed.dom.remove(n);
+                        e.preventDefault();
+                    }
+                }
             });
         },
 
