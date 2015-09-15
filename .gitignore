@@ -8,7 +8,7 @@ components/*
 plugins/editors/*
 plugins/system/*
 plugins/quickicon/*
-modules/*
+administrator/modules/*
 
 # config
 !.gitignore
@@ -24,7 +24,7 @@ modules/*
 !plugins/system/jce
 
 # module
-!modules/mod_jcefilebrowser
+!administrator/modules/mod_jcefilebrowser
 
 # site
 !components/com_jce/
