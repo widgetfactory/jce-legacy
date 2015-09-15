@@ -10,7 +10,7 @@
 (function () {
     var blocks = 'H1,H2,H3,H4,H5,H6,P,DIV,ADDRESS,PRE,FORM,TABLE,OL,UL,CAPTION,BLOCKQUOTE,CENTER,DL,DIR,FIELDSET,NOSCRIPT,NOFRAMES,MENU,ISINDEX,SAMP,SECTION,ARTICLE,HGROUP,ASIDE,FIGURE';
     var VK = tinymce.VK, BACKSPACE = VK.BACKSPACE, DELETE = VK.DELETE;
-    
+
     tinymce.create('tinymce.plugins.HorizontalRulePlugin', {
         init: function (ed, url) {
             var self = this;
@@ -112,8 +112,23 @@
                     var s = ed.selection, n = s.getNode();
 
                     if (isHR(n)) {
+                        var sib = n.previousSibling;
+
                         ed.dom.remove(n);
                         e.preventDefault();
+
+                        if (!ed.dom.isBlock(sib)) {
+                            sib = n.nextSibling;
+
+                            if (!ed.dom.isBlock(sib)) {
+                                sib = null;
+                            }
+                        }
+
+                        if (sib) {
+                            // reset the cursor
+                            ed.selection.setCursorLocation(sib, sib.childNodes.length);
+                        }
                     }
                 }
             });
