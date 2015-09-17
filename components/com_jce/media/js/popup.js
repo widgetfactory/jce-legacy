@@ -68,7 +68,7 @@
 
     var WFWindowPopup = {
         init: function(width, height, click) {
-            this.width = parseInt(width);
+            this.width  = parseInt(width);
             this.height = parseInt(height);
             this.click = !!click;
 
@@ -105,7 +105,7 @@
                 }
             }
 
-            win.resizeBy(vw - this.config.width, vh - (this.config.height + oh));
+            win.resizeBy(vw - this.width, vh - (this.height + oh));
 
             this.center();
         },
