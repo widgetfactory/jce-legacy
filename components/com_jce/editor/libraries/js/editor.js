@@ -102,6 +102,7 @@ function jInsertEditorText(text, editor) {
                 indent_before: indent,
                 indent_after: indent,
                 popup_css: false,
+                keep_styles: false,
                 compress: {
                     'css': true,
                     'javascript': true
