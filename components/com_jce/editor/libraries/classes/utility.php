@@ -297,16 +297,38 @@ abstract class WFUtility {
     }
 
     /**
-     * Checks an uploaded for suspicious naming and potential PHP contents which could indicate a hacking attempt.
+     * Checks an upload for suspicious naming and potential PHP contents which could indicate a hacking attempt.
      */
-    public static function isSafeFile($file, $options = array()) {
-        if (class_exists('JFilterInput') && method_exists(JFilterInput, 'isSafeFile')) {
-            return JFilterInput::isSafeFile($file, $options);
+    public static function isSafeFile($file) {
+        // null byte check
+        if (strstr($file['name'], "\u0000")) {
+            return false;
         }
-        
-        require_once(dirname(__FILE__) . '/uploadshield.php');
-        
-        return WFUploadShield::isSafeFile($file, $options);
+
+        if (self::validateFileName($file['name']) !== true) {
+            return false;
+        }
+
+        $fp = @fopen($file['tmp_name'], 'r');
+
+        if ($fp !== false) {
+            $data = '';
+
+            while (!feof($fp)) {
+                $buffer = @fread($fp, 131072);
+                $data .= $buffer;
+
+                if (stristr($buffer, '<?php')) {
+                    return false;
+                }
+
+                $data = substr($data, -8);
+            }
+
+            fclose($fp);
+        }
+
+        return true;
     }
     /**
      * Check file name for extensions
