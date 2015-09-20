@@ -842,11 +842,6 @@ class WFFileBrowser extends JObject {
             @unlink($file['tmp_name']);
             throw new InvalidArgumentException('INVALID UPLOAD DATA');
         }
-        
-        if (WFUtility::validateFileName($file['name']) === false) {
-            @unlink($file['tmp_name']);
-            throw new InvalidArgumentException('INVALID UPLOAD DATA');
-        }
 
         // get extension
         $ext = WFUtility::getExtension($file['name']);
