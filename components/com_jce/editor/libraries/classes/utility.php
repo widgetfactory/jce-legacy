@@ -1,9 +1,9 @@
 <?php
 
 /**
- * @package   	JCE
- * @copyright 	Copyright (c) 2009-2015 Ryan Demmer. All rights reserved.
- * @license   	GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
+ * @package    JCE
+ * @copyright    Copyright (c) 2009-2015 Ryan Demmer. All rights reserved.
+ * @license    GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  * JCE is free software. This version may have been modified pursuant
  * to the GNU General Public License, and as distributed it includes or
  * is derivative of works licensed under the GNU General Public License or
@@ -11,18 +11,22 @@
  */
 defined('_JEXEC') or die('RESTRICTED');
 
-abstract class WFUtility {
+abstract class WFUtility
+{
 
-    public static function getExtension($path) {
+    public static function getExtension($path)
+    {
         return array_pop(explode('.', $path));
     }
 
-    public static function stripExtension($path) {
+    public static function stripExtension($path)
+    {
         $dot = strrpos($path, '.');
         return substr($path, 0, $dot);
     }
 
-    public static function cleanPath($path, $ds = DIRECTORY_SEPARATOR, $prefix = '') {
+    public static function cleanPath($path, $ds = DIRECTORY_SEPARATOR, $prefix = '')
+    {
         $path = trim(urldecode($path));
 
         // check for UNC path on IIS and set prefix
@@ -42,16 +46,18 @@ abstract class WFUtility {
      * @param string $ds optional directory seperator
      * @return string path with trailing DIRECTORY_SEPARATOR
      */
-    public static function fixPath($path, $ds = DIRECTORY_SEPARATOR) {
+    public static function fixPath($path, $ds = DIRECTORY_SEPARATOR)
+    {
         return self::cleanPath($path . $ds);
     }
 
-    private static function checkCharValue($string) {
+    private static function checkCharValue($string)
+    {
         // null byte check
         if (strstr($string, "\x00")) {
             return false;
         }
-        
+
         if (preg_match('#([^\w\.\-~\/\\\\\s ])#i', $string, $matches)) {
             foreach ($matches as $match) {
                 // not a safe UTF-8 character
@@ -64,7 +70,8 @@ abstract class WFUtility {
         return true;
     }
 
-    public static function checkPath($path) {
+    public static function checkPath($path)
+    {
         $path = urldecode($path);
 
         if (self::checkCharValue($path) === false || strpos($path, '..') !== false) {
@@ -80,11 +87,13 @@ abstract class WFUtility {
      * @param string $ds optional directory seperator
      * @return string $a DIRECTORY_SEPARATOR $b
      */
-    public static function makePath($a, $b, $ds = DIRECTORY_SEPARATOR) {
+    public static function makePath($a, $b, $ds = DIRECTORY_SEPARATOR)
+    {
         return self::cleanPath($a . $ds . $b, $ds);
     }
 
-    private static function utf8_latin_to_ascii($subject) {
+    private static function utf8_latin_to_ascii($subject)
+    {
 
         static $CHARS = NULL;
 
@@ -115,7 +124,8 @@ abstract class WFUtility {
         return str_replace(array_keys($CHARS), array_values($CHARS), $subject);
     }
 
-    protected static function changeCase($string, $case) {
+    protected static function changeCase($string, $case)
+    {
         if (!function_exists('mb_strtolower') || !function_exists('mb_strtoupper')) {
             return $string;
         }
@@ -143,7 +153,8 @@ abstract class WFUtility {
      * @param mixed The name of the file (not full path)
      * @return mixed The sanitised string or array
      */
-    public static function makeSafe($subject, $mode = 'utf-8', $allowspaces = false, $case = '') {
+    public static function makeSafe($subject, $mode = 'utf-8', $allowspaces = false, $case = '')
+    {
         $search = array();
 
         // trim
@@ -219,7 +230,8 @@ abstract class WFUtility {
      * @param int $size the raw filesize
      * @return string formated file size.
      */
-    public static function formatSize($size) {
+    public static function formatSize($size)
+    {
         if ($size < 1024) {
             return $size . ' ' . WFText::_('WF_LABEL_BYTES');
         } else if ($size >= 1024 && $size < 1024 * 1024) {
@@ -234,7 +246,8 @@ abstract class WFUtility {
      * @param int $date the unix datestamp
      * @return string formated date.
      */
-    public static function formatDate($date, $format = "%d/%m/%Y, %H:%M") {
+    public static function formatDate($date, $format = "%d/%m/%Y, %H:%M")
+    {
         return strftime($format, $date);
     }
 
@@ -244,7 +257,8 @@ abstract class WFUtility {
      * @return Formatted modified date
      * @param string $file Absolute path to file
      */
-    public static function getDate($file) {
+    public static function getDate($file)
+    {
         return self::formatDate(@filemtime($file));
     }
 
@@ -254,11 +268,13 @@ abstract class WFUtility {
      * @return Formatted filesize value
      * @param string $file Absolute path to file
      */
-    public static function getSize($file) {
+    public static function getSize($file)
+    {
         return self::formatSize(@filesize($file));
     }
 
-    public static function isUtf8($string) {
+    public static function isUtf8($string)
+    {
         if (!function_exists('mb_detect_encoding')) {
             // From http://w3.org/International/questions/qa-forms-utf-8.html 
             return preg_match('%^(?: 
@@ -279,7 +295,8 @@ abstract class WFUtility {
     /**
      * Convert size value to bytes
      */
-    public static function convertSize($value) {
+    public static function convertSize($value)
+    {
         // Convert to bytes
         switch (strtolower($value{strlen($value) - 1})) {
             case 'g':
@@ -297,18 +314,57 @@ abstract class WFUtility {
     }
 
     /**
-     * Checks an upload for suspicious naming and potential PHP contents which could indicate a hacking attempt.
+     * Remove exif data from an image by rewriting it
+     * @param $image
+     * @return bool
      */
-    public static function isSafeFile($file) {
+    public static function removeExifData($image)
+    {
+        if (extension_loaded('imagick')) {
+            try {
+                $img = new Imagick($image);
+                $img->stripImage();
+                $img->writeImage($image);
+                $img->clear();
+                $img->destroy();
+
+            } catch (Exception $e) {
+            }
+        } else if (extension_loaded('gd')) {
+            try {
+                $info = @getimagesize($image);
+
+                if (!empty($info[2]) && $info[2] === IMAGETYPE_JPEG) {
+                    $handle = imagecreatefromjpeg($image);
+                    imagejpeg($handle, $image, 100);
+                    @imagedestroy($handle);
+                }
+            } catch (Exception $e) {
+            }
+        }
+
+        return true;
+    }
+
+    /**
+     * Checks an upload for suspicious naming, potential PHP contents, valid image and HTML tags.
+     */
+    public static function isSafeFile($file)
+    {
         // null byte check
-        if (strstr($file['name'], "\u0000")) {
+        if (strstr($file['name'], "\u0000") | strstr($file['name'], "\x00")) {
             return false;
         }
 
+        // check name for invalid extensions
         if (self::validateFileName($file['name']) !== true) {
             return false;
         }
 
+        $tagCheck = !preg_match('#\.(htm|html|xml|txt)$#i', $file['name']);
+        $tags = 'a,abbr,acronym,address,area,b,base,bdo,big,blockquote,body,br,button,caption,cite,code,col,colgroup,dd,del,dfn,div,dl,dt,em,fieldset,form,h1,h2,h3,h4,h5,h6,head,hr,html,i,img,input,ins,kbd,label,legend,li,link,map,meta,noscript,object,ol,optgroup,option,p,param,pre,q,samp,script,select,small,span,strong,style,sub,sup,table,tbody,td,textarea,tfoot,th,thead,title,tr,tt,ul,var';
+
+        // check file for <?php tags
         $fp = @fopen($file['tmp_name'], 'r');
 
         if ($fp !== false) {
@@ -317,9 +373,18 @@ abstract class WFUtility {
             while (!feof($fp)) {
                 $buffer = @fread($fp, 131072);
                 $data .= $buffer;
-
+                // we can only reliably check for the full <?php tag here (short tags conflict with valid exif xml data), so users are reminded to disable short_open_tag
                 if (stristr($buffer, '<?php')) {
                     return false;
+                }
+
+                if ($tagCheck) {
+                    foreach (explode(',', $tags) as $tag) {
+                        // check for tag eg: <body> or <body
+                        if (stripos($buffer, '<' . $tag . '>') !== false || stripos($buffer, '<' . $tag . ' ') !== false) {
+                            return false;
+                        }
+                    }
                 }
 
                 $data = substr($data, -8);
@@ -328,14 +393,25 @@ abstract class WFUtility {
             fclose($fp);
         }
 
+        // validate image
+        if (preg_match('#\.(jpeg|jpg|jpe|png|gif|wbmp|bmp|tiff|tif|webp|psd|swc|iff|jpc|jp2|jpx|jb2|xbm|ico|xcf|odg)$#i', $file['name'])) {
+            if (@getimagesize($file['tmp_name']) === false) {
+                @unlink($file['tmp_name']);
+
+                return false;
+            }
+        }
+
         return true;
     }
+
     /**
      * Check file name for extensions
      * @param type $name
      * @return boolean
      */
-    public static function validateFileName($name) {
+    public static function validateFileName($name)
+    {
         if (empty($name)) {
             return false;
         }
@@ -348,19 +424,19 @@ abstract class WFUtility {
         // get file parts, eg: ['image', 'jpg']
         $parts = explode('.', $name);
         // reverse so that name is last array item
-        $parts = array_reverse($parts);        
+        $parts = array_reverse($parts);
         // remove name
         array_pop($parts);
         // lowercase it
         array_map('strtolower', $parts);
 
         // check for extension in file name, eg: image.php.jpg or as extension, eg: image.php
-        foreach($executable as $ext) {
+        foreach ($executable as $ext) {
             if (in_array($ext, $parts)) {
                 return false;
             }
         }
-            
+
         return true;
     }
 }
