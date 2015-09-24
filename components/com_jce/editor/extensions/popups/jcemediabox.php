@@ -35,7 +35,7 @@ class WFPopupsExtension_Jcemediabox {
             $files = JFolder::files($path, '.js');
 
             foreach ($files as $file) {
-                if (strpos('-src.js', $file) === false) {
+                if (strpos($file, '-src.js') === false) {
                     $scripts[] = 'plugins/system/jcemediabox/addons/' . JFile::stripExt($file);
                 }
             }
