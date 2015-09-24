@@ -1,5 +1,5 @@
 /* Reset */
-.highcontrastSkin table, .highcontrastSkin tbody, .highcontrastSkin a, .highcontrastSkin img, .highcontrastSkin tr, .highcontrastSkin div, .highcontrastSkin td, .highcontrastSkin iframe, .highcontrastSkin span, .highcontrastSkin *, .highcontrastSkin .mceText {border:0; margin:0; padding:0; vertical-align:baseline; border-collapse:separate;}
+.highcontrastSkin table, .highcontrastSkin tbody, .highcontrastSkin a, .highcontrastSkin img, .highcontrastSkin tr, .highcontrastSkin div, .highcontrastSkin td, .highcontrastSkin iframe, .highcontrastSkin span, .highcontrastSkin *, .highcontrastSkin .mceText {border:0; margin:0; padding:0; vertical-align:baseline; border-collapse:separate;; box-sizing: initial;}
 .highcontrastSkin a:hover, .highcontrastSkin a:link, .highcontrastSkin a:visited, .highcontrastSkin a:active {text-decoration:none; font-weight:normal; cursor:default;}
 .highcontrastSkin table td {vertical-align:middle}
 
