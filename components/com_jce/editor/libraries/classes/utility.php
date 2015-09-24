@@ -353,16 +353,18 @@ abstract class WFUtility
     {
         // null byte check
         if (strstr($file['name'], "\u0000") | strstr($file['name'], "\x00")) {
-            return false;
+            @unlink($file['tmp_name']);
+            throw new InvalidArgumentException('FILE NAME IS INVALID: NULL BYTE');
         }
 
         // check name for invalid extensions
         if (self::validateFileName($file['name']) !== true) {
-            return false;
+            @unlink($file['tmp_name']);
+            throw new InvalidArgumentException('FILE NAME IS INVALID: EXTENSION');
         }
 
-        $tagCheck = !preg_match('#\.(htm|html|xml|txt)$#i', $file['name']);
-        $tags = 'a,abbr,acronym,address,area,b,base,bdo,big,blockquote,body,br,button,caption,cite,code,col,colgroup,dd,del,dfn,div,dl,dt,em,fieldset,form,h1,h2,h3,h4,h5,h6,head,hr,html,i,img,input,ins,kbd,label,legend,li,link,map,meta,noscript,object,ol,optgroup,option,p,param,pre,q,samp,script,select,small,span,strong,style,sub,sup,table,tbody,td,textarea,tfoot,th,thead,title,tr,tt,ul,var';
+        $tagCheck   = preg_match('#\.(jpg|jpeg|gif)$#i', $file['name']);
+        $tags       = 'a,abbr,acronym,address,area,b,base,bdo,big,blockquote,body,br,button,caption,cite,code,col,colgroup,dd,del,dfn,div,dl,dt,em,fieldset,form,h1,h2,h3,h4,h5,h6,head,hr,html,i,img,input,ins,kbd,label,legend,li,link,map,meta,noscript,object,ol,optgroup,option,p,param,pre,q,samp,script,select,small,span,strong,style,sub,sup,table,tbody,td,textarea,tfoot,th,thead,title,tr,tt,ul,var';
 
         // check file for <?php tags
         $fp = @fopen($file['tmp_name'], 'r');
@@ -375,14 +377,16 @@ abstract class WFUtility
                 $data .= $buffer;
                 // we can only reliably check for the full <?php tag here (short tags conflict with valid exif xml data), so users are reminded to disable short_open_tag
                 if (stristr($buffer, '<?php')) {
-                    return false;
+                    @unlink($file['tmp_name']);
+                    throw new InvalidArgumentException('FILE CONTAINS INVALID CODE: PHP');
                 }
 
                 if ($tagCheck) {
                     foreach (explode(',', $tags) as $tag) {
                         // check for tag eg: <body> or <body
                         if (stripos($buffer, '<' . $tag . '>') !== false || stripos($buffer, '<' . $tag . ' ') !== false) {
-                            return false;
+                            @unlink($file['tmp_name']);
+                            throw new InvalidArgumentException('FILE CONTAINS INVALID CODE: HTML');
                         }
                     }
                 }
@@ -397,8 +401,7 @@ abstract class WFUtility
         if (preg_match('#\.(jpeg|jpg|jpe|png|gif|wbmp|bmp|tiff|tif|webp|psd|swc|iff|jpc|jp2|jpx|jb2|xbm|ico|xcf|odg)$#i', $file['name'])) {
             if (@getimagesize($file['tmp_name']) === false) {
                 @unlink($file['tmp_name']);
-
-                return false;
+                throw new InvalidArgumentException('INVALID IMAGE FILE');
             }
         }
 
