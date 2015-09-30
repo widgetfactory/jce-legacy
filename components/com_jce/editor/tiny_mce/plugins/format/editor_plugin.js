@@ -41,6 +41,9 @@
                 ed.formatter.register('code', {inline: 'code', remove: 'all'});
                 // samp
                 ed.formatter.register('samp', {inline: 'samp', remove: 'all'});
+
+                // blockquote - remove wrapper?
+                ed.formatter.register('blockquote', {block: 'blockquote', wrapper: 0, remove: 'all'});
             });
 
             // update with HMTL5 tags
