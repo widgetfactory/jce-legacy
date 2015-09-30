@@ -242,7 +242,6 @@ class WFDocument extends JObject {
                     $pre = $base . '';
                     break;
                 // JCE libraries resource folder
-                default:
                 case 'libraries':
                     $pre = $base . 'libraries/' . $type;
                     break;
