@@ -354,13 +354,13 @@ abstract class WFUtility
         // null byte check
         if (strstr($file['name'], "\u0000") | strstr($file['name'], "\x00")) {
             @unlink($file['tmp_name']);
-            throw new InvalidArgumentException('FILE NAME IS INVALID: NULL BYTE');
+            throw new InvalidArgumentException('Upload Failed: The file name contains a null byte.');
         }
 
         // check name for invalid extensions
         if (self::validateFileName($file['name']) !== true) {
             @unlink($file['tmp_name']);
-            throw new InvalidArgumentException('FILE NAME IS INVALID: EXTENSION');
+            throw new InvalidArgumentException('Upload Failed: The file name contains an invalid extension.');
         }
 
         $tagCheck   = preg_match('#\.(jpg|jpeg|gif)$#i', $file['name']);
@@ -378,7 +378,7 @@ abstract class WFUtility
                 // we can only reliably check for the full <?php tag here (short tags conflict with valid exif xml data), so users are reminded to disable short_open_tag
                 if (stristr($buffer, '<?php')) {
                     @unlink($file['tmp_name']);
-                    throw new InvalidArgumentException('FILE CONTAINS INVALID CODE: PHP');
+                    throw new InvalidArgumentException('Upload Failed: The file contains PHP code.');
                 }
 
                 if ($tagCheck) {
@@ -386,7 +386,7 @@ abstract class WFUtility
                         // check for tag eg: <body> or <body
                         if (stripos($buffer, '<' . $tag . '>') !== false || stripos($buffer, '<' . $tag . ' ') !== false) {
                             @unlink($file['tmp_name']);
-                            throw new InvalidArgumentException('FILE CONTAINS INVALID CODE: HTML');
+                            throw new InvalidArgumentException('Upload Failed: The file contains HTML code.');
                         }
                     }
                 }
@@ -401,7 +401,7 @@ abstract class WFUtility
         if (preg_match('#\.(jpeg|jpg|jpe|png|gif|wbmp|bmp|tiff|tif|webp|psd|swc|iff|jpc|jp2|jpx|jb2|xbm|ico|xcf|odg)$#i', $file['name'])) {
             if (@getimagesize($file['tmp_name']) === false) {
                 @unlink($file['tmp_name']);
-                throw new InvalidArgumentException('INVALID IMAGE FILE');
+                throw new InvalidArgumentException('Upload Failed: The file is not a valid image.');
             }
         }
 
