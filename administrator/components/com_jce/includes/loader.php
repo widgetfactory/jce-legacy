@@ -35,7 +35,7 @@ abstract class WFLoader {
 
         if (!isset($paths[$keyPath])) {
             // set base as Component root
-            $base = JPATH_COMPONENT_ADMINISTRATOR;
+            $base = JPATH_ADMINISTRATOR . '/components/com_jce';
 
             switch ($key) {
                 case 'editor':

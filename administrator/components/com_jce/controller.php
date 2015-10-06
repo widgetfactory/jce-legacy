@@ -170,8 +170,7 @@ class WFController extends WFControllerBase {
         $params = new WFParameter($component->params);
 
         $theme = $params->get('preferences.theme', 'jce');
-        $site_path = JPATH_COMPONENT_SITE . '/editor/libraries/css';
-        $admin_path = JPATH_COMPONENT_ADMINISTRATOR . '/media/css';
+        $site_path = JPATH_SITE . '/component/com_jce/editor/libraries/css';
 
         // Load styles
         $styles = array();
