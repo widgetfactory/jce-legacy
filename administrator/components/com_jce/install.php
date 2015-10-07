@@ -15,7 +15,25 @@ defined('_JEXEC') or die('RESTRICTED');
 @set_time_limit(0);
 
 // try to increase memory limit
-if ((int) ini_get('memory_limit') < 32) {
+$memoryInBytes = function ($value) {
+     $value = trim($value);
+     $multipliers = array(
+        'g' => 1024 * 1024 * 1024,
+        'm' => 1024 * 1024,
+        'k' => 1024
+     );
+
+     $unit  = strtolower(substr($value, -1, 1));
+
+     if (!array_key_exists($unit, $multipliers)) {
+        return $value;
+     }
+
+     return ((int)$value * $multipliers[$unit]);
+};
+
+$memoryLimit = trim(ini_get('memory_limit'));
+if ($memoryLimit != -1 && $memoryInBytes($memoryLimit) < 32 * 1024 * 1024) {
     @ini_set('memory_limit', '32M');
 }
 
