@@ -282,6 +282,8 @@ var LinkDialog = {
         
         var txt = $('#text').val();
 
+        ed.undoManager.add();
+
         // no selection
         if (se.isCollapsed()) {
             ed.execCommand('mceInsertContent', false, '<a href="' + args.href + '" id="__mce_tmp">' + txt + '</a>', {
