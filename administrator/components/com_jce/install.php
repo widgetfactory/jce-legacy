@@ -14,11 +14,6 @@ defined('_JEXEC') or die('RESTRICTED');
 // try to set time limit
 @set_time_limit(0);
 
-// try to increase memory limit
-if ((int) ini_get('memory_limit') < 32) {
-    @ini_set('memory_limit', '32M');
-}
-
 abstract class WFInstall {
     public static function install($installer) {
         error_reporting(E_ERROR | E_WARNING);
