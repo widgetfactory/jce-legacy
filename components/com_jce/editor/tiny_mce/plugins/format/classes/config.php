@@ -42,7 +42,7 @@ class WFFormatPluginConfig {
             }
         }
 
-        $settings['removeformat_selector'] = $wf->getParam('editor.removeformat_selector', 'span,b,strong,em,i,font,u,strike', 'span,b,strong,em,i,font,u,strike');
+        //$settings['removeformat_selector'] = $wf->getParam('editor.removeformat_selector', 'span,b,strong,em,i,font,u,strike', 'span,b,strong,em,i,font,u,strike');
 
         // Relative urls
         $settings['relative_urls'] = $wf->getParam('editor.relative_urls', 1, 1, 'boolean');
