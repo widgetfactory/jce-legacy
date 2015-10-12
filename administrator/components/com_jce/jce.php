@@ -20,7 +20,7 @@ $view = JRequest::getCmd('view');
 $task = JRequest::getCmd('task');
 
 if ($task === "plugin") {
-    throw new Exception('RESTRICTED', 403);
+    die('RESTRICTED');
 }
 
 // legacy conversion
