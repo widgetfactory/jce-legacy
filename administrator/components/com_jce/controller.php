@@ -310,10 +310,12 @@ class WFController extends WFControllerBase {
         $input = (array) $input;
 
         foreach ($input as $k => $v) {
-            if (is_array($v)) {
-                $input[$k] = $this->cleanInput($v, $method);
-            } else {
-                $input[$k] = $filter->clean($v, $method);
+            if (!empty($v)) {
+                if (is_array($v)) {
+                    $input[$k] = $this->cleanInput($v, $method);
+                } else {
+                    $input[$k] = $filter->clean($v, $method);
+                }
             }
         }
 

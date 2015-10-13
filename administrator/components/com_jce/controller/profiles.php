@@ -128,11 +128,11 @@ class WFControllerProfiles extends WFController {
                     $value = implode(',', $this->cleanInput($value));
                     break;
                 case 'usergroups':
-                    $key = 'types';
-                    $value = implode(',', $this->cleanInput($value, 'int'));
+                    $key    = 'types';
+                    $value  = implode(',', $this->cleanInput(array_filter($value), 'int'));
                     break;
                 case 'users':
-                    $value = implode(',', $this->cleanInput($value, 'int'));
+                    $value = implode(',', $this->cleanInput(array_filter($value), 'int'));
                     break;
                 case 'area':
                     if (empty($value) || count($value) == 2) {
