@@ -138,3 +138,15 @@ var tinyMCE = {
         return jQuery.Plugin.addI18n(p, o);
     }
 };
+
+var tinyMCEPopup = {
+    getLang: function (p, o) {
+        return tinyMCE.addI18n(p, o);
+    },
+    getParam: function () {
+
+    },
+    getWindowArg: function(element) {
+
+    }
+};
