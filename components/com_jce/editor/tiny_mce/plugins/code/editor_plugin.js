@@ -70,9 +70,9 @@
                             self._buildStyle(node);
                         }
 
-                        /*if (node.name == 'span' && /mceItemCurlyCode/.test(node.attr('class'))) {
-                         node.unwrap();
-                         }*/
+                        /*if (/mceItemCurlyCode/.test(node.attr('class'))) {
+                            node.unwrap();
+                        }*/
 
                         if (node.name == 'div' && node.attr('data-mce-type') == 'noscript') {
                             self._buildNoScript(node);
@@ -229,7 +229,7 @@
         },
         _convertCurlyCode: function(content) {
             // open / close type code eg: {youtube}url{/youtube}
-            content = content.replace(/\{([^\}]+)\}([\s\S]+?)\{\/\1\}/, '<span class="mceItemCurlyCode" data-mce-type="code-item">{$1}$2{/$1}</span>');
+            content = content.replace(/\{([\w]+)\b([^\}]*)\}([\s\S]+?)\{\/\1\}/, '<div class="mceItemCurlyCode" data-mce-type="code-item">{$1$2}$3{/$1}</div>');
 
             // single tag code type eg: {code}
             content = content.replace(/\{([^\}]+)\}/, '<span class="mceItemCurlyCode" data-mce-type="code-item">{$1}</span>');
