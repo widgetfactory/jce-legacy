@@ -19,7 +19,8 @@
             ed.addCommand('InsertHorizontalRule', function(ui, v) {
                 var se = ed.selection, n = se.getNode();
 
-                if (ed.dom.isBlock(n)) {
+                // split pragraphs and headings
+                if (/^(H[1-6]|P)$/.test(n.nodeName)) {
 
                     // create hr marker
                     ed.execCommand('mceInsertContent', false, '<span id="mce_hr_marker" data-mce-type="bookmark">\uFEFF</span>', {
@@ -31,39 +32,10 @@
                     // get the marker parent
                     var p = ed.dom.getParent(marker, blocks, 'BODY');
 
-                    // split paragraphs / divs
-                    if (p.nodeName == 'P' || p.nodeName == 'DIV') {
+                    // split
+                    ed.dom.split(p, marker);
 
-                        // split
-                        ed.dom.split(p, marker);
-
-                        var ns = marker.nextSibling;
-
-                    } else {
-                        // If in block
-                        if (p) {
-                            if (p.parentNode.nodeName == 'BODY') {
-                                ed.dom.insertAfter(marker, p);
-                            } else {
-                                p.parentNode.insertBefore(marker, p);
-                            }
-                        } else {
-                            if (n.parentNode.nodeName == 'BODY') {
-                                ed.dom.insertAfter(marker, n);
-                            } else {
-                                n.parentNode.insertBefore(marker, n);
-                            }
-                        }
-
-                        p = marker.parentNode;
-
-                        while (/^(H[1-6]|ADDRESS|PRE|FORM|TABLE|OL|UL|CAPTION|BLOCKQUOTE|CENTER|DL|DIR|FIELDSET|NOSCRIPT|NOFRAMES|MENU|ISINDEX|SAMP)$/.test(p.nodeName)) {
-                            p.parentNode.insertBefore(marker, p);
-                            p = marker.parentNode;
-                        }
-                    }
-
-                    ns = marker.nextSibling;
+                    var ns = marker.nextSibling;
 
                     if (!ns) {
                         var el = ed.getParam('forced_root_block') || 'br';
@@ -74,6 +46,11 @@
                         }
 
                         ed.dom.insertAfter(ns, marker);
+
+                        // delete created sibling
+                        ed.dom.remove(ns);
+
+                        ns = marker.previousSibling;
                     }
 
                     // move cursor to the end of block element
