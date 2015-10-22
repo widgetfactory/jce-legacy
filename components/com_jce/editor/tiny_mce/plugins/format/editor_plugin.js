@@ -26,9 +26,10 @@
                 });
 
                 // Register default block formats
-                each('aside figure dl'.split(/\s/), function(name) {
+                each('aside figure'.split(/\s/), function(name) {
                     ed.formatter.register(name, {block: name, remove: 'all', wrapper: true});
                 });
+
                 // div container
                 ed.formatter.register('div_container', {block: 'div', remove: 'all', wrapper: true});
                 // span
@@ -81,6 +82,7 @@
             // Format Block fix
             ed.onBeforeExecCommand.add(function(ed, cmd, ui, v, o) {
                 var se = ed.selection, n = se.getNode(), p;
+
                 switch (cmd) {
                     case 'FormatBlock':
                         // remove format
@@ -92,15 +94,35 @@
                             }
 
                             ed.undoManager.add();
+
                             p = ed.dom.getParent(n, blocks.join(',')) || '';
+
                             if (p) {
-                                ed.formatter.toggle(p.nodeName.toLowerCase());
+                                //ed.formatter.remove(p.nodeName.toLowerCase());
+                                ed.execCommand('mceToggleFormat', false, p.nodeName.toLowerCase());
                             }
 
                             var cm = ed.controlManager.get('formatselect');
+
                             if (cm) {
                                 cm.select(p);
                             }
+                        }
+                        // Definition List
+                        if (v === 'dl' || v === 'dt' || v === 'dd') {
+                            if (n && !ed.dom.getParent(n, 'dl')) {
+                                ed.execCommand('InsertDefinitionList');
+                            }
+
+                            if (v === 'dt' && n.nodeName === 'DD') {
+                                ed.dom.rename(n, 'DT');
+                            }
+
+                            if (v === 'dd' && n.nodeName === 'DT') {
+                                ed.dom.rename(n, 'DD');
+                            }
+
+                            o.terminate = true;
                         }
 
                         break;
@@ -108,10 +130,12 @@
                         if (!v) {
                             if (ed.dom.isBlock(n)) {
                                 ed.undoManager.add();
+
                                 p = ed.dom.getParent(n, blocks.join(','));
 
                                 if (p) {
-                                    ed.formatter.toggle(p.nodeName.toLowerCase());
+                                    //ed.formatter.remove(p.nodeName.toLowerCase());
+                                    ed.execCommand('mceToggleFormat', false, p.nodeName.toLowerCase());
                                 }
 
                                 var cm = ed.controlManager.get('formatselect');
@@ -125,7 +149,7 @@
                                 // get select Styles value if any
                                 if (cm && cm.selectedValue) {
                                     // remove style
-                                    ed.formatter.remove(cm.selectedValue);
+                                    ed.execCommand('mceToggleFormat', false, cm.selectedValue);
                                 }
                             }
                         }
@@ -136,19 +160,19 @@
 
             ed.onExecCommand.add(function(ed, cmd, ui, v, o) {
                 var se = ed.selection, n = se.getNode();
-                // add Definition List
+                // remove empty Definition List
                 switch (cmd) {
-                    case 'FormatBlock':
-                        if (v === 'dt' || v === 'dd') {
-                            if (n && n.nodeName !== 'DL') {
-                                ed.formatter.apply('dl');
+                    case 'mceToggleFormat':
+                        if (v === "dt" || v === "dd") {
+                            if (n.nodeName === "DL" && ed.dom.select('dt,dd', n).length === 0) {
+                                ed.formatter.remove('dl');
                             }
                         }
                         break;
                 }
             });
 
-            ed.onPreInit.add(function() {
+            /*ed.onPreInit.add(function() {
 
                 function wrapList(node) {
                     var sibling = node.prev;
@@ -163,6 +187,7 @@
                     }
 
                     sibling = node.next;
+
                     if (sibling && (sibling.name === 'dl' || sibling.name === 'dl')) {
                         sibling.insert(node, sibling.firstChild, true);
                         return;
@@ -182,7 +207,7 @@
                         wrapList(nodes[i]);
                     }
                 });
-            });
+            });*/
         },
         _clearBlocks: function(ed, e) {
             var p, n = ed.selection.getNode();
