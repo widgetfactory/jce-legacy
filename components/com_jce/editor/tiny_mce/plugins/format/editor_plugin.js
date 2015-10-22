@@ -98,8 +98,11 @@
                             p = ed.dom.getParent(n, blocks.join(',')) || '';
 
                             if (p) {
-                                //ed.formatter.remove(p.nodeName.toLowerCase());
-                                ed.execCommand('mceToggleFormat', false, p.nodeName.toLowerCase());
+                                var name = p.nodeName.toLowerCase();
+
+                                if (ed.formatter.get(name)) {
+                                    ed.formatter.remove(name);
+                                }
                             }
 
                             var cm = ed.controlManager.get('formatselect');
@@ -109,7 +112,7 @@
                             }
                         }
                         // Definition List
-                        if (v === 'dl' || v === 'dt' || v === 'dd') {
+                        if (v === 'dt' || v === 'dd') {
                             if (n && !ed.dom.getParent(n, 'dl')) {
                                 ed.execCommand('InsertDefinitionList');
                             }
@@ -134,8 +137,11 @@
                                 p = ed.dom.getParent(n, blocks.join(','));
 
                                 if (p) {
-                                    //ed.formatter.remove(p.nodeName.toLowerCase());
-                                    ed.execCommand('mceToggleFormat', false, p.nodeName.toLowerCase());
+                                    var name = p.nodeName.toLowerCase();
+
+                                    if (ed.formatter.get(name)) {
+                                        ed.formatter.remove(name);
+                                    }
                                 }
 
                                 var cm = ed.controlManager.get('formatselect');
