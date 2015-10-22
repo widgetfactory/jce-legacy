@@ -363,7 +363,7 @@ abstract class WFUtility
             throw new InvalidArgumentException('Upload Failed: The file name contains an invalid extension.');
         }
 
-        $tagCheck   = preg_match('#\.(jpg|jpeg|gif)$#i', $file['name']);
+        $isImage    = preg_match('#\.(jpeg|jpg|jpe|png|gif|wbmp|bmp|tiff|tif|webp|psd|swc|iff|jpc|jp2|jpx|jb2|xbm|ico|xcf|odg)$#i', $file['name']);
         $tags       = 'a,abbr,acronym,address,area,b,base,bdo,big,blockquote,body,br,button,caption,cite,code,col,colgroup,dd,del,dfn,div,dl,dt,em,fieldset,form,h1,h2,h3,h4,h5,h6,head,hr,html,i,img,input,ins,kbd,label,legend,li,link,map,meta,noscript,object,ol,optgroup,option,p,param,pre,q,samp,script,select,small,span,strong,style,sub,sup,table,tbody,td,textarea,tfoot,th,thead,title,tr,tt,ul,var';
 
         // check file for <?php tags
@@ -381,7 +381,7 @@ abstract class WFUtility
                     throw new InvalidArgumentException('Upload Failed: The file contains PHP code.');
                 }
 
-                if ($tagCheck) {
+                if ($isImage) {
                     foreach (explode(',', $tags) as $tag) {
                         // check for tag eg: <body> or <body
                         if (stripos($buffer, '<' . $tag . '>') !== false || stripos($buffer, '<' . $tag . ' ') !== false) {
@@ -398,7 +398,7 @@ abstract class WFUtility
         }
 
         // validate image
-        if (preg_match('#\.(jpeg|jpg|jpe|png|gif|wbmp|bmp|tiff|tif|webp|psd|swc|iff|jpc|jp2|jpx|jb2|xbm|ico|xcf|odg)$#i', $file['name'])) {
+        if ($isImage) {
             if (@getimagesize($file['tmp_name']) === false) {
                 @unlink($file['tmp_name']);
                 throw new InvalidArgumentException('Upload Failed: The file is not a valid image.');
