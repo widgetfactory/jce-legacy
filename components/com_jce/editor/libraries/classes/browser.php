@@ -925,7 +925,7 @@ class WFFileBrowser extends JObject {
         
         // check name
         if (WFUtility::validateFileName($name) === false) {
-            throw new InvalidArgumentException('INVALID FILE NAME');
+            throw new InvalidArgumentException('Upload Failed: The file name contains an invalid extension.');
         }
         
         // check file name
@@ -934,6 +934,11 @@ class WFFileBrowser extends JObject {
         // get extension from file name
         $ext = WFUtility::getExtension($file['name']);
 
+        // check extension exists
+        if (empty($ext) || $ext === $file['name']) {
+            throw new InvalidArgumentException('Upload Failed: The file name does not contain a valid extension.');
+        }
+
         // strip extension
         $name = WFUtility::stripExtension($name);
         // make file name 'web safe'
@@ -941,7 +946,7 @@ class WFFileBrowser extends JObject {
 
         // check name
         if (WFUtility::validateFileName($name) === false) {
-            throw new InvalidArgumentException('INVALID FILE NAME');
+            throw new InvalidArgumentException('Upload Failed: The file name contains an invalid extension.');
         }
 
         // target directory
