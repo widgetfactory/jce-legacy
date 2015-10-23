@@ -824,24 +824,23 @@ class WFFileBrowser extends JObject {
     private function validateUploadedFile($file) {
         // check the POST data array
         if (empty($file)) {
-            throw new InvalidArgumentException('INVALID UPLOAD DATA');
+            throw new InvalidArgumentException('Upload Failed: No data');
         }
         // tmp name must exist
         if (empty($file['tmp_name'])) {
-            throw new InvalidArgumentException('INVALID UPLOAD DATA');
+            throw new InvalidArgumentException('Upload Failed: No data');
         }
 
         // check for tmp_name and is valid uploaded file
         if (!is_uploaded_file($file['tmp_name'])) {
             @unlink($file['tmp_name']);
-
-            throw new InvalidArgumentException('INVALID UPLOAD DATA');
+            throw new InvalidArgumentException('Upload Failed: Not an uploaded file');
         }
 
         // check file for various issues
         if (WFUtility::isSafeFile($file) !== true) {
             @unlink($file['tmp_name']);
-            throw new InvalidArgumentException('INVALID UPLOAD FILE NAME OR DATA');
+            throw new InvalidArgumentException('Upload Failed: Invalid file');
         }
 
         // get extension
@@ -875,8 +874,7 @@ class WFFileBrowser extends JObject {
 
             if (WFMimeType::check($file['name'], $file['tmp_name']) === false) {
                 @unlink($file['tmp_name']);
-
-                throw new InvalidArgumentException('INVALID MIME TYPE');
+                throw new InvalidArgumentException(WFText::_('WF_MANAGER_UPLOAD_MIME_ERROR'));
             }
         }
 
