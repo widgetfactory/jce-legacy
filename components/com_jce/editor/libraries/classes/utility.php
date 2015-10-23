@@ -352,7 +352,7 @@ abstract class WFUtility
     public static function isSafeFile($file)
     {
         // null byte check
-        if (strstr($file['name'], "\u0000") || strstr($file['name'], "\x00")) {
+        if (strstr($file['name'], "\x00")) {
             @unlink($file['tmp_name']);
             throw new InvalidArgumentException('Upload Failed: The file name contains a null byte.');
         }
