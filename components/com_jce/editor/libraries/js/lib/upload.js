@@ -490,6 +490,10 @@
                 }
             }
 
+            function isValidName(s) {
+                return /\.(php|php(3|4|5)|js|exe|html|htm|phtml|java|perl|py|asp|dll|go|ade|adp|bat|chm|cmd|com|cpl|hta|ins|isp|jse|lib|mde|msc|msp|mst|pif|scr|sct|shb|sys|vb|vbe|vbs|vxd|wsc|wsf|wsh)\./i.test(s) === false;
+            }
+
             $.each(files, function (x, file) {
                 var title = $.String.basename(file.name);
 
@@ -502,7 +506,7 @@
                 }
 
                 // check for extension in file name, eg. image.php.jpg
-                if (/\.(php|php(3|4|5)|phtml|pl|py|jsp|asp|htm|html|shtml|sh|cgi)\./i.test(title)) {
+                if (!isValidName(title)) {
                     _triggerError(file);
 
                     return false;
@@ -628,7 +632,11 @@
                         // make web safe
                         v = $.String.safe(v, self.options.websafe_mode, self.options.websafe_spaces, self.options.websafe_textcase);
 
-                        self._renameFile(file, v);
+                        if (isValidName(v)) {
+                            self._renameFile(file, v);
+                        } else {
+                            v = file.name;
+                        }
 
                         // show name element
                         $(txt).show().text(v);
