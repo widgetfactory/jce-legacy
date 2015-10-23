@@ -932,6 +932,9 @@ class WFFileBrowser extends JObject {
         // get extension from file name
         $ext = WFUtility::getExtension($file['name']);
 
+        // trim extension
+        $ext = trim($ext);
+
         // check extension exists
         if (empty($ext) || $ext === $file['name']) {
             throw new InvalidArgumentException('Upload Failed: The file name does not contain a valid extension.');
