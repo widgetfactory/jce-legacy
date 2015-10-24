@@ -139,7 +139,8 @@ class WFMediaManager extends WFEditorPlugin {
                 'validate_mimetype' => $this->getParam('validate_mimetype', 1),
                 'add_random' => $this->getParam('editor.upload_add_random', 0),
                 'total_files' => (float) $this->getParam('editor.total_files', 0),
-                'total_size' => (float) $this->getParam('editor.total_size', 0)
+                'total_size' => (float) $this->getParam('editor.total_size', 0),
+                'remove_exif' => $this->getParam('editor.upload_remove_exif', 0)
             ),
             'folder_tree' => $this->getParam('editor.folder_tree', 1),
             'list_limit' => $this->getParam('editor.list_limit', 'all'),

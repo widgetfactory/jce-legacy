@@ -48,7 +48,8 @@ class WFFileBrowser extends JObject {
                 'validate_mimetype' => 1,
                 'add_random' => 0,
                 'total_files' => 0,
-                'total_size' => 0
+                'total_size' => 0,
+                'remove_exif' => 0
             ),
             'folder_tree' => 1,
             'list_limit' => 'all',
@@ -879,8 +880,11 @@ class WFFileBrowser extends JObject {
         }
 
         // remove exif data
-        if (!empty($upload['remove_exif']) && preg_match('\.(jpg|jpeg|png|gif)$', $file['name'])) {
-            WFUtility::removeExifData($file['tmp_name']);
+        if (!empty($upload['remove_exif']) && preg_match('#\.(jpg|jpeg|png)$#i', $file['name'])) {
+            if (WFUtility::removeExifData($file['tmp_name']) === false) {
+                @unlink($file['tmp_name']);
+                throw new InvalidArgumentException(WFText::_('WF_MANAGER_UPLOAD_EXIF_REMOVE_ERROR'));
+            }
         }
     }
 
@@ -989,6 +993,9 @@ class WFFileBrowser extends JObject {
         $complete = false;
         $contentType = JRequest::getVar('CONTENT_TYPE', '', 'SERVER');
 
+        // relative path
+        $relative = WFUtility::makePath($dir, $name);
+
         // Only multipart uploading is supported for now
         if ($contentType && strpos($contentType, "multipart") !== false) {
             $result = $filesystem->upload('multipart', trim($file['tmp_name']), $dir, $name);
@@ -1017,16 +1024,6 @@ class WFFileBrowser extends JObject {
 
             if ($result instanceof WFFileSystemResult) {
                 if ($result->state === true) {
-
-                    $path = $result->path;
-                    // get root dir eg: JPATH_SITE
-                    $root = substr($filesystem->getBaseDir(), 0, -(strlen($filesystem->getRootDir())));
-
-                    // get relative path
-                    $relative = substr($path, strlen($root));
-                    // clean
-                    $relative = WFUtility::cleanPath($relative, '/');
-
                     $this->setResult($this->fireEvent('onUpload', array($result->path, $relative)));
                     $this->setResult(basename($result->path), 'files');
                 } else {

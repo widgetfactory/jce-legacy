@@ -328,22 +328,46 @@ abstract class WFUtility
                 $img->clear();
                 $img->destroy();
 
+                return true;
             } catch (Exception $e) {
             }
         } else if (extension_loaded('gd')) {
             try {
                 $info = @getimagesize($image);
 
-                if (!empty($info[2]) && $info[2] === IMAGETYPE_JPEG) {
-                    $handle = imagecreatefromjpeg($image);
-                    imagejpeg($handle, $image, 100);
-                    @imagedestroy($handle);
+                if (!empty($info)) {
+
+                    if ($info[2] === IMAGETYPE_JPEG) {
+                        $handle = imagecreatefromjpeg($image);
+
+                        if (is_resource($handle)) {
+                            imagejpeg($handle, $image, 100);
+                            @imagedestroy($handle);
+
+                            return true;
+                        }
+                    }
+
+                    if ($info[2] === IMAGETYPE_PNG) {
+                        $handle = imagecreatefrompng($image);
+
+                        if (is_resource($handle)) {
+                            // Allow transparency for the new image handle.
+                            imagealphablending($handle, false);
+                            imagesavealpha($handle, true);
+
+                            imagepng($handle, $image, 0);
+                            @imagedestroy($handle);
+
+                            return true;
+                        }
+                    }
                 }
             } catch (Exception $e) {
             }
         }
 
-        return true;
+        return false;
     }
 
     /**
@@ -363,46 +387,12 @@ abstract class WFUtility
             throw new InvalidArgumentException('Upload Failed: The file name contains an invalid extension.');
         }
 
-        $isImage    = preg_match('#\.(jpeg|jpg|jpe|png|gif|wbmp|bmp|tiff|tif|webp|psd|swc|iff|jpc|jp2|jpx|jb2|xbm|ico|xcf|odg)$#i', $file['name']);
-        $tags       = 'a,abbr,acronym,address,area,b,base,bdo,big,blockquote,body,br,button,caption,cite,code,col,colgroup,dd,del,dfn,div,dl,dt,em,fieldset,form,h1,h2,h3,h4,h5,h6,head,hr,html,i,img,input,ins,kbd,label,legend,li,link,map,meta,noscript,object,ol,optgroup,option,p,param,pre,q,samp,script,select,small,span,strong,style,sub,sup,table,tbody,td,textarea,tfoot,th,thead,title,tr,tt,ul,var';
-
-        // check file for <?php tags
-        $fp = @fopen($file['tmp_name'], 'r');
-
-        if ($fp !== false) {
-            $data = '';
-
-            while (!feof($fp)) {
-                $buffer = @fread($fp, 131072);
-                $data .= $buffer;
-                // we can only reliably check for the full <?php tag here (short tags conflict with valid exif xml data), so users are reminded to disable short_open_tag
-                if (stristr($buffer, '<?php')) {
-                    @unlink($file['tmp_name']);
-                    throw new InvalidArgumentException('Upload Failed: The file contains PHP code.');
-                }
-
-                if ($isImage) {
-                    foreach (explode(',', $tags) as $tag) {
-                        // check for tag eg: <body> or <body
-                        if (stripos($buffer, '<' . $tag . '>') !== false || stripos($buffer, '<' . $tag . ' ') !== false) {
-                            @unlink($file['tmp_name']);
-                            throw new InvalidArgumentException('Upload Failed: The file contains HTML code.');
-                        }
-                    }
-                }
-
-                $data = substr($data, -8);
-            }
-
-            fclose($fp);
-        }
+        $isImage = preg_match('#\.(jpeg|jpg|jpe|png|gif|wbmp|bmp|tiff|tif|webp|psd|swc|iff|jpc|jp2|jpx|jb2|xbm|ico|xcf|odg)$#i', $file['name']);
 
         // validate image
-        if ($isImage) {
-            if (@getimagesize($file['tmp_name']) === false) {
-                @unlink($file['tmp_name']);
-                throw new InvalidArgumentException('Upload Failed: The file is not a valid image.');
-            }
+        if ($isImage && @getimagesize($file['tmp_name']) === false) {
+            @unlink($file['tmp_name']);
+            throw new InvalidArgumentException('Upload Failed: The file is not a valid image.');
         }
 
         return true;
