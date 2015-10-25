@@ -340,7 +340,8 @@
         },
         getPath: function (plugin) {
             if (!standalone) {
-                return tinyMCEPopup.getParam('site_url') + 'components/com_jce/editor/tiny_mce/plugins/' + this.getName();
+                //return tinyMCEPopup.getParam('site_url') + 'components/com_jce/editor/tiny_mce/plugins/' + this.getName();
+                return tinyMCEPopup.editor.plugins[this.getName()].url;
             }
 
             return this.options.site + 'components/com_jce/editor/tiny_mce/plugins/' + this.getName();
