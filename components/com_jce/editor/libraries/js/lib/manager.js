@@ -1572,7 +1572,7 @@
                 }).addClass(name).append('<span id="' + name + '_label" aria-hidden="true">' + o.title + '</span>');
 
                 if (o.icon) {
-                    $(action).css('background-image', $.String.path($.Plugin.getPath(this.options.plugin), o.icon));
+                    $(action).css('background-image', $.String.path($.Plugin.getPath(), o.icon));
                 }
 
                 if (o.name) {
