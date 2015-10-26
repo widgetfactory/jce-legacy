@@ -838,6 +838,14 @@ class WFFileBrowser extends JObject {
             throw new InvalidArgumentException('Upload Failed: Not an uploaded file');
         }
 
+        // remove exif data
+        if (!empty($upload['remove_exif']) && preg_match('#\.(jpg|jpeg|png)$#i', $file['name'])) {
+            if (WFUtility::removeExifData($file['tmp_name']) === false) {
+                @unlink($file['tmp_name']);
+                throw new InvalidArgumentException(WFText::_('WF_MANAGER_UPLOAD_EXIF_REMOVE_ERROR'));
+            }
+        }
+
         // check file for various issues
         if (WFUtility::isSafeFile($file) !== true) {
             @unlink($file['tmp_name']);
@@ -878,14 +886,6 @@ class WFFileBrowser extends JObject {
                 throw new InvalidArgumentException(WFText::_('WF_MANAGER_UPLOAD_MIME_ERROR'));
             }
         }
-
-        // remove exif data
-        if (!empty($upload['remove_exif']) && preg_match('#\.(jpg|jpeg|png)$#i', $file['name'])) {
-            if (WFUtility::removeExifData($file['tmp_name']) === false) {
-                @unlink($file['tmp_name']);
-                throw new InvalidArgumentException(WFText::_('WF_MANAGER_UPLOAD_EXIF_REMOVE_ERROR'));
-            }
-        }
     }
 
     /**
@@ -914,10 +914,15 @@ class WFFileBrowser extends JObject {
         // get uploaded file
         $file = JRequest::getVar('file', '', 'files', 'array');
 
+        $exif = null;
+
+        // store exif data
+        if (!empty($upload['remove_exif']) && preg_match('#\.(jpg|jpeg|png|tiff)$#i', $file['name'])) {
+            $exif = @exif_read_data($file['tmp_name']);
+        }
+
         // validate file data
         $this->validateUploadedFile($file);
-
-        $wf = WFEditor::getInstance();
 
         // get file name
         $name = JRequest::getVar('name', $file['name']);
@@ -1024,7 +1029,9 @@ class WFFileBrowser extends JObject {
 
             if ($result instanceof WFFileSystemResult) {
                 if ($result->state === true) {
-                    $this->setResult($this->fireEvent('onUpload', array($result->path, $relative)));
+                    var_dump($exif);
+
+                    $this->setResult($this->fireEvent('onUpload', array($result->path, $relative, "", $exif)));
                     $this->setResult(basename($result->path), 'files');
                 } else {
                     $this->setResult($result->message, 'error');
