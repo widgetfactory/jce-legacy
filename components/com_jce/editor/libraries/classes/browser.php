@@ -838,6 +838,8 @@ class WFFileBrowser extends JObject {
             throw new InvalidArgumentException('Upload Failed: Not an uploaded file');
         }
 
+        $upload = $this->get('upload');
+
         // remove exif data
         if (!empty($upload['remove_exif']) && preg_match('#\.(jpg|jpeg|png)$#i', $file['name'])) {
             if (WFUtility::removeExifData($file['tmp_name']) === false) {
@@ -863,8 +865,7 @@ class WFFileBrowser extends JObject {
             throw new InvalidArgumentException(WFText::_('WF_MANAGER_UPLOAD_INVALID_EXT_ERROR'));
         }
 
-        $upload = $this->get('upload');
-        $size   = round(filesize($file['tmp_name']) / 1024);
+        $size = round(filesize($file['tmp_name']) / 1024);
         
         if (empty($upload['max_size'])) {
             $upload['max_size'] = 1024;
