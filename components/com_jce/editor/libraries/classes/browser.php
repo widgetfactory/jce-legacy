@@ -914,13 +914,6 @@ class WFFileBrowser extends JObject {
         // get uploaded file
         $file = JRequest::getVar('file', '', 'files', 'array');
 
-        $exif = null;
-
-        // store exif data
-        if (!empty($upload['remove_exif']) && preg_match('#\.(jpg|jpeg|png|tiff)$#i', $file['name'])) {
-            $exif = @exif_read_data($file['tmp_name']);
-        }
-
         // validate file data
         $this->validateUploadedFile($file);
 
@@ -1029,9 +1022,7 @@ class WFFileBrowser extends JObject {
 
             if ($result instanceof WFFileSystemResult) {
                 if ($result->state === true) {
-                    var_dump($exif);
-
-                    $this->setResult($this->fireEvent('onUpload', array($result->path, $relative, "", $exif)));
+                    $this->setResult($this->fireEvent('onUpload', array($result->path, $relative)));
                     $this->setResult(basename($result->path), 'files');
                 } else {
                     $this->setResult($result->message, 'error');
