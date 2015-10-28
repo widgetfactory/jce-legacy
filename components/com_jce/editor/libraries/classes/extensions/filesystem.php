@@ -304,6 +304,10 @@ final class WFFileSystemResult {
      * @var File / Folder path
      */
     public $path = null;
+    /*
+     * @var File / Folder url
+     */
+    public $url = null;
 
     function __construct() {
         
