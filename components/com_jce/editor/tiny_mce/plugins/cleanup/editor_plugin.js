@@ -63,10 +63,15 @@
 
                                 // remove attribute if it matches expression
                                 if (new RegExp(re).test(node.attr(name))) {
-                                    node.attr(name, "");
+                                    node.attr(name, null);
                                     // remove temp attribute
                                     if (name === 'src' || name === 'href' || name === 'style') {
-                                        node.attr('data-mce-' + name, "");
+                                        node.attr('data-mce-' + name, null);
+                                    }
+
+                                    // remove <a> nodes without attributes
+                                    if (node.name === "a" && !node.attributes.length) {
+                                        node.unwrap();
                                     }
                                 }
                             }
