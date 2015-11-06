@@ -97,11 +97,11 @@ WFAggregator.add('vimeo', {
 
             args[k] = v;
         });
-        
+
         if (args.clip_id) {
             id = args.clip_id;
         } else {
-            var s = /vimeo.com(\/video)?\/([0-9]+)/.exec(src);
+            var s = /vimeo\.com\/(\w+\/)?(\w+\/)?([0-9]+)/.exec(src);
 
             if (s && $.type(s) === "array") {
                 id = s.pop();
@@ -129,6 +129,13 @@ WFAggregator.add('vimeo', {
             $.extend(data, {
                 frameborder : 0
             });
+
+            if (args.fullscreen !== 0) {
+                $.extend(data, {
+                    allowfullscreen : true
+                });
+            }
+
         } else {
             $.extend(true, data, {
                 param : {
@@ -177,7 +184,7 @@ WFAggregator.add('vimeo', {
             delete data['clip_id'];
             delete query['clip_id'];
         } else {
-            var s = /vimeo\.com\/(video\/)?([0-9]+)/.exec(src);
+            var s = /vimeo\.com\/(\w+\/)?(\w+\/)?([0-9]+)/.exec(src);
 
             if (s && $.type(s) === "array") {
                 id = s.pop();
