@@ -98,11 +98,11 @@ function jInsertEditorText(text, editor) {
                 plugins: '',
                 whitespace_elements: 'pre,script,style,textarea,code',
                 fix_list_elements: true,
-                keep_styles: false,
                 indent_before: indent,
                 indent_after: indent,
                 popup_css: false,
                 keep_styles: false,
+                update_styles: true,
                 compress: {
                     'css': true,
                     'javascript': true
