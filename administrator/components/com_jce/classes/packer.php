@@ -106,13 +106,8 @@ class WFPacker extends JObject {
         // encoding
         header("Vary: Accept-Encoding");
 
-        // expires after 48 hours
-        $expires = 60 * 60 * 24 * 2;
-
-        header("Cache-Control: maxage=" . $expires);
-
-        // Handle proxies
-        header("Expires: " . gmdate("D, d M Y H:i:s", time() + $expires) . " GMT");
+        // cache control
+        header("Cache-Control: max-age=0,no-cache");
 
         $files = $this->getFiles();
 
