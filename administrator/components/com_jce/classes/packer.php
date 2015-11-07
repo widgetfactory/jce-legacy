@@ -142,11 +142,24 @@ class WFPacker extends JObject {
 
         $content .= $this->getContentEnd();
 
+        // trim content
+        $content = trim($content);
+
         // get content hash
-        $hash = md5($content);
+        $hash = md5(implode(" ", array_map(basename, $files)) . $content);
+
+        // check for sent etag against hash
+        if (!headers_sent() && isset($_SERVER['HTTP_IF_NONE_MATCH'])) {
+            $etag = stripslashes($_SERVER['HTTP_IF_NONE_MATCH']);
+
+            if ($etag && $etag === $hash) {
+                header('HTTP/1.x 304 Not Modified', true);
+                exit(ob_get_clean());
+            }
+        }
 
         // set etag header
-        header("ETag: \"{$hash}\"");
+        header("ETag: " . $hash);
 
         // Generate GZIP'd content
         if ($gzip) {
