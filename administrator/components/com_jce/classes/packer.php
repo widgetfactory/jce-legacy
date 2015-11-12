@@ -89,6 +89,12 @@ class WFPacker extends JObject {
         return $encoding;
     }
 
+    /**
+     * Pack and output content based on type
+     * @param bool|true $minify
+     * @param bool|false $gzip
+     * Contains some code from libraries/joomla/cache/controller/page.php - Copyright (C) 2005 - 2015 Open Source Matters, Inc. All rights reserved.
+     */
     public function pack($minify = true, $gzip = false) {
         $type = $this->getType();
 
