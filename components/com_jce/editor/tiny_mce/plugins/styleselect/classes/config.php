@@ -24,7 +24,7 @@ class WFStyleselectPluginConfig {
             $theme_advanced_styles = $wf->getParam('editor.theme_advanced_styles', '');
 
             if (!empty($theme_advanced_styles)) {
-                $settings['theme_advanced_styles'] = implode(';', explode(',', $theme_advanced_styles));
+                $settings['theme_advanced_styles'] = $theme_advanced_styles;
             }
             
             $styles = array();
