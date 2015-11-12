@@ -20,15 +20,8 @@
         TinyMCE_Utils.fillClassList = function (id) {
             var ed = tinyMCEPopup.editor, lst = document.getElementById(id), v, cl;
 
-            if (v = tinyMCEPopup.getParam('theme_advanced_styles')) {
-                cl = [];
-
-                tinymce.each(v.split(';'), function (v) {
-                    var p = v.split('=');
-
-                    cl.push({'title': p[0], 'class': p[1]});
-                });
-
+            if (ed.getParam('theme_advanced_styles')) {
+                cl = ed.getParam('theme_advanced_styles', '', 'hash');
             } else {
                 cl = ed.dom.getClasses();
             }
