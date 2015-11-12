@@ -824,11 +824,7 @@ class WFFileBrowser extends JObject {
 
     private function validateUploadedFile($file) {
         // check the POST data array
-        if (empty($file)) {
-            throw new InvalidArgumentException('Upload Failed: No data');
-        }
-        // tmp name must exist
-        if (empty($file['tmp_name'])) {
+        if (empty($file) || empty($file['tmp_name'])) {
             throw new InvalidArgumentException('Upload Failed: No data');
         }
 
