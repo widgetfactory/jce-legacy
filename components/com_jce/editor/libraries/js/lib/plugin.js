@@ -798,7 +798,12 @@
                             }
                             // show error
                         } else {
-                            showError(o);
+                            // check for malformed JSON
+                            if (/[{}]/.test(s)) {
+                                showError('The server returned an invalid JSON response.');
+                            } else {
+                                showError(o);
+                            }
                         }
                     } else {
                         o = {'error': ''};
