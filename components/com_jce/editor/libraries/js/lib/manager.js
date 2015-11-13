@@ -1020,6 +1020,17 @@
 
             $('input[name="refresh"]', 'form').remove();
 
+            // data error...
+            if (!o) {
+                // reset state
+                this.setStatus({
+                    message: '',
+                    state: ''
+                });
+
+                return false;
+            }
+
             // add unselectable (IE)
             if (!$.support.cssFloat) {
                 $('#browser-list').attr('unselectable', 'on');

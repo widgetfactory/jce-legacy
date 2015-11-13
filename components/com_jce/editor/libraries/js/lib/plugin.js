@@ -799,7 +799,7 @@
                             // show error
                         } else {
                             // check for malformed JSON
-                            if (/[{}]/.test(s)) {
+                            if (/[{}]/.test(o)) {
                                 showError('The server returned an invalid JSON response.');
                             } else {
                                 showError(o);
