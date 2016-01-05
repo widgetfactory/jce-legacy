@@ -16,6 +16,8 @@
     var isWin = navigator.platform.indexOf('Win') !== -1, isSafari = tinymce.isWebKit && navigator.vendor.indexOf('Apple') !== -1;
     var Node = tinymce.html.Node, RangeUtils = tinymce.dom.RangeUtils;
 
+    var supportDragDrop = !!(window.ProgressEvent && window.FileReader && window.FormData) && !tinymce.isOpera;
+
     var mimes = {};
 
     function toArray(list) {
@@ -233,8 +235,8 @@
             });
 
             ed.onInit.add(function () {
-                // check for support - basically IE 10+, Firefox 4+, Chrome 7+, Safari 5+
-                if (!window.FormData) {
+                // check for support
+                if (!supportDragDrop) {
                     cancel();
                     return;
                 }
@@ -271,82 +273,16 @@
                     });
                 }
 
-                // fake drag & drop in Windows Safari
-                /*if (isSafari && isWin) {
-                 ed.dom.bind(ed.getBody(), 'dragenter', function(e) {
-                 var dataTransfer = e.dataTransfer;
-                 
-                 // cancel dropped files
-                 if (dataTransfer && dataTransfer.files && dataTransfer.files.length) {
-                 
-                 var dropInputElm;
-                 
-                 // Get or create drop zone
-                 dropInputElm = ed.dom.get(ed.getBody().id + "_dragdropupload");
-                 
-                 if (!dropInputElm) {
-                 dropInputElm = ed.dom.add(ed.getBody(), "input", {
-                 'type': 'file',
-                 'id': ed.getBody().id + "_dragdropupload",
-                 'multiple': 'multiple',
-                 'style': {
-                 position: 'absolute',
-                 display: 'block',
-                 top: 0,
-                 left: 0,
-                 width: '100%',
-                 height: '100%',
-                 opacity: '0'
-                 }
-                 });
-                 }
-                 
-                 ed.dom.bind(dropInputElm, 'change', function(e) {
-                 // Add the selected files from file input
-                 each(dropInputElm.files, function(file) {
-                 if (tinymce.inArray(self.files, file) == -1) {
-                 self.addFile(file);
-                 }
-                 });
-                 
-                 // Remove input element
-                 ed.dom.unbind(dropInputElm, 'change');
-                 ed.dom.remove(dropInputElm);
-                 
-                 // upload...
-                 each(self.files, function(file) {
-                 self.upload(file);
-                 });
-                 });
-                 }
-                 });
-                 
-                 ed.dom.bind(ed.getBody(), 'drop', function(e) {
-                 var dataTransfer = e.dataTransfer;
-                 
-                 // cancel dropped files
-                 if (dataTransfer && dataTransfer.files && dataTransfer.files.length) {
-                 e.preventDefault();
-                 }
-                 });
-                 
-                 return;
-                 }*/
-
-                // Disable in Opera and Windows Safari
-                if (window.Opera || (isSafari && isWin)) {
-                    return;
-                }
-
                 function cancelEvent(e) {
                     e.preventDefault();
                     e.stopPropagation();
                 }
 
-                // Block browser default drag over in IE              
-                if (tinymce.isIE || tinymce.isIE11) {
-                    ed.dom.bind(ed.getBody(), 'dragover', cancelEvent);
-                }
+                ed.dom.bind(ed.getBody(), 'dragover', function(e) {
+                    e.dataTransfer.dropEffect = 'copy';
+
+                    cancelEvent(e);
+                });
 
                 // Attach drop handler and grab files
                 ed.dom.bind(ed.getBody(), 'drop', function (e) {
