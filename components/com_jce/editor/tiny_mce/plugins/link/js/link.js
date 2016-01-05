@@ -296,9 +296,14 @@ var LinkDialog = {
             // create link on selection or update existing link
         } else {
             if (txt) {
-                ed.execCommand('mceInsertContent', false, '<a href="' + args.href + '" data-mce-tmp="1">' + txt + '</a>', {
-                    skip_undo: 1
-                });
+                if (n && n.nodeName === "A") {
+                    ed.dom.setAttribs(n, {'href': args.href, 'data-mce-tmp': '1'});
+                    ed.dom.setHTML(n, txt);
+                } else {
+                    ed.execCommand('mceInsertContent', false, '<a href="' + args.href + '" data-mce-tmp="1">' + txt + '</a>', {
+                        skip_undo: 1
+                    });
+                }
             } else {
                 // insert link on selection
                 ed.execCommand('mceInsertLink', false, {'href': args.href, 'data-mce-tmp': '1'});
