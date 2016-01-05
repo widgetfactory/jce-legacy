@@ -147,7 +147,7 @@ class WFPacker extends JObject {
         $content = trim($content);
 
         // get content hash
-        $hash = md5(implode(" ", array_map(basename, $files)) . $content);
+        $hash = md5(implode(" ", array_map('basename', $files)) . $content);
 
         // check for sent etag against hash
         if (!headers_sent() && isset($_SERVER['HTTP_IF_NONE_MATCH'])) {
