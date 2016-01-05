@@ -283,7 +283,7 @@
             var self = this;
             
             $('#jce-tooltip').addClass('sticky');
-            $('span.ui-icon-close', '#jce-tooltip').show();
+            $('span.ui-icon-close', '#jce-tooltip').css('display', 'block');
             
             // add blur handler
             $(window).on('click.tooltip-blur', function(e) {                
