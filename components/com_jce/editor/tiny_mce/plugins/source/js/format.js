@@ -3533,7 +3533,8 @@
         'indent_size'   : 1, 
         'indent_char'   : '\t', 
         'unformatted'   : ['a','abbr','acronym','b','bdo','big','br','cite','code','dfn','em','i','img','input','kbd','label','q','samp','select','small','span','strong','sub','sup','textarea','tt','var','pre'], 
-        'max_char'      : 0
+        'max_char'      : 0,
+        'wrap_line_length' : 0
     };
     
     SourceEditor.formatHTML = function(html, o) {
