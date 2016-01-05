@@ -295,15 +295,9 @@ var LinkDialog = {
             ed.dom.setAttribs(el, args);
             // create link on selection or update existing link
         } else {
-            if (txt) {
-                if (n && n.nodeName === "A") {
-                    ed.dom.setAttribs(n, {'href': args.href, 'data-mce-tmp': '1'});
-                    ed.dom.setHTML(n, txt);
-                } else {
-                    ed.execCommand('mceInsertContent', false, '<a href="' + args.href + '" data-mce-tmp="1">' + txt + '</a>', {
-                        skip_undo: 1
-                    });
-                }
+            // update link
+            if (n && n.nodeName === "A") {
+                ed.dom.setAttribs(n, {'href': args.href, 'data-mce-tmp': '1'});
             } else {
                 // insert link on selection
                 ed.execCommand('mceInsertLink', false, {'href': args.href, 'data-mce-tmp': '1'});
@@ -325,6 +319,10 @@ var LinkDialog = {
                 // remove id on multiple links
                 if (i > 0 && args.id) {
                     ed.dom.setAttrib(elm, 'id', '');
+                }
+
+                if (txt) {
+                    ed.dom.setHTML(elm, txt);
                 }
             });
 
