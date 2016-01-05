@@ -1116,6 +1116,16 @@ class WFModelEditor extends WFModelBase {
                             $files[] = $content;
                         }
                     }
+                } else if ($context == 'preview') {
+                    $files = array();
+                    $files[] = WF_EDITOR_PLUGINS . '/preview/css/preview.css';
+                    // get template stylesheets
+                    $styles = self::getStyleSheetsList(true);
+                    foreach ($styles as $style) {
+                        if (JFile::exists($style)) {
+                            $files[] = $style;
+                        }
+                    }
                 } else {
                     $files = array();
 
