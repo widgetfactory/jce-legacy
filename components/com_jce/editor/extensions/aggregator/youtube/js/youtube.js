@@ -120,8 +120,6 @@ WFAggregator.add('youtube', {
                 allowfullscreen: true,
                 frameborder: 0
             });
-            // add wmode
-            args['wmode'] = 'opaque';
         } else {
             $.extend(true, data, {
                 param: {
