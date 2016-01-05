@@ -158,6 +158,8 @@ class WFLinkExtension extends WFExtension {
             $where[] = 'access <= ' . (int) $user->get('aid');
         }
 
+        $case = "";
+
         if ($wf->getParam('category_alias', 1) == 1) {
             if (is_object($query)) {
                 //sqlsrv changes

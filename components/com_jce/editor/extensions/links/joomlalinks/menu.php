@@ -141,6 +141,8 @@ class JoomlalinksMenu extends JObject {
                         //$menu = AdvlinkMenu::_alias($menu->id);
                     }
 
+                    $children = (int) self::_children($menu->id);
+
                     $title = isset($menu->name) ? $menu->name : $menu->title;
 
                     // get params

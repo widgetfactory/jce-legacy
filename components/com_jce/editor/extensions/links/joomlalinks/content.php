@@ -78,7 +78,7 @@ class JoomlalinksContent extends JObject {
                         $id = ContentHelperRoute::getSectionRoute($section->id);
                         $view = 'section';
                     } else {
-                        if (isset($category->language)) {
+                        if (isset($section->language)) {
                             $language = $category->language;
                         }
                         
