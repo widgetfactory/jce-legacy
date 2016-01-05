@@ -198,14 +198,18 @@
                 cm.setWrap = function(s) {
                     cm.setOption('lineWrapping', s);
 
-                    cm.focus();
+                    try {
+                        cm.focus();
+                    } catch (e) {}
                 };
 
                 // gutter
                 cm.showGutter = function(s) {
                     cm.setOption('lineNumbers', s);
 
-                    cm.focus();
+                    try {
+                        cm.focus();
+                    } catch (e) {}
                 };
 
                 // syntax highlighting
@@ -220,7 +224,9 @@
 
                     cm.setCursor(c);
 
-                    cm.focus();
+                    try {
+                        cm.focus();
+                    } catch (e) {}
                 };
 
                 // resize editor
@@ -247,7 +253,10 @@
                         v = '\u00a0';
                     }
                     cm.setValue(v);
-                    cm.focus();
+
+                    try {
+                        cm.focus();
+                    } catch (e) {}
                 };
 
                 cm.insertContent = function(v) {

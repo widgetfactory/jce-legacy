@@ -345,7 +345,10 @@
                     self.setHighlight(ed.getParam('source_highlight', true));
 
                     if (se) {
-                        se.focus();
+
+                        try {
+                            se.focus();
+                        } catch (e) {}
                     }
                     
                 }, 10);
@@ -385,8 +388,9 @@
             var container = DOM.create('div', {
                 role	: 'textbox',
                 style 	: {
-                    position : 'absolute',
-                    top		 : tinymce.isIE ? 0 : this.getTop()
+                    position    : 'absolute',
+                    top		    : tinymce.isIE ? 0 : this.getTop(),
+                    width       : '100%'
                 },
                 id		: 'wf_' + ed.id + '_source_container',
                 'class' : 'WFSourceEditor'
