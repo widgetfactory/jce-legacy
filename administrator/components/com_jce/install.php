@@ -443,7 +443,7 @@ abstract class WFInstall {
                 $row->admin_menu_link = 'option=com_jce&view=' . $v;
 
                 if (!$row->store()) {
-                    $mainframe->enqueueMessage('Unable to update Component Links for view : ' . strtoupper($v), 'error');
+                    $app->enqueueMessage('Unable to update Component Links for view : ' . strtoupper($v), 'error');
                 }
             }
         }
