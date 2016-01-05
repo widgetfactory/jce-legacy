@@ -11,6 +11,8 @@
  */
 defined('_JEXEC') or die('RESTRICTED');
 
+require_once (WF_ADMINISTRATOR . '/classes/xml.php');
+
 abstract class WFXMLHelper {
 
     public static function getElement($xml, $name, $default = '') {
