@@ -2336,7 +2336,9 @@
                 $(this.element).after('<span class="loader" />');
                 
                 $.JSON.request('getFileDetails', [path], function(o) {
-                    $(item).data('url', o.url || '').data('preview', o.preview || o.url || '');
+                    if ($.isPlainObject(o)) {
+                        $(item).data('url', o.url || '').data('preview', o.preview || o.url || '');
+                    }
                     
                     callback();
                 }, this);
