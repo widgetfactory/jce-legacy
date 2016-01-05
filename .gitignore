@@ -47,6 +47,7 @@ language/en-GB/en-GB.com_jce_popups*
 .idea
 
 build.xml
+build-branch.xml
 plugin_build.xml
 
 Gruntfile.js
