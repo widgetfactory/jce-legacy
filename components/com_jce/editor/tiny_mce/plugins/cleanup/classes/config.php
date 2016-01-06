@@ -53,12 +53,29 @@ class WFCleanupPluginConfig {
         // Add elements to invalid list (removed by plugin)
         $model->addKeys($settings['invalid_elements'], self::$invalid_elements);
 
-        // remove extended_valid_elements
+        // process extended_valid_elements
         if ($settings['extended_valid_elements']) {
-            preg_match_all('#(\w+)(\[([^\]]+)\])?#', $settings['extended_valid_elements'], $extended);
+            $extended_elements = explode(',', $settings['extended_valid_elements']);
 
-            if ($extended && count($extended) > 1) {
-                $settings['invalid_elements'] = array_diff($settings['invalid_elements'], $extended[1]);
+            $elements = array();
+
+            // add wildcard attributes if none specified
+            for($i = 0; $i < count($extended_elements); $i++) {
+                $pos = strpos($extended_elements[$i], '[');
+
+                if ($pos === false) {
+                    $elements[] = $extended_elements[$i];
+                    $extended_elements[$i] .= '[*]';
+                } else {
+                    $elements[] = substr($extended_elements[$i], 0, $pos);
+                }
+            }
+
+            // restore settings to array
+            $settings['extended_valid_elements'] = implode(',', $extended_elements);
+
+            if (!empty($elements)) {
+                $settings['invalid_elements'] = array_diff($settings['invalid_elements'], $elements);
             }
         }
 
