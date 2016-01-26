@@ -1,5 +1,5 @@
 html{height:100% !important; width:100% !important; overflow: auto !important;}
-body#tinymce {overflow: hidden; width: auto; height: auto;min-height: 100%; box-sizing: border-box;}
+body#tinymce {overflow: hidden; width: auto; height: auto;}
 .mceContentBody{padding:5px;}
 body, td, pre {color:#000; font-family:Verdana, Arial, Helvetica, sans-serif; font-size:11px; margin:8px;}
 body {background:#fff;}
