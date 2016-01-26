@@ -91,3 +91,5 @@ components/com_jce/editor/extensions/popups/widgetkit2.xml
 components/com_jce/editor/extensions/popups/rokbox_build.xml
 components/com_jce/editor/extensions/popups/widgetkit1_build.xml
 components/com_jce/editor/extensions/popups/widgetkit2_build.xml
+
+components/com_jce/editor/libraries/pro/
