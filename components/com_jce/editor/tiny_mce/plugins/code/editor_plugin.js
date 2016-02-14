@@ -86,7 +86,7 @@
                 if (ed.theme && ed.theme.onResolveName) {
                     ed.theme.onResolveName.add(function(theme, o) {
                         var cls = o.node.className;
-                        
+
                         if (o.name === 'span' && /mceItemScript/.test(cls)) {
                             o.name = 'script';
                         }
@@ -165,12 +165,12 @@
                         if (c.indexOf('data-mce-type') === -1) {
                             if (c.indexOf('type') === -1) {
                                 var type = (b === "script") ? "javascript" : "css";
-                                c += ' data-mce-type="text/' + type + '"';   
+                                c += ' data-mce-type="text/' + type + '"';
                             } else {
                                 c = c.replace(/type="([^"]+)"/i, 'data-mce-type="$1"');
                             }
                         }
-                        
+
                         return '<' + b + c + '>';
                     });
                 }
@@ -181,7 +181,7 @@
                     // Process converted php
                     if (/(mcePhp|data-mce-php|\{php:start\})/.test(o.content)) {
                         // attribute value
-                        o.content = o.content.replace(/\{php:start\}([^\{]+)\{php:end\}/g, function(a, b) {
+                        o.content = o.content.replace(/\{php:\s?start\}([^\{]+)\{php:\s?end\}/g, function(a, b) {
                             return '<?php' + ed.dom.decode(b) + '?>';
                         });
 
@@ -199,15 +199,15 @@
                         });
 
                         // other
-                        o.content = o.content.replace(/<span([^>]+)class="mcePhp"([^>]+)><!--([\s\S]*?)-->(&nbsp;|\u00a0)<\/span>/g, function(a, b, c, d) {
-                            return '<?php' + ed.dom.decode(d) + '?>';
+                        o.content = o.content.replace(/<span class="mcePhp"><!--([\s\S]*?)-->(&nbsp;|\u00a0)?<\/span>/g, function(a, b, c) {
+                            return '<?php' + ed.dom.decode(b) + '?>';
                         });
                     }
-                    
+
                     // remove data-mce-type
                     o.content = o.content.replace(/<(script|style)([^>]*)>/gi, function(a, b, c) {
                         c = c.replace(/\s?data-mce-type="[^"]+"/gi, "");
-                        
+
                         return '<' + b + c + '>';
                     });
                 }
@@ -246,7 +246,7 @@
             }
 
             p = JSON.parse(n.attr('data-mce-json')) || {};
-            
+
             if (!p.type) {
                 p.type = n.attr('data-mce-type') || 'text/javascript';
             }
@@ -273,10 +273,10 @@
                 if (k === "type") {
                     v = v.replace(/mce-/, '');
                 }
- 
+
                 node.attr(k, v);
             });
-            
+
             // set data-mce-type
             node.attr('data-mce-type', p.type);
 
@@ -296,7 +296,7 @@
             }
 
             p = JSON.parse(n.attr('data-mce-json')) || {};
-            
+
             if (!p.type) {
                 p.type = 'text/css';
             }
@@ -330,10 +330,10 @@
                 if (k === "type") {
                     v = v.replace(/mce-/, '');
                 }
-                
+
                 node.attr(k, v);
             });
-            
+
             // set data-mce-type
             node.attr('data-mce-type', p.type);
 
