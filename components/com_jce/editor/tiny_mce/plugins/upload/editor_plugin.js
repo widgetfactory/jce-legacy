@@ -7,7 +7,7 @@
  * to the GNU General Public License, and as distributed it includes or
  * is derivative of works licensed under the GNU General Public License or
  * other free or open source software licenses.
- * 
+ *
  * * Based on plupload - http://www.plupload.com
  */
 
@@ -279,8 +279,7 @@
                 }
 
                 ed.dom.bind(ed.getBody(), 'dragover', function(e) {
-                    e.dataTransfer.dropEffect = 'copy';
-
+                    e.dataTransfer.dropEffect = tinymce.VK.metaKeyPressed(e) ? "copy" : "move";
                     cancelEvent(e);
                 });
 
@@ -412,7 +411,7 @@
         },
         /*
          * Bind events to upload marker and create upload input
-         * @param marker Marker / Placeholder element 
+         * @param marker Marker / Placeholder element
          */
         _bindUploadMarkerEvents: function (ed, marker) {
             var self = this, dom = tinymce.DOM;
@@ -780,4 +779,3 @@
     // Register plugin
     tinymce.PluginManager.add('upload', tinymce.plugins.Upload);
 })();
-
