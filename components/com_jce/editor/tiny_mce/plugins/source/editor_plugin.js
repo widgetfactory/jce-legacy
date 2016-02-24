@@ -10,19 +10,19 @@
 
 (function() {
     var each = tinymce.each;
-    
+
     tinymce.create('tinymce.plugins.Source', {
         init : function(ed, url) {
             var self = this;
 
-            this.editor = ed; 
+            this.editor = ed;
             this.url = url;
 
             // add command
             ed.addCommand('mceSource', function() {
                 self.toggleSource();
             });
-            
+
             this.invisibles = false;
 
             // add context menu blocker
@@ -33,21 +33,21 @@
                     }
                 });
             }
-            
+
             ed.onInit.add(function() {
                 var s = ed.getParam('source_state', false);
-            		
+
                 if (typeof s != 'undefined') {
                     ed.settings.source_state = !s;
                     self.toggleSource();
-                }    
-            	
+                }
+
                 if (ed.onFullScreen) {
-                    ed.onFullScreen.add(function(editor, state) {                                                
+                    ed.onFullScreen.add(function(editor, state) {
 
                         if (!state) {
                             ed.settings.source_state = !editor.settings.source_state;
-		            		
+
                             each(['source_highlight', 'source_numbers', 'source_wrap'], function(s) {
                                 ed.settings[s] = editor.settings[s];
                             });
@@ -55,7 +55,7 @@
                             self.toggleSource();
                         }
                     });
-                }      		
+                }
             });
 
             // Patch in Commands
@@ -81,7 +81,7 @@
                             return self.printSource();
                             break;
                         case 'mceFullScreen':
-                            if (self.getState()) {                            
+                            if (self.getState()) {
                                 ed.setContent(self.getContent());
                             }
                             break;
@@ -92,14 +92,14 @@
             ed.onLoadContent.add( function(ed, o) {
                 if (self.getState()) {
                     self._disable();
-                    self.setContent();                   
+                    self.setContent();
                 }
             });
-            
+
             ed.onSetContent.add(function(ed, o) {
                 if (self.getState()) {
-                    self.setContent(); 
-                    self._disable();               
+                    self.setContent();
+                    self._disable();
                 }
             });
 
@@ -137,7 +137,7 @@
 
             ed.onNodeChange.add( function(ed, cm, n) {
                 var s = self.getState();
-                
+
                 if (s) {
                     self._disable();
                 }
@@ -149,51 +149,51 @@
             });
 
         },
-        
+
         _disable : function() {
             var self = this;
             window.setTimeout( function() {
                 self.toggleDisabled();
             }, 0);
         },
-        
+
         getWin : function() {
             var ed = this.editor, f = tinymce.DOM.get('wf_'+ ed.id +'_source_iframe');
-        	
+
             if (f) {
                 return f.contentWindow;
             }
-        	
-            return false;	
+
+            return false;
         },
-        
+
         getDoc : function() {
             var w = this.getWin();
-        	
+
             if (w) {
                 return w.document;
             }
-        	
+
             return false;
         },
-        
+
         getContainer : function() {
             var se = this.getEditor();
-        	
+
             if (se) {
                 return se.getContainer();
             }
-        	
+
             return null;
         },
-        
+
         getEditor : function() {
             var win = this.getWin();
-        	
+
             if (win) {
                 return win.SourceEditor || null;
             }
-        	
+
             return null;
         },
 
@@ -211,10 +211,10 @@
         },
 
         printSource : function() {},
-        
+
         reInit : function() {
             this.toggleDisabled(), se = this.getEditor();
-        	
+
             if (this.getState() && se) {
                 se.focus();
             }
@@ -227,15 +227,15 @@
                 v = ed.getContent();
             }
 
-            if (se) {                                
+            if (se) {
                 se.setContent(v, ed.getParam('source_format', true));
             }
         },
-        
+
         insertContent : function(v) {
             var DOM = tinymce.DOM, se = this.getEditor();
-        	
-            if (se) {                                
+
+            if (se) {
                 se.insertContent(DOM.decode(v));
             }
         },
@@ -262,7 +262,7 @@
                     'width' 	: w,
                     'height' 	: h
                 });
-                
+
                 DOM.setStyles(this.getContainer(), {
                     'width' 	: w,
                     'height' 	: h
@@ -286,14 +286,14 @@
                 cm.setActive(n.id, !state);
             });
 
-            each(DOM.select('.mceButton, .mceListBox, .mceSplitButton', DOM.get(ed.id + '_toolbargroup')), function(n) {            	
+            each(DOM.select('.mceButton, .mceListBox, .mceSplitButton', DOM.get(ed.id + '_toolbargroup')), function(n) {
                 var id = n.id;
-            	
+
                 // get splitButton id from parent
                 if (n.className.indexOf('mceSplitButton') !== -1) {
                     id = n.parentNode.id;
                 }
-            	
+
                 if (id) {
                     cm.setDisabled(id, state);
                 }
@@ -304,6 +304,7 @@
 
             cm.setDisabled('source', false);
             cm.setDisabled('fullscreen', false);
+            cm.setDisabled('kitchensink', false);
         },
 
         toggleSource : function() {
@@ -317,11 +318,11 @@
 
             // set the state
             this.setState(!state);
-            
+
             if (tinymce.isIE) {
                 DOM.setStyle(iframe.parentNode, 'position', 'relative');
             }
-            
+
             // Path
             var editorpath 	= DOM.get(ed.id + '_path_row');
             // Word Count
@@ -331,16 +332,16 @@
                 // hide Path
                 if (editorpath) {
                     DOM.hide(editorpath);
-                } 
+                }
                 // hide word count
                 if (wordcount) {
                     DOM.hide(wordcount.parentNode);
                 }
- 
+
                 // hide iframe
                 DOM.setStyle(iframe, 'visiblity', 'hidden');
                 DOM.setAttrib(iframe, 'aria-hidden', true);
-                
+
                 window.setTimeout(function() {
                     self.setHighlight(ed.getParam('source_highlight', true));
 
@@ -350,10 +351,10 @@
                             se.focus();
                         } catch (e) {}
                     }
-                    
+
                 }, 10);
             } else {
-                if (se) {                    
+                if (se) {
                     // pass content
                     ed.setContent(self.getContent());
 
@@ -364,12 +365,12 @@
                 // show iframe
                 DOM.setStyle(iframe, 'visiblity', 'visible');
                 iframe.removeAttribute('aria-hidden');
-                
-                // show Path                
+
+                // show Path
                 if (editorpath) {
                     DOM.show(editorpath);
-                } 
-                // show word count                
+                }
+                // show word count
                 if (wordcount) {
                     DOM.show(wordcount.parentNode);
                 }
@@ -388,9 +389,9 @@
             var container = DOM.create('div', {
                 role	: 'textbox',
                 style 	: {
-                    position    : 'absolute',
-                    top		    : tinymce.isIE ? 0 : this.getTop(),
-                    width       : '100%'
+                    position  : 'absolute',
+                    top		    : 0,
+                    width     : '100%'
                 },
                 id		: 'wf_' + ed.id + '_source_container',
                 'class' : 'WFSourceEditor'
@@ -399,7 +400,7 @@
             DOM.insertAfter(container, iframe);
 
             var query 	= ed.getParam('site_url') + 'index.php?option=com_jce';
-            
+
             var args 	= {
                 'view' 		: 'editor',
                 'layout'	: 'plugin',
@@ -414,7 +415,7 @@
             for (k in args) {
                 query += '&' + k + '=' + encodeURIComponent(args[k]);
             }
-            
+
             var iframe = DOM.create('iframe', {
                 'frameborder' 	: 0,
                 'scrolling'		: 'no',
@@ -422,15 +423,15 @@
                 'src'			: query,
                 'style'			: {
                     'width' : w,
-                    'height': h 
+                    'height': h
                 }
             });
-            
+
             tinymce.dom.Event.add(iframe, 'load', function() {
                 var editor = self.getEditor();
-            	
+
                 var content = ed.getContent(), highlight = ed.getParam('source_highlight', true), wrap = ed.getParam('source_wrap', true), numbers = ed.getParam('source_numbers', true);
-                
+
                 /*var selection = ed.selection.getContent({
                     format : 'text'
                 });*/
@@ -448,21 +449,21 @@
                     'font_size' : ed.getParam('source_font_size', ''),
                     'load'		: function() {
                         ed.setProgressState(false);
-            			
+
                         if (tinymce.isIE && !document.querySelector) {
                             ed.hide();
                             ed.show();
-                        }       			
+                        }
                     },
                     change : function() {
                         ed.controlManager.setDisabled('undo', false);
                     }
                 }, content);
-            	
+
                 //editor.resize('100%', h, true);
                 self.resize();
             });
-            
+
             DOM.add(container, iframe);
         },
 
@@ -472,24 +473,24 @@
          */
         setHighlight : function(s) {
             var ed = this.editor, DOM = tinymce.DOM, se = this.getEditor();
-            
+
             // get editor selection
             /*var selection = ed.selection.getContent({
                 format : 'text'
             });*/
 
-            if (se) {            	
+            if (se) {
                 se.highlight(s);
-                
+
                 this.setContent();
-                
+
                 se.format();
-                
+
                 DOM.show('wf_' + ed.id + '_source_container');
                 DOM.setAttrib('wf_' + ed.id + '_source_container', 'aria-hidden', false);
-                
-                DOM.setStyle('wf_' + ed.id + '_source_container', 'top', tinymce.isIE ? 0 : this.getTop());
-                
+
+                DOM.setStyle('wf_' + ed.id + '_source_container', 'top', 0);
+
                 this.resize();
 
                 this.setNumbers(ed.getParam('source_numbers', true));
