@@ -111,10 +111,10 @@
             $('#upload-browse').addClass('loading').button('disable');
 
             /*var runtimes = options.runtimes.split(',');
-             
+
              if (runtimes.length > 1) {
              var required = options.required.join(',');
-             
+
              if (!options.canvasResize && runtimes.indexOf('html5') != -1 && /(jpg|png)resize/.test(required)) {
              runtimes.splice(runtimes.indexOf('html5'), 1);
              }
@@ -200,7 +200,7 @@
                             o.response = '{"error":"UPLOAD ERROR"}';
                         }
                     }
-                    
+
                     if (!isJSON(o.response)) {
                         o.response = '{"error":"' + $.trim(o.response) + '"}';
                     }
@@ -324,7 +324,7 @@
                 }
 
                 // show error text
-                $(file.element).addClass('error').after('<li class="queue-item-error"><span>' + response.error + '</span></li>');
+                $(file.element).addClass('error').after('<li class="queue-item-error"><span>' + response.error.text || response.error + '</span></li>');
                 // hide progress
                 $('span.queue-item-progress', file.element).hide();
             } else {
