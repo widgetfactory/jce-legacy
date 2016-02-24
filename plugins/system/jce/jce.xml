@@ -1,15 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
 <extension version="1.6" type="plugin" group="system" method="upgrade">
-    <name>plg_system_jce</name>
-    <version>@@version@@</version>
-    <creationDate>@@date@@</creationDate>
-    <author>Ryan Demmer</author>
-    <authorEmail>@@e-mail@@</authorEmail>
-    <authorUrl>http://www.joomlacontenteditor.net</authorUrl>
-    <copyright>@@copyright@@</copyright>
-    <license>GNU/GPL Version 2 - http://www.gnu.org/licenses/gpl-2.0.html</license>
-    <description>PLG_JCE_XML_DESCRIPTION</description>    
-    <files>
-        <file plugin="jce">jce.php</file>
-    </files>
+  <name>plg_system_jce</name>
+  <version>@@version@@</version>
+  <creationDate>@@date@@</creationDate>
+  <author>Ryan Demmer</author>
+  <authorEmail>@@e-mail@@</authorEmail>
+  <authorUrl>http://www.joomlacontenteditor.net</authorUrl>
+  <copyright>@@copyright@@</copyright>
+  <license>GNU/GPL Version 2 - http://www.gnu.org/licenses/gpl-2.0.html</license>
+  <description>PLG_JCE_XML_DESCRIPTION</description>
+  <files>
+    <file plugin="jce">jce.php</file>
+  </files>
+
+  <config>
+    <fields name="params">
+      <fieldset name="general" group="general">
+
+        <field name="replace_media_manager" type="radio" default="0" label="PLG_SYSTEM_JCE_REPLACE_MEDIAMANAGER_LABEL" class="btn-group btn-group-yesno" description="PLG_SYSTEM_JCE_REPLACE_MEDIAMANAGER_DESCRIPTION">
+          <option value="1">JYES</option>
+          <option value="0">JNO</option>
+        </field>
+
+      </fieldset>
+    </fields>
+  </config>
+
 </extension>

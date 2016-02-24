@@ -61,17 +61,21 @@ class PlgSystemJce extends JPlugin {
 
             return false;
         }
-        
+
+        if ((bool) $this->params->get('replace_media_manager', 1) === false) {
+          return;
+        }
+
         // get form name.
         $name = $form->getName();
 
         $valid = array(
-            'com_content.article', 
-            'com_categories.categorycom_content', 
-            'com_templates.style', 
-            'com_tags.tag', 
-            'com_banners.banner', 
-            'com_contact.contact', 
+            'com_content.article',
+            'com_categories.categorycom_content',
+            'com_templates.style',
+            'com_tags.tag',
+            'com_banners.banner',
+            'com_contact.contact',
             'com_newsfeeds.newsfeed'
         );
 
