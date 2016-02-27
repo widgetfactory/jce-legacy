@@ -252,14 +252,15 @@
                 // If also needs to be in view on IE or the paste would fail
                 dom.setStyles(n, {
                     position: 'absolute',
-                    left: tinymce.isGecko ? -40 : 0, // Need to move it out of site on Gecko since it will othewise display a ghost resize rect for the div
+                    left: (tinymce.isIE || tinymce.isGecko) ? -40 : 0, // Need to move it out of site on Gecko since it will othewise display a ghost resize rect for the div
                     top: posY - 25,
-                    width: 1,
-                    height: 1,
-                    overflow: 'hidden'
+                    width: 10,
+                    height: 10,
+                    overflow: 'hidden',
+                    opacity: 0
                 });
-
-                if (tinymce.isIE) {
+                // Old IE...
+                if (tinymce.isIE && !tinymce.isIE11) {
                     // Store away the old range
                     oldRng = sel.getRng();
 
@@ -291,7 +292,7 @@
                     setTimeout(function() {
                         // Process contents
                         process({
-                            content: n.innerHTML
+                            content: ed.pasteAsPlainText ? n.textContent.replace(/\r?\n/g, '<br />') : n.innerHTML
                         });
                     }, 0);
 
@@ -381,7 +382,7 @@
             }
 
             // Is it's Opera or older FF use key handler
-            if (tinymce.isOpera || /Firefox\/2/.test(navigator.userAgent)) {
+            if (tinymce.isOpera) {
                 ed.onKeyDown.addToTop(function(ed, e) {
                     if (((tinymce.isMac ? e.metaKey : e.ctrlKey) && e.keyCode == 86) || (e.shiftKey && e.keyCode == 45))
                         grabContent(e);
@@ -392,7 +393,6 @@
                 ed.onPaste.addToTop(function(ed, e) {
                     return grabContent(e);
                 });
-
             }
 
             // Block all drag/drop events
@@ -1236,14 +1236,14 @@
                 // process style attributes
                 this._processStyles(o.node);
             }
-            
+
             // fix margin units
             each(dom.select('*[style]', o.node), function(el) {
                 var m = el.style.marginLeft, v = '';
-                
+
                 if (m && m.indexOf('px') === -1) {
                     v = parseInt(m, 10);
-                    
+
                     if (m.indexOf('pt') !== -1 && v > 0) {
                         v = Math.round(v / 35.4) * 30;
                     }
