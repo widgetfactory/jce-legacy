@@ -34,7 +34,7 @@ final class WFFileBrowserPlugin extends WFMediaManager {
         } else {
             $browser->setFileTypes('images=jpg,jpeg,png,gif');
         }
-        
+
         $filter = JRequest::getString('filter');
 
         if ($filter) {
@@ -57,12 +57,12 @@ final class WFFileBrowserPlugin extends WFMediaManager {
 
         $document = WFDocument::getInstance();
         $settings = $this->getSettings();
-        
+
         $document->addScript(array('browser'), 'plugins');
 
         if ($document->get('standalone') == 1) {
             $document->addScript(array('browser'), 'component');
-            
+
             $element = JRequest::getCmd('element', JRequest::getCmd('fieldid', ''));
 
             $options = array(
@@ -80,14 +80,6 @@ final class WFFileBrowserPlugin extends WFMediaManager {
             $document->addScriptDeclaration('BrowserDialog.settings=' . json_encode($settings) . ';');
         }
     }
-
-    /**
-     * @see WFMediaManager::getSettings()
-     */
-    function getSettings() {
-        return parent::getSettings();
-    }
-
 }
 
 ?>
