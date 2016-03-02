@@ -103,7 +103,7 @@
 
                 //
                 // load the activeX control
-                //                
+                //
                 try {
                     // AcroPDF.PDF is used by version 7 and later
                     control = new ActiveXObject('AcroPDF.PDF');
@@ -227,15 +227,15 @@
             /*if ($.browser.webkit) {
              $('#jce').addClass('webkit');
              }
-             
+
              if ($.browser.opera) {
              $('#jce').addClass('opera');
              }
-             
+
              if ($.browser.msie) {
              $('#jce').addClass('ie');
              }
-             
+
              if ($.browser.gecko) {
              $('#jce').addClass('gecko');
              }*/
@@ -743,7 +743,7 @@
             var url = document.location.href;
 
             // strip token
-            url = url.replace(/&wf([a-z0-9]+)=1/, '');
+            url = url.replace(/&([a-z0-9]+)=1/, '');
 
             function showError(e) {
                 var txt = $.type(e) === 'array' ? e.join('\n') : e;
