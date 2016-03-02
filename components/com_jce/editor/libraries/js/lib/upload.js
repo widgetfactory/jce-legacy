@@ -197,12 +197,12 @@
                         if (o.status === 200) {
                             o.response = '{"error":false,"files":["' + file.name + '"]}';
                         } else {
-                            o.response = '{"error":"UPLOAD ERROR"}';
+                            o.response = '{"error":"Upload failed: Error code - ' + o.status + '"}';
                         }
                     }
 
                     if (!isJSON(o.response)) {
-                        o.response = '{"error":"' + $.trim(o.response) + '"}';
+                        o.response = '{"error":"Upload failed: ' + $.trim(o.response) + '"}';
                     }
 
                     self._onComplete(file, $.parseJSON(o.response), status);
@@ -314,17 +314,24 @@
                 status = 'error';
                 this.errors++;
 
+                var msg = response.error;
+
                 // pass text to error if available
                 if (response.text) {
-                    response.error = response.text;
+                    msg = response.text;
                 }
+
+                if ($.isPlainObject(response.error) && response.error.text) {
+                    msg = response.error.text;
+                }
+
                 // join error array
                 if ($.isArray(response.error)) {
-                    response.error = response.error.join(' : ');
+                    msg = response.error.join(' : ');
                 }
 
                 // show error text
-                $(file.element).addClass('error').after('<li class="queue-item-error"><span>' + response.error.text || response.error + '</span></li>');
+                $(file.element).addClass('error').after('<li class="queue-item-error"><span>' + msg + '</span></li>');
                 // hide progress
                 $('span.queue-item-progress', file.element).hide();
             } else {
