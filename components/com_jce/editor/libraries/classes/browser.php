@@ -862,15 +862,15 @@ class WFFileBrowser extends JObject {
         }
 
         $size = round(filesize($file['tmp_name']) / 1024);
-        
+
         if (empty($upload['max_size'])) {
             $upload['max_size'] = 1024;
         }
-        
+
         // validate size
         if ($size > (int) $upload['max_size']) {
             @unlink($file['tmp_name']);
-            
+
             throw new InvalidArgumentException(WFText::sprintf('WF_MANAGER_UPLOAD_SIZE_ERROR', $file['name'], $size, $upload['max_size']));
         }
 
@@ -893,14 +893,14 @@ class WFFileBrowser extends JObject {
         // Check for request forgeries
         WFToken::checkToken() or die();
 
-        // check for feature access	
+        // check for feature access
         if (!$this->checkFeature('upload')) {
             JError::raiseError(403, 'Access to this resource is restricted');
         }
 
         $filesystem = $this->getFileSystem();
         jimport('joomla.filesystem.file');
-        
+
         header('Content-Type: text/json;charset=UTF-8');
         header("Expires: Wed, 4 Apr 1984 13:00:00 GMT");
         header("Last-Modified: " . gmdate("D, d M_Y H:i:s") . " GMT");
@@ -916,18 +916,18 @@ class WFFileBrowser extends JObject {
 
         // get file name
         $name = JRequest::getVar('name', $file['name']);
-        
+
         // decode name
         $name = rawurldecode($name);
-        
+
         // check name
         if (WFUtility::validateFileName($name) === false) {
             throw new InvalidArgumentException('Upload Failed: The file name contains an invalid extension.');
         }
-        
+
         // check file name
         WFUtility::checkPath($name);
-        
+
         // get extension from file name
         $ext = WFUtility::getExtension($file['name']);
 
@@ -958,14 +958,14 @@ class WFFileBrowser extends JObject {
 
         $upload = $this->get('upload');
 
-        // Check file number limits        
+        // Check file number limits
         if (!empty($upload['total_files'])) {
             if ($filesystem->countFiles($dir, true) > $upload['total_files']) {
                 throw new InvalidArgumentException(WFText::_('WF_MANAGER_FILE_LIMIT_ERROR'));
             }
         }
 
-        // Check total file size limit        
+        // Check total file size limit
         if (!empty($upload['total_size'])) {
             $size = $filesystem->getTotalSize($dir);
 
@@ -1039,7 +1039,7 @@ class WFFileBrowser extends JObject {
      * @return string $error on failure.
      */
     public function deleteItem($items) {
-        // check for feature access	
+        // check for feature access
         if (!$this->checkFeature('delete', 'folder') && !$this->checkFeature('delete', 'file')) {
             JError::raiseError(403, 'Access to this resource is restricted');
         }
@@ -1051,7 +1051,7 @@ class WFFileBrowser extends JObject {
             // decode
             $item = rawurldecode($item);
 
-            // check path	
+            // check path
             WFUtility::checkPath($item);
 
             if ($filesystem->is_file($item)) {
@@ -1090,7 +1090,7 @@ class WFFileBrowser extends JObject {
      * @return string $error
      */
     public function renameItem() {
-        // check for feature access	
+        // check for feature access
         if (!$this->checkFeature('rename', 'folder') && !$this->checkFeature('rename', 'file')) {
             JError::raiseError(403, 'Access to this resource is restricted');
         }
@@ -1100,14 +1100,16 @@ class WFFileBrowser extends JObject {
         $source = array_shift($args);
         $destination = array_shift($args);
 
-        $source = rawurldecode($source);
-        $destination = rawurldecode($destination);
+        $source = (string) rawurldecode($source);
+
+        // decode and cast as string
+        $destination = (string) rawurldecode($destination);
 
         WFUtility::checkPath($source);
         WFUtility::checkPath($destination);
 
         // check for extension in destination name
-        if (WFUtility::validateFileName($destination) === false) {
+        if ($destination !== "" && WFUtility::validateFileName($destination) === false) {
             JError::raiseError(403, 'INVALID FILE NAME');
         }
 
@@ -1147,7 +1149,7 @@ class WFFileBrowser extends JObject {
      * @return string $error on failure
      */
     public function copyItem($items, $destination) {
-        // check for feature access	
+        // check for feature access
         if (!$this->checkFeature('move', 'folder') && !$this->checkFeature('move', 'file')) {
             JError::raiseError(403, 'Access to this resource is restricted');
         }
@@ -1156,14 +1158,14 @@ class WFFileBrowser extends JObject {
 
         $items = explode(",", rawurldecode($items));
 
-        // decode
-        $destination = rawurldecode($destination);
+        // decode and cast as string
+        $destination = (string) rawurldecode($destination);
 
         // check destination path
         WFUtility::checkPath($destination);
-        
+
         // check for extension in destination name
-        if (WFUtility::validateFileName($destination) === false) {
+        if ($destination !== "" && WFUtility::validateFileName($destination) === false) {
             JError::raiseError(403, 'INVALID PATH NAME');
         }
 
@@ -1209,7 +1211,7 @@ class WFFileBrowser extends JObject {
      * @return string $error on failure
      */
     public function moveItem($items, $destination) {
-        // check for feature access	
+        // check for feature access
         if (!$this->checkFeature('move', 'folder') && !$this->checkFeature('move', 'file')) {
             JError::raiseError(403, 'Access to this resource is restricted');
         }
@@ -1218,14 +1220,14 @@ class WFFileBrowser extends JObject {
 
         $items = explode(",", rawurldecode($items));
 
-        // decode
-        $destination = rawurldecode($destination);
+        // decode and cast as string
+        $destination = (string) rawurldecode($destination);
 
         // check destination path
         WFUtility::checkPath($destination);
 
         // check for extension in destination name
-        if (WFUtility::validateFileName($destination) === false) {
+        if ($destination !== "" && WFUtility::validateFileName($destination) === false) {
             JError::raiseError(403, 'INVALID PATH NAME');
         }
 
@@ -1284,9 +1286,9 @@ class WFFileBrowser extends JObject {
         $new = rawurldecode($new);
 
         $filesystem = $this->getFileSystem();
-        
+
         $name = WFUtility::makeSafe($new, $this->get('websafe_mode'), $this->get('websafe_spaces'), $this->get('websafe_textcase'));
-                
+
         // check for extension in destination name
         if (WFUtility::validateFileName($name) === false) {
             JError::raiseError(403, 'INVALID FOLDER NAME');
