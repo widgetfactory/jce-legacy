@@ -915,9 +915,9 @@ class WFFileBrowser extends JObject {
         $this->validateUploadedFile($file);
 
         // get file name
-        $name = JRequest::getVar('name', $file['name']);
+        $name = (string) JRequest::getVar('name', $file['name']);
 
-        // decode name
+        // decode
         $name = rawurldecode($name);
 
         // check name
@@ -950,8 +950,8 @@ class WFFileBrowser extends JObject {
         }
 
         // target directory
-        $dir = JRequest::getVar('upload-dir');
-        // deocode directory
+        $dir = (string) JRequest::getVar('upload-dir');
+        // decode
         $dir = rawurldecode($dir);
         // check destination path
         WFUtility::checkPath($dir);
@@ -1045,11 +1045,12 @@ class WFFileBrowser extends JObject {
         }
 
         $filesystem = $this->getFileSystem();
-        $items = explode(",", rawurldecode($items));
+
+        $items = explode(",", rawurldecode((string) $items));
 
         foreach ($items as $item) {
-            // decode
-            $item = rawurldecode($item);
+            // decode and cast as string
+            $item = (string) rawurldecode($item);
 
             // check path
             WFUtility::checkPath($item);
@@ -1097,13 +1098,11 @@ class WFFileBrowser extends JObject {
 
         $args = func_get_args();
 
-        $source = array_shift($args);
-        $destination = array_shift($args);
+        $source       = (string) array_shift($args);
+        $destination  = (string) array_shift($args);
 
-        $source = (string) rawurldecode($source);
-
-        // decode and cast as string
-        $destination = (string) rawurldecode($destination);
+        $source       = rawurldecode($source);
+        $destination  = rawurldecode($destination);
 
         WFUtility::checkPath($source);
         WFUtility::checkPath($destination);
@@ -1156,10 +1155,10 @@ class WFFileBrowser extends JObject {
 
         $filesystem = $this->getFileSystem();
 
-        $items = explode(",", rawurldecode($items));
+        $items = explode(",", rawurldecode((string) $items));
 
-        // decode and cast as string
-        $destination = (string) rawurldecode($destination);
+        // decode
+        $destination = rawurldecode(strval($destination));
 
         // check destination path
         WFUtility::checkPath($destination);
@@ -1171,7 +1170,7 @@ class WFFileBrowser extends JObject {
 
         foreach ($items as $item) {
             // decode
-            $item = rawurldecode($item);
+            $item = (string) rawurldecode($item);
 
             // check source path
             WFUtility::checkPath($item);
@@ -1218,10 +1217,10 @@ class WFFileBrowser extends JObject {
 
         $filesystem = $this->getFileSystem();
 
-        $items = explode(",", rawurldecode($items));
+        $items = explode(",", rawurldecode((string) $items));
 
         // decode and cast as string
-        $destination = (string) rawurldecode($destination);
+        $destination = rawurldecode(strval($destination));
 
         // check destination path
         WFUtility::checkPath($destination);
@@ -1233,7 +1232,7 @@ class WFFileBrowser extends JObject {
 
         foreach ($items as $item) {
             // decode
-            $item = rawurldecode($item);
+            $item = (string) rawurldecode($item);
             // check source path
             WFUtility::checkPath($item);
 
@@ -1278,10 +1277,10 @@ class WFFileBrowser extends JObject {
 
         $args = func_get_args();
 
-        $dir = array_shift($args);
-        $new = array_shift($args);
+        $dir = (string) array_shift($args);
+        $new = (string) array_shift($args);
 
-        // decode
+        // decode and cast as string
         $dir = rawurldecode($dir);
         $new = rawurldecode($new);
 
