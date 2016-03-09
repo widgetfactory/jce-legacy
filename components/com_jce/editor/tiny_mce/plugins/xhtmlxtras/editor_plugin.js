@@ -10,9 +10,9 @@
 
 (function() {
     var each = tinymce.each;
-	
+
     tinymce.create('tinymce.plugins.XHTMLXtrasPlugin', {
-        init : function(ed, url) {          
+        init : function(ed, url) {
             // Register commands
             ed.addCommand('mceCite', function() {
                 ed.windowManager.open({
@@ -101,10 +101,15 @@
                 title : 'xhtmlxtras.cite_desc',
                 cmd : 'mceCite'
             });
-            ed.addButton('acronym', {
-                title : 'xhtmlxtras.acronym_desc',
-                cmd : 'mceAcronym'
-            });
+
+            // acronym is deprecated in HTML5
+            if (ed.settings.schema !== "html5-strict") {
+              ed.addButton('acronym', {
+                  title : 'xhtmlxtras.acronym_desc',
+                  cmd : 'mceAcronym'
+              });
+            }
+
             ed.addButton('abbr', {
                 title : 'xhtmlxtras.abbr_desc',
                 cmd : 'mceAbbr'
@@ -158,11 +163,11 @@
                             each(vars, function(value, key) {
                                 ed.dom.setAttrib(elm, key, value);
                             });
-	
+
                         }
-	
+
                     },
-	
+
                     acronym : {
                         inline : 'acronym',
                         remove : 'all',
@@ -170,11 +175,11 @@
                             each(vars, function(value, key) {
                                 ed.dom.setAttrib(elm, key, value);
                             });
-	
+
                         }
-	
+
                     },
-	
+
                     abbr : {
                         inline : 'abbr',
                         remove : 'all',
@@ -182,23 +187,23 @@
                             each(vars, function(value, key) {
                                 ed.dom.setAttrib(elm, key, value);
                             });
-	
+
                         }
-	
+
                     },
-	
+
                     del : {
                         inline : 'del',
-                        remove : 'all',	
+                        remove : 'all',
                         onformat : function(elm, fmt, vars) {
                             each(vars, function(value, key) {
                                 ed.dom.setAttrib(elm, key, value);
                             });
-	
+
                         }
-	
+
                     },
-	
+
                     ins : {
                         inline : 'ins',
                         remove : 'all',
@@ -206,11 +211,11 @@
                             each(vars, function(value, key) {
                                 ed.dom.setAttrib(elm, key, value);
                             });
-	
+
                         }
-	
+
                     },
-                    
+
                     attributes : {
                         inline : 'span',
                         remove : 'all',
@@ -218,9 +223,9 @@
                             each(vars, function(value, key) {
                                 ed.dom.setAttrib(elm, key, value);
                             });
-	
+
                         }
-	
+
                     }
                 });
             });
