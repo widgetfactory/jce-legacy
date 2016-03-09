@@ -12,8 +12,8 @@ WFAggregator.add('youtube', {
      * Parameter Object
      */
     params: {
-        width: 425,
-        height: 350,
+        width: 560,
+        height: 315,
         embed: true
     },
     props: {
@@ -54,21 +54,21 @@ WFAggregator.add('youtube', {
     },
     getValues: function(src) {
         var self = this, data = {}, args = {}, type = this.getType(), id, query = {};
-        
+
         // parse URI
         var u = this.parseURL(src);
-        
+
         if (u.query) {
             // split query
             query = $.String.query(u.query);
         }
-        
+
         // extend args with query data
         $.extend(args, query);
 
         // protocol / scheme relative url
         src = src.replace(/^http(s)?:\/\//, '//');
-        
+
         $(':input', '#youtube_options').not('#youtube_embed, #youtube_https, #youtube_privacy').each(function() {
             var k = $(this).attr('id'), v = $(this).val();
             // remove youtube_ prefix
@@ -87,11 +87,11 @@ WFAggregator.add('youtube', {
 
             args[k] = v;
         });
-        
+
         // process src
         src = src.replace(/youtu(\.)?be([^\/]+)?\/(.+)/, function(a, b, c, d) {
             d = d.replace(/(watch\?v=|v\/|embed\/)/, '');
-            
+
             if (b && !c) {
                 c = '.com';
             }
@@ -99,10 +99,10 @@ WFAggregator.add('youtube', {
             id = d.replace(/([^\?&#]+)/, function($0, $1) {
                 return $1;
             });
-            
+
             return 'youtube' + c + '/' + (type == 'iframe' ? 'embed' : 'v') + '/' + d;
         });
-        
+
         // loop requires a playlist value to be the same as the video id
         if (id && args.loop && !args.playlist) {
             args.playlist = id;
@@ -131,14 +131,14 @@ WFAggregator.add('youtube', {
 
         // convert args to URL query string
         var q = $.param(args);
-        
+
         // add to src if not empty
         if (q) {
             src = src + (/\?/.test(src) ? '&' : '?') + q;
         }
 
         data.src = src;
-        
+
         return data;
     },
     /**
@@ -166,7 +166,7 @@ WFAggregator.add('youtube', {
 
         // parse URI
         var u = this.parseURL(src);
-        
+
         if (u.query) {
             // split query
             query = $.String.query(u.query);
@@ -191,7 +191,7 @@ WFAggregator.add('youtube', {
             delete query.v;
         } else {
             var s = /\/?(embed|v)?\/([\w-]+)\b/.exec(u.path);
-            
+
             if (s && $.type(s) === "array") {
                 id = s.pop();
             }
@@ -218,11 +218,11 @@ WFAggregator.add('youtube', {
                 $('#youtube_options table').append('<tr><td><label for="youtube_' + k + '">' + k + '</label><input type="text" id="youtube_' + k + '" value="' + v + '" /></td></tr>');
             }
         });
-        
+
         // process url
         src = src.replace(/youtu(\.)?be([^\/]+)?\/(.+)/, function(a, b, c, d) {
             var args = 'youtube';
-            
+
             if (b) {
                 args += '.com';
             }
@@ -238,20 +238,20 @@ WFAggregator.add('youtube', {
             }
 
             args += '/' + id;
-            
+
             // add time
             if (u.anchor) {
                 var s = u.anchor;
-                
+
                 s = s.replace(/(\?|&)(.+)/, '');
-                
+
                 args += '#' + s;
             }
-            
+
             return args;
             // add www (required by iOS ??)
         }).replace(/\/\/youtube/i, '//www.youtube');
-        
+
         data.src = src;
         return data;
     },
