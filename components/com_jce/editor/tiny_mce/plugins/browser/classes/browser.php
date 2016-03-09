@@ -38,11 +38,22 @@ final class WFFileBrowserPlugin extends WFMediaManager {
         $filter = JRequest::getString('filter');
 
         if ($filter) {
-            if ($filter === "images") {
-                $browser->setFileTypes('images=jpg,jpeg,png,gif');
+            if ($filter === 'images') {
+                $filetypes = 'images=jpg,jpeg,png,gif';
+            } else if ($filter === 'media') {
+                $filetypes = 'windowsmedia=avi,wmv,wm,asf,asx,wmx,wvx;quicktime=mov,qt,mpg,mpeg,m4a;flash=swf;shockwave=dcr;real=rm,ra,ram;divx=divx;video=mp4,ogv,ogg,webm,flv,f4v;audio=mp3,ogg,wav;silverlight=xap';
+            } else if ($filter === 'html') {
+                $filetypes = 'html=html,htm,txt';
             } else {
-                $browser->setFileTypes('files=' . JRequest::getString('filter'));
+                // custom filter list, eg: jpg,jpeg,png,pdf
+                if (strpos($filter, ',') !== false) {
+                  $filetypes = 'files=' . $filter;
+                } else {
+                  $filetypes = $this->get('_filetypes');
+                }
             }
+
+            $browser->setFileTypes($filetypes);
         }
         // remove insert button
         $browser->removeButton('file', 'insert');

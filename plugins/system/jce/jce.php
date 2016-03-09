@@ -31,10 +31,10 @@ class PlgSystemJce extends JPlugin {
         parent::__construct($subject, $config);
     }
 
-    protected function getLink() {
+    protected function getLink($filter = 'images') {
         require_once(JPATH_ADMINISTRATOR . '/components/com_jce/helpers/browser.php');
 
-        $link = WFBrowserHelper::getMediaFieldLink('', 'images');
+        $link = WFBrowserHelper::getMediaFieldLink('', $filter);
 
         return $link;
     }
@@ -97,32 +97,39 @@ class PlgSystemJce extends JPlugin {
             return true;
         }
 
-        $link = $this->getLink();
         $hasMedia = false;
+        $fields = $form->getFieldset();
 
-        if ($link) {
-            $fields = $form->getFieldset();
+        foreach ($fields as $field) {
+            $type = $field->getAttribute('type');
 
-            foreach ($fields as $field) {
-                $type = $field->getAttribute('type');
+            if (strtolower($type) === "media") {
+                // get filter value for field, eg: images, media, files
+                $filter = $field->getAttribute('filter', 'images');
 
-                if (strtolower($type) === "media") {
-                    $name   = $field->getAttribute('name');
-                    $group  = (string) $field->group;
-                    $form->setFieldAttribute($name, 'link', $link, $group);
-                    $form->setFieldAttribute($name, 'class', 'input-large wf-media-input', $group);
+                // get file browser link
+                $link = $this->getLink($filter);
 
-                    $hasMedia = true;
+                // link not available for environment
+                if (empty($link)) {
+                  continue;
                 }
-            }
 
-            if ($hasMedia) {
-                // Include jQuery
-                JHtml::_('jquery.framework');
+                $name   = $field->getAttribute('name');
+                $group  = (string) $field->group;
+                $form->setFieldAttribute($name, 'link', $link, $group);
+                $form->setFieldAttribute($name, 'class', 'input-large wf-media-input', $group);
 
-                $document = JFactory::getDocument();
-                $document->addScriptDeclaration('jQuery(document).ready(function($){$(".wf-media-input").removeAttr("readonly");});');
+                $hasMedia = true;
             }
+        }
+
+        if ($hasMedia) {
+            // Include jQuery
+            JHtml::_('jquery.framework');
+
+            $document = JFactory::getDocument();
+            $document->addScriptDeclaration('jQuery(document).ready(function($){$(".wf-media-input").removeAttr("readonly");});');
         }
 
         return true;
