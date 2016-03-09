@@ -13,17 +13,6 @@
     <file plugin="jce">jce.php</file>
   </files>
 
-  <config>
-    <fields name="params">
-      <fieldset name="general" group="general">
-
-        <field name="replace_media_manager" type="radio" default="0" label="PLG_SYSTEM_JCE_REPLACE_MEDIAMANAGER_LABEL" class="btn-group btn-group-yesno" description="PLG_SYSTEM_JCE_REPLACE_MEDIAMANAGER_DESCRIPTION">
-          <option value="1">JYES</option>
-          <option value="0">JNO</option>
-        </field>
-
-      </fieldset>
-    </fields>
-  </config>
+  <config></config>
 
 </extension>

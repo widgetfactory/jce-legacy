@@ -62,7 +62,9 @@ class PlgSystemJce extends JPlugin {
             return false;
         }
 
-        if ((bool) $this->params->get('replace_media_manager', 1) === false) {
+        $params = JComponentHelper::getParams('com_jce');
+
+        if ((bool) $params->get('replace_media_manager', 1) === false) {
           return;
         }
 
