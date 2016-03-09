@@ -188,7 +188,7 @@
 						role : 'application',
 						style : {
 							position : 'absolute',
-							top		 : tinymce.isIE ? 0 : this.getTop()
+							top		 : 0
 						}
 					});
 
