@@ -12,7 +12,4 @@
   <files>
     <file plugin="jce">jce.php</file>
   </files>
-
-  <config></config>
-
 </extension>
