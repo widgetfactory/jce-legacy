@@ -81,7 +81,7 @@ class PlgSystemJce extends JPlugin {
             'com_newsfeeds.newsfeed'
         );
 
-        // only allow some forms :(
+        // only allow some forms, see - https://github.com/joomla/joomla-cms/pull/8657
         if (!in_array($name, $valid)) {
             return true;
         }
