@@ -280,7 +280,7 @@
 
                 ed.dom.bind(ed.getBody(), 'dragover', function(e) {
                     e.dataTransfer.dropEffect = tinymce.VK.metaKeyPressed(e) ? "copy" : "move";
-                    cancelEvent(e);
+                    //cancelEvent(e);
                 });
 
                 // Attach drop handler and grab files
