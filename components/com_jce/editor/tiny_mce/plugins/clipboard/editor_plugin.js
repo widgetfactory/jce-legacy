@@ -670,7 +670,7 @@
             h = h.replace(/<meta([^>]+)>/, '');
 
             // Word comments like conditional comments etc
-            h = h.replace(/<!--[\s\S]+?-->/gi, '');
+            h = h.replace(/<!--([\s\S]*?)-->/gi, '');
 
             // remove styles
             h = h.replace(/<style([^>]*)>([\w\W]*?)<\/style>/gi, '');
@@ -1140,7 +1140,7 @@
                             'href': '#' + n.id
                         };
                         // get correct anchor attribute for schema
-                        var k = ed.settings.schema == 'html5' ? 'id' : 'name';
+                        var k = ed.settings.schema === 'html4' ? 'name' : 'id';
 
                         // set attribute
                         attribs[k] = id;
