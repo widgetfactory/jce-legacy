@@ -13,7 +13,7 @@
     var Node = tinymce.html.Node;
 
     var Styles = new tinymce.html.Styles();
-    
+
     // list of valid child elements
     //var validChildren = '#|address|blockquote|div|dl|fieldset|form|h1|h2|h3|h4|h5|h6|hr|menu|ol|p|pre|table|ul|a|abbr|b|bdo|br|button|cite|code|del|dfn|em|embed|i|iframe|img|input|ins|kbd|label|map|noscript|object|q|s|samp|script|select|small|span|strong|sub|sup|textarea|u|var|#text|#comment|article|aside|details|dialog|figure|header|footer|hgroup|section|nav|audio|canvas|command|datalist|mark|meter|output|progress|time|wbr|video|ruby|bdi|keygen|object';
 
@@ -177,7 +177,7 @@
 
             ed.onPreInit.add(function() {
                 var invalid = ed.settings.invalid_elements;
-                
+
                 // keep this for legacy
                 if (ed.settings.schema === "html4") {
                     // iframe
@@ -260,6 +260,18 @@
 
                     return '<' + b + c + '>' + d + '</' + b + '>';
                 });
+
+                // convert frameborder in HTML5
+                if (ed.settings.schema === "html5-strict") {
+                  h = h.replace(/frameborder="(0|1)"/gi, function(a, b) {
+
+                    if (parseInt(b) === 0) {
+                      return 'seamless="seamless"';
+                    }
+
+                    return "";
+                  });
+                }
 
                 o.content = h;
             });
@@ -663,7 +675,7 @@
                             break;
                         case 'frameborder':
                             // remove in html5
-                            if (parseInt(v) == 0 && ed.settings.schema === 'html5') {
+                            if (parseInt(v) == 0 && ed.settings.schema === 'html5-strict') {
                                 attribs['seamless'] = 'seamless';
                             } else {
                                 attribs[k] = v;
