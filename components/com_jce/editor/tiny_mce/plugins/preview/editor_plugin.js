@@ -302,26 +302,23 @@
 			// load preview data
 			tinymce.util.XHR.send({
 				url 	: s['site_url'] + 'index.php?option=com_jce&view=editor&layout=plugin&plugin=preview&component_id=' + s['component_id'],
-				data 	: 'json=' + tinymce.util.JSON.serialize({'fn' : 'showPreview'}) + '&' + query,
+				data 	: 'json=' + JSON.stringify({'fn' : 'showPreview'}) + '&' + query,
 				content_type : 'application/x-www-form-urlencoded',
 				success : function(x) {
-					// Logic borrowed from http://json.org - https://github.com/douglascrockford/JSON-js
-					if (/^[\],:{}\s]*$/
-							.test(x.replace(/\\(?:["\\\/bfnrt]|u[0-9a-fA-F]{4})/g, '@')
-								.replace(/"[^"\\\n\r]*"|true|false|null|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?/g, ']')
-								.replace(/(?:^|:|,)(?:\s*\[)+/g, ''))) {
-						o = tinymce.util.JSON.parse(x);
-					} else {
-						o = {
-							error : /[{}]/.test(x) ? 'The server returned an invalid JSON response' : x
-						};
+					var o = {}, msg = "";
+
+					try {
+						o = JSON.parse(x);
+					} catch (e) {
+						o.error = /[{}]/.test(o) ? 'The server returned an invalid JSON response' : x;
 					}
 
 					if (o.error) {
-						var msg = o.error;
 
-						if (o.text) {
-							msg = o.text.join('');
+						if (typeof o.error === "string") {
+							msg = o.error;
+						} else {
+							msg = o.error.text;
 						}
 
 						ed.windowManager.alert(msg);
