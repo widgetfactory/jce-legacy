@@ -87,11 +87,11 @@ source_lang = en
 type = INI
 
 [jce.en-gbplg_system_jcemediaboxini]
-source_file = administrator/language/en-GB/en-GB.plg_system_jcemediabox.ini
+source_file = ../muon/administrator/language/en-GB/en-GB.plg_system_jcemediabox.ini
 source_lang = en
 type = INI
 
 [jce.en-gbplg_system_jcemediaboxsysini]
-source_file = administrator/language/en-GB/en-GB.plg_system_jcemediabox.sys.ini
+source_file = ../muon/administrator/language/en-GB/en-GB.plg_system_jcemediabox.sys.ini
 source_lang = en
 type = INI
