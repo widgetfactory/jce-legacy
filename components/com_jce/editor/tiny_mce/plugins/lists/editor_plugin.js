@@ -417,9 +417,9 @@
                     return true;
                 }
 
-                if (sibling && sibling.nodeName == 'LI' && isListNode(li.lastChild)) {
+                /*if (sibling && sibling.nodeName == 'LI' && isListNode(li.lastChild)) {
                     return false;
-                }
+                }*/
 
                 sibling = li.previousSibling;
                 if (sibling && sibling.nodeName == 'LI') {
@@ -659,7 +659,17 @@
                     }
 
                     nonEmptyBlocks = editor.schema.getNonEmptyElements();
+                    if (node.nodeType == 1) {
+						            node = tinymce.dom.RangeUtils.getNode(node, offset);
+					          }
                     walker = new tinymce.dom.TreeWalker(rng.startContainer);
+
+                    // Delete at <li>|<br></li> then jump over the bogus br
+            				if (isForward) {
+            					if (isBogusBr(node)) {
+            						walker.next();
+            					}
+            				}
 
                     while ((node = walker[isForward ? 'next' : 'prev']())) {
                         if (node.nodeName == 'LI' && !node.hasChildNodes()) {
