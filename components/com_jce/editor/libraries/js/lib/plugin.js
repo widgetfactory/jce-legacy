@@ -991,7 +991,14 @@
 
                     }],
                 onOpen: function () {
-                    $('#' + options.id).focus();
+                    var n = $('#' + id).get(0);
+
+                    $(n).focus();
+
+                    // fix cursor position in Firefox
+    								if (n.setSelectionRange && n.value) {
+    									n.setSelectionRange(n.value.length, n.value.length);
+    								}
                 }
 
             }, options);
