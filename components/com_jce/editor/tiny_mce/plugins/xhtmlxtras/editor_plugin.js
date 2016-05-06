@@ -18,7 +18,7 @@
                 ed.windowManager.open({
                     file : ed.getParam('site_url') + 'index.php?option=com_jce&view=editor&layout=plugin&plugin=xhtmlxtras&element=cite',
                     width : 440 + parseInt(ed.getLang('xhtmlxtras.cite_delta_width', 0)),
-                    height : 380 + parseInt(ed.getLang('xhtmlxtras.cite_delta_height', 0)),
+                    height : 320 + parseInt(ed.getLang('xhtmlxtras.cite_delta_height', 0)),
                     inline : 1,
                     popup_css : false
                 }, {
@@ -32,7 +32,7 @@
                 ed.windowManager.open({
                     file : ed.getParam('site_url') + 'index.php?option=com_jce&view=editor&layout=plugin&plugin=xhtmlxtras&element=acronym',
                     width : 440 + parseInt(ed.getLang('xhtmlxtras.acronym_delta_width', 0)),
-                    height : 380 + parseInt(ed.getLang('xhtmlxtras.acronym_delta_height', 0)),
+                    height : 320 + parseInt(ed.getLang('xhtmlxtras.acronym_delta_height', 0)),
                     inline : 1,
                     popup_css : false
                 }, {
@@ -46,7 +46,7 @@
                 ed.windowManager.open({
                     file : ed.getParam('site_url') + 'index.php?option=com_jce&view=editor&layout=plugin&plugin=xhtmlxtras&element=abbr',
                     width : 440 + parseInt(ed.getLang('xhtmlxtras.abbr_delta_width', 0)),
-                    height : 380 + parseInt(ed.getLang('xhtmlxtras.abbr_delta_height', 0)),
+                    height : 320 + parseInt(ed.getLang('xhtmlxtras.abbr_delta_height', 0)),
                     inline : 1,
                     popup_css : false
                 }, {
@@ -60,7 +60,7 @@
                 ed.windowManager.open({
                     file : ed.getParam('site_url') + 'index.php?option=com_jce&view=editor&layout=plugin&plugin=xhtmlxtras&element=del',
                     width : 440 + parseInt(ed.getLang('xhtmlxtras.del_delta_width', 0)),
-                    height : 440 + parseInt(ed.getLang('xhtmlxtras.del_delta_height', 0)),
+                    height : 360 + parseInt(ed.getLang('xhtmlxtras.del_delta_height', 0)),
                     inline : 1,
                     popup_css : false
                 }, {
@@ -74,7 +74,7 @@
                 ed.windowManager.open({
                     file : ed.getParam('site_url') + 'index.php?option=com_jce&view=editor&layout=plugin&plugin=xhtmlxtras&element=ins',
                     width : 440 + parseInt(ed.getLang('xhtmlxtras.ins_delta_width', 0)),
-                    height : 440 + parseInt(ed.getLang('xhtmlxtras.ins_delta_height', 0)),
+                    height : 360 + parseInt(ed.getLang('xhtmlxtras.ins_delta_height', 0)),
                     inline : 1,
                     popup_css : false
                 }, {
@@ -88,7 +88,7 @@
                 ed.windowManager.open({
                     file : ed.getParam('site_url') + 'index.php?option=com_jce&view=editor&layout=plugin&plugin=xhtmlxtras&element=attributes',
                     width : 440,
-                    height : 420,
+                    height : 360,
                     inline : 1,
                     popup_css : false
                 }, {

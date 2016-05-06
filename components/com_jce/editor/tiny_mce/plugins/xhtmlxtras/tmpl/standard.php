@@ -16,7 +16,6 @@ if ($element == 'del' || $element == 'ins') :
     echo $this->loadTemplate('datetime');
 endif;
 ?>
-<h4><?php echo WFText::_('WF_XHTMLXTRAS_FIELDSET_ATTRIB_TAB'); ?></h4>
 <table>
     <tr>
         <td class="label"><label for="title"><?php echo WFText::_('WF_XHTMLXTRAS_ATTRIBUTE_LABEL_TITLE'); ?></label></td>

@@ -11,7 +11,6 @@
  */
 defined('_JEXEC') or die('RESTRICTED');
 ?>
-<h4><?php echo WFText::_('WF_XHTMLXTRAS_ATTRIBUTE_EVENTS_TAB');?></h4>
 <table>
     <tr>
         <td class="label"><label for="onafterprint">onafterprint</label></td>
