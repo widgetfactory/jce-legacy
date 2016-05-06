@@ -11,7 +11,6 @@
  */
 defined('_JEXEC') or die('RESTRICTED');
 ?>
-<h4><?php echo WFText::_('WF_TABLE_GENERAL_PROPS'); ?></h4>
 <table border="0" cellpadding="4" cellspacing="0">
     <tr>
         <td><label for="align">

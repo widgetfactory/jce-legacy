@@ -1009,7 +1009,7 @@
                 });
                 function tableCellSelected(ed, rng, n, currentCell) {
                     // The decision of when a table cell is selected is somewhat involved.  The fact that this code is
-                    // required is actually a pointer to the root cause of this bug. A cell is selected when the start 
+                    // required is actually a pointer to the root cause of this bug. A cell is selected when the start
                     // and end offsets are 0, the start container is a text, and the selection node is either a TR (most cases)
                     // or the parent of the table (in the case of the selection containing the last cell of a table).
                     var TEXT_NODE = 3, table = ed.dom.getParent(rng.startContainer, 'TABLE'),
@@ -1065,7 +1065,7 @@
                              m.add({title: 'advanced.unlink_desc', icon: 'unlink', cmd: 'UnLink'});
                              m.addSeparator();
                              }
-                             
+
                              if (el.nodeName == 'IMG' && el.className.indexOf('mceItem') == -1) {
                              m.add({title: 'advanced.image_desc', icon: 'image', cmd: ed.plugins.advimage ? 'mceAdvImage' : 'mceImage', ui: true});
                              m.addSeparator();
@@ -1415,8 +1415,8 @@
                 mceInsertTable: function (val) {
                     winMan.open({
                         url: ed.getParam('site_url') + 'index.php?option=com_jce&view=editor&layout=plugin&plugin=table',
-                        width: 420 + parseInt(ed.getLang('table.table_delta_width', 0)),
-                        height: 440 + parseInt(ed.getLang('table.table_delta_height', 0)),
+                        width: 440 + parseInt(ed.getLang('table.table_delta_width', 0)),
+                        height: 460 + parseInt(ed.getLang('table.table_delta_height', 0)),
                         inline: 1,
                         popup_css: false
                     }, {
@@ -1429,7 +1429,7 @@
                     winMan.open({
                         url: ed.getParam('site_url') + 'index.php?option=com_jce&view=editor&layout=plugin&plugin=table&context=row',
                         width: 440 + parseInt(ed.getLang('table.rowprops_delta_width', 0)),
-                        height: 440 + parseInt(ed.getLang('table.rowprops_delta_height', 0)),
+                        height: 460 + parseInt(ed.getLang('table.rowprops_delta_height', 0)),
                         inline: 1,
                         popup_css: false
                     }, {
@@ -1440,8 +1440,8 @@
                 mceTableCellProps: function () {
                     winMan.open({
                         url: ed.getParam('site_url') + 'index.php?option=com_jce&view=editor&layout=plugin&plugin=table&context=cell',
-                        width: 420 + parseInt(ed.getLang('table.cellprops_delta_width', 0)),
-                        height: 440 + parseInt(ed.getLang('table.cellprops_delta_height', 0)),
+                        width: 440 + parseInt(ed.getLang('table.cellprops_delta_width', 0)),
+                        height: 460 + parseInt(ed.getLang('table.cellprops_delta_height', 0)),
                         inline: 1,
                         popup_css: false
                     }, {
@@ -1846,4 +1846,4 @@
             DOM.remove(this.id + '_menu');
         }
     });
-})(tinymce); 
+})(tinymce);

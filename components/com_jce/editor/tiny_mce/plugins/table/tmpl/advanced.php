@@ -12,7 +12,6 @@
 defined('_JEXEC') or die('RESTRICTED');
 
 ?>
-<h4><?php echo WFText::_('WF_TABLE_ADVANCED_PROPS'); ?></h4>
 <table border="0" cellpadding="0" cellspacing="4">
     <tr>
         <td><label for="classlist" class="hastip" title="<?php echo WFText::_('WF_LABEL_CLASS_LIST_DESC'); ?>"><?php echo WFText::_('WF_LABEL_CLASS_LIST'); ?></label></td>
@@ -61,15 +60,10 @@ defined('_JEXEC') or die('RESTRICTED');
         <td class="column1"><label for="backgroundimage">
                 <?php echo WFText::_('WF_TABLE_BGIMAGE'); ?></label></td>
         <td>
-            <table border="0" cellpadding="0" cellspacing="0">
-                <tr>
-                    <td>
-                        <input id="backgroundimage" type="text"
-                               value="" class="advfield browser"
-                               onchange="TableDialog.changedBackgroundImage();" />
-                    </td>
-                </tr>
-            </table></td>
+          <input id="backgroundimage" type="text"
+                 value="" class="advfield browser"
+                 onchange="TableDialog.changedBackgroundImage();" />
+        </td>
     </tr>
     <?php if ($this->plugin->getContext() == 'table') :
         ?>
@@ -118,26 +112,14 @@ defined('_JEXEC') or die('RESTRICTED');
         <td class="column1"><label for="bordercolor">
                 <?php echo WFText::_('WF_TABLE_BORDERCOLOR'); ?></label></td>
         <td>
-            <table border="0" cellpadding="0" cellspacing="0">
-                <tr>
-                    <td>
-                        <input id="bordercolor" type="text" value=""
-                               size="9" class="color" onchange="TableDialog.changedColor();"/>
-                    </td>
-                </tr>
-            </table></td>
+          <input id="bordercolor" type="text" value=""
+                 size="9" class="color" onchange="TableDialog.changedColor();"/></td>
     </tr>
     <tr>
         <td class="column1"><label for="bgcolor">
                 <?php echo WFText::_('WF_TABLE_BGCOLOR'); ?></label></td>
         <td>
-            <table border="0" cellpadding="0" cellspacing="0">
-                <tr>
-                    <td>
-                        <input id="bgcolor" type="text" value="" size="9"
-                               class="color" onchange="TableDialog.changedColor();" />
-                    </td>
-                </tr>
-            </table></td>
+          <input id="bgcolor" type="text" value="" size="9"
+                 class="color" onchange="TableDialog.changedColor();" /></td>
     </tr>
 </table>
