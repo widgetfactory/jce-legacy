@@ -10,26 +10,26 @@
 (function() {
 	var each = tinymce.each, extend = tinymce.extend, JSON = tinymce.util.JSON;
 	var Node = tinymce.html.Node;
-	
+
 	tinymce.create('tinymce.plugins.LinkPlugin', {
         init : function(ed, url) {
             this.editor = ed;
             this.url = url;
             var self = this;
 
-            function isLink(n) {            	
+            function isLink(n) {
                 // no node specified
                 if (!n) {
                     return false;
                 }
-                
+
                 // get link
                 n = ed.dom.getParent(n, 'A');
-                
+
                 // is a link but not an anchor
                 return n && isAnchor(n) === false;
             }
-            
+
             function isAnchor(n) {
             	return ed.dom.hasClass(n, 'mceItemAnchor');
             }
@@ -45,7 +45,7 @@
                 ed.windowManager.open({
                     file 	: ed.getParam('site_url') + 'index.php?option=com_jce&view=editor&layout=plugin&plugin=link',
                     width 	: 500 + ed.getLang('link.delta_width', 0),
-                    height 	: 515 + ed.getLang('link.delta_height', 0),
+                    height 	: 550 + ed.getLang('link.delta_height', 0),
                     inline 	: 1,
                     popup_css : false
                 }, {
@@ -71,10 +71,10 @@
                     });
                 }
             });
-            
-            ed.onNodeChange.add( function(ed, cm, n, co) {            	                
+
+            ed.onNodeChange.add( function(ed, cm, n, co) {
                 // set active if link
-                cm.setActive('link', isLink(n)); 
+                cm.setActive('link', isLink(n));
                 // set disabled if anchor
                 cm.setDisabled('link', isAnchor(n));
             });

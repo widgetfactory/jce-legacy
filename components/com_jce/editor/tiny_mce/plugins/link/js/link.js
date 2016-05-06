@@ -54,7 +54,7 @@ var LinkDialog = {
         $(window).bind('resize', function(e, init) {
             var vm = init ? 5 : 20;
 
-            $('#link-browser').height($('#link-browser').innerHeight() + ($('div.actionPanel').position().top - $('#tabs').height()) - vm);
+            $('#link-browser').height($('#link-browser').innerHeight() + ($('div.actionPanel').position().top - $('#tabs').height()) - 30);
 
             $('#advanced_tab, #popups_tab').height($('#link_tab').height());
 
@@ -264,7 +264,7 @@ var LinkDialog = {
 
         tinymce.each(attribs, function(k) {
             var v = $('#' + k).val();
-            
+
             // trim value
             v = tinymce.trim(v);
 
@@ -279,7 +279,7 @@ var LinkDialog = {
 
             args[k] = v;
         });
-        
+
         var txt = $('#text').val();
 
         ed.undoManager.add();
@@ -331,7 +331,7 @@ var LinkDialog = {
                 el = elms[0];
             }
         }
-        
+
         if (txt) {
             // reset cursor
             ed.selection.select(el);
