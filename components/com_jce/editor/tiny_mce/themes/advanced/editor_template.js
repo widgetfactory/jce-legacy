@@ -1,22 +1,22 @@
 /**
- * @package   	JCE
- * @copyright 	Copyright (c) 2009-2016 Ryan Demmer. All rights reserved.
+ * @package    JCE
+ * @copyright    Copyright (c) 2009-2015 Ryan Demmer. All rights reserved.
  * @copyright   Copyright 2009, Moxiecode Systems AB
- * @license   	GNU/LGPL 2.1 or later - http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html
+ * @license    GNU/LGPL 2.1 or later - http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html
  * JCE is free software. This version may have been modified pursuant
  * to the GNU General Public License, and as distributed it includes or
  * is derivative of works licensed under the GNU General Public License or
  * other free or open source software licenses.
  */
 
-(function(tinymce) {
+(function (tinymce) {
     var DOM = tinymce.DOM, Event = tinymce.dom.Event, extend = tinymce.extend, each = tinymce.each, Cookie = tinymce.util.Cookie, lastExtID, explode = tinymce.explode;
 
     // Tell it to load theme specific language pack(s)
     tinymce.ThemeManager.requireLangPack('advanced');
 
     tinymce.create('tinymce.themes.AdvancedTheme', {
-        
+
         // Control name lookup, format: title, command
         controls: {
             bold: ['bold_desc', 'Bold'],
@@ -57,8 +57,8 @@
             blockquote: ['blockquote_desc', 'mceBlockQuote']
         },
         stateControls: ['bold', 'italic', 'underline', 'strikethrough', 'justifyleft', 'justifycenter', 'justifyright', 'justifyfull', 'sub', 'sup', 'blockquote'],
-        
-        init: function(ed, url) {
+
+        init: function (ed, url) {
             var t = this, s, v, o;
 
             t.editor = ed;
@@ -109,22 +109,22 @@
                 ed.contentCSS.push(ed.baseURI.toAbsolute(url + "/skins/" + ed.settings.skin + "/content.css"));
 
             // Init editor
-            ed.onInit.add(function() {
+            ed.onInit.add(function () {
                 if (!ed.settings.readonly) {
                     ed.onNodeChange.add(t._nodeChanged, t);
                     ed.onKeyUp.add(t._updateUndoStatus, t);
                     ed.onMouseUp.add(t._updateUndoStatus, t);
-                    ed.dom.bind(ed.dom.getRoot(), 'dragend', function() {
+                    ed.dom.bind(ed.dom.getRoot(), 'dragend', function () {
                         t._updateUndoStatus(ed);
                     });
                 }
             });
 
-            ed.onSetProgressState.add(function(ed, b, ti) {
+            ed.onSetProgressState.add(function (ed, b, ti) {
                 var co, id = ed.id, tb;
 
                 if (b) {
-                    t.progressTimer = setTimeout(function() {
+                    t.progressTimer = setTimeout(function () {
                         co = ed.getContainer();
                         co = co.insertBefore(DOM.create('DIV', {
                             style: 'position:relative'
@@ -159,11 +159,12 @@
             if (!ed.settings.compress.css) {
                 DOM.loadCSS(s.editor_css ? ed.documentBaseURI.toAbsolute(s.editor_css) : url + "/skins/" + ed.settings.skin + "/ui.css");
 
-                if (s.skin_variant)
+                if (s.skin_variant) {
                     DOM.loadCSS(url + "/skins/" + ed.settings.skin + "/ui_" + s.skin_variant + ".css");
+                }
             }
         },
-        _isHighContrast: function() {
+        _isHighContrast: function () {
             var actualColor, div = DOM.add(DOM.getRoot(), 'div', {
                 'style': 'background-color: rgb(171,239,86);'
             });
@@ -173,7 +174,7 @@
 
             return actualColor != 'rgb(171,239,86)' && actualColor != '#abef56';
         },
-        createControl: function(n, cf) {
+        createControl: function (n, cf) {
             var cd, c;
 
             if (c = cf.createControl(n))
@@ -187,7 +188,7 @@
                     value: cd[3]
                 });
         },
-        execCommand: function(cmd, ui, val) {
+        execCommand: function (cmd, ui, val) {
             var f = this['_' + cmd];
 
             if (f) {
@@ -196,78 +197,54 @@
             }
 
             return false;
-        },    
+        },
 
-        renderUI: function(o) {
+        renderUI: function (o) {
             var n, ic, tb, t = this, ed = t.editor, s = t.settings, sc, p, nl;
 
             if (ed.settings) {
                 ed.settings.aria_label = s.aria_label + ed.getLang('advanced.help_shortcut');
             }
 
-            // TODO: ACC Should have an aria-describedby attribute which is user-configurable to describe what this field is actually for.
-            // Maybe actually inherit it from the original textara?
+            var skin = "defaultSkin";
 
-            // WFEDITOR - Change UI Container SPAN Element to DIV
+            if (ed.settings.skin !== "default") {
+              skin += ' ' + ed.settings.skin + 'Skin';
+
+              if (s.skin_variant) {
+                skin += ' ' + ed.settings.skin + 'Skin' + t._ufirst(s.skin_variant);
+              }
+            }
 
             n = p = DOM.create('div', {
                 role: 'application',
                 'aria-labelledby': ed.id + '_voice',
                 id: ed.id + '_parent',
-                'class': 'mceEditor ' + ed.settings.skin + 'Skin' + (s.skin_variant ? ' ' + ed.settings.skin + 'Skin' + t._ufirst(s.skin_variant) : '') + (ed.settings.directionality == "rtl" ? ' mceRtl' : '')
+                'class': 'mceEditor ' + skin + (ed.settings.directionality == "rtl" ? ' mceRtl' : '')
             });
+
             DOM.add(n, 'span', {
                 'class': 'mceVoiceLabel',
                 'style': 'display:none;',
                 id: ed.id + '_voice'
             }, s.aria_label);
 
-            if (!DOM.boxModel)
-                n = DOM.add(n, 'div', {
-                    'class': 'mceOldBoxModel'
-                });
-
-            n = sc = DOM.add(n, 'table', {
+            n = sc = DOM.add(n, 'div', {
                 role: "presentation",
                 id: ed.id + '_tbl',
-                'class': 'mceLayout',
-                cellSpacing: 0,
-                cellPadding: 0
+                'class': 'mceLayout'
             });
-            n = tb = DOM.add(n, 'tbody');
 
-            switch ((s.theme_advanced_layout_manager || '').toLowerCase()) {
-                case "rowlayout":
-                    ic = t._rowLayout(s, tb, o);
-                    break;
-
-                case "customlayout":
-                    ic = ed.execCallback("theme_advanced_custom_layout", s, tb, o, p);
-                    break;
-
-                default:
-                    ic = t._simpleLayout(s, tb, o, p);
-            }
+            ic = t._createLayout(s, n, o, p);
 
             n = o.targetNode;
 
-            // Add classes to first and last TRs
-            nl = sc.rows;
-            DOM.addClass(nl[0], 'mceFirst');
-            DOM.addClass(nl[nl.length - 1], 'mceLast');
+            DOM.addClass(sc.firstChild, 'mceFirst');
+            DOM.addClass(sc.lastChild, 'mceLast');
 
-            // Add classes to first and last TDs
-            each(DOM.select('tr', tb), function(n) {
-                DOM.addClass(n.firstChild, 'mceFirst');
-                DOM.addClass(n.childNodes[n.childNodes.length - 1], 'mceLast');
-            });
+            DOM.insertAfter(p, n);
 
-            if (DOM.get(s.theme_advanced_toolbar_container))
-                DOM.get(s.theme_advanced_toolbar_container).appendChild(p);
-            else
-                DOM.insertAfter(p, n);
-
-            Event.add(ed.id + '_path_row', 'click', function(e) {
+            Event.add(ed.id + '_path_row', 'click', function (e) {
                 e = e.target;
 
                 if (e.nodeName == 'A') {
@@ -277,20 +254,22 @@
                 }
             });
 
-            if (!ed.getParam('accessibility_focus'))
+            if (!ed.getParam('accessibility_focus')) {
                 Event.add(DOM.add(p, 'a', {
                     href: '#'
-                }, '<!-- IE -->'), 'focus', function() {
+                }, '<!-- IE -->'), 'focus', function () {
                     tinyMCE.get(ed.id).focus();
                 });
+            }
 
-            if (s.theme_advanced_toolbar_location == 'external')
+            if (s.theme_advanced_toolbar_location == 'external') {
                 o.deltaHeight = 0;
+            }
 
             t.deltaHeight = o.deltaHeight;
             o.targetNode = null;
 
-            ed.onKeyDown.add(function(ed, evt) {
+            ed.onKeyDown.add(function (ed, evt) {
                 var DOM_VK_F10 = 121, DOM_VK_F11 = 122;
 
                 if (evt.altKey) {
@@ -315,13 +294,13 @@
              }*/
 
             return {
-                iframeContainer: ic,
-                editorContainer: ed.id + '_parent',
-                sizeContainer: sc,
-                deltaHeight: o.deltaHeight
+                iframeContainer : ic,
+                editorContainer : ed.id + '_parent',
+                sizeContainer   : sc,
+                deltaHeight     : o.deltaHeight
             };
         },
-        getInfo: function() {
+        getInfo: function () {
             return {
                 longname: 'Advanced theme',
                 author: 'Moxiecode Systems AB',
@@ -329,13 +308,13 @@
                 version: tinymce.majorVersion + "." + tinymce.minorVersion
             };
         },
-        resizeBy: function(dw, dh) {
+        resizeBy: function (dw, dh) {
             var e = DOM.get(this.editor.id + '_ifr');
 
             this.resizeTo(e.clientWidth + dw, e.clientHeight + dh);
         },
-        resizeTo: function(w, h, store) {
-            var ed = this.editor, s = this.settings, e = DOM.get(ed.id + '_tbl'), ifr = DOM.get(ed.id + '_ifr');
+        resizeTo: function (w, h, store) {
+            var ed = this.editor, s = this.settings, e = DOM.get(ed.id + '_parent'), ifr = DOM.get(ed.id + '_ifr');
 
             // Boundery fix box
             w = Math.max(s.theme_advanced_resizing_min_width || 100, w);
@@ -344,18 +323,19 @@
             h = Math.min(s.theme_advanced_resizing_max_height || 0xFFFF, h);
 
             // Resize iframe and container
-            DOM.setStyle(e, 'height', '');
+            //DOM.setStyle(e, 'height', '');
             DOM.setStyle(ifr, 'height', h);
 
             if (s.theme_advanced_resize_horizontal) {
-                DOM.setStyle(e, 'width', '');
-                DOM.setStyle(ifr, 'width', w);
+                //DOM.setStyle(e, 'width', '');
 
                 // Make sure that the size is never smaller than the over all ui
                 if (w < e.clientWidth) {
-                    w = e.clientWidth;
-                    DOM.setStyle(ifr, 'width', e.clientWidth);
+                    //w = e.clientWidth;
                 }
+
+                DOM.setStyle(e, 'max-width', w + 'px');
+                DOM.setStyle(ifr, 'max-width', w + 'px');
             }
 
             // Store away the size
@@ -369,7 +349,7 @@
             // dispatch
             this.onResize.dispatch();
         },
-        destroy: function() {
+        destroy: function () {
             var id = this.editor.id;
 
             Event.clear(id + '_resize');
@@ -378,20 +358,21 @@
         },
         // Internal functions
 
-        _simpleLayout: function(s, tb, o, p) {
+        _createLayout: function (s, tb, o, p) {
             var t = this, ed = t.editor, lo = s.theme_advanced_toolbar_location, sl = s.theme_advanced_statusbar_location, n, ic, etb, c;
 
             if (s.readonly) {
-                n = DOM.add(tb, 'tr');
-                n = ic = DOM.add(n, 'td', {
+                ic = DOM.add(tb, 'div', {
                     'class': 'mceIframeContainer'
                 });
+
                 return ic;
             }
 
             // Create toolbar container at top
-            if (lo == 'top')
+            if (lo == 'top') {
                 t._addToolbars(tb, o);
+            }
 
             // Create external toolbar
             if (lo == 'external') {
@@ -407,27 +388,23 @@
                     href: 'javascript:;',
                     'class': 'mceExternalClose'
                 });
-                n = DOM.add(n, 'table', {
+                n = DOM.add(n, 'div', {
                     id: ed.id + '_tblext',
                     cellSpacing: 0,
                     cellPadding: 0
                 });
-                etb = DOM.add(n, 'tbody');
 
-                if (p.firstChild.className == 'mceOldBoxModel')
-                    p.firstChild.appendChild(c);
-                else
-                    p.insertBefore(c, p.firstChild);
+                p.insertBefore(c, p.firstChild);
 
-                t._addToolbars(etb, o);
+                t._addToolbars(n, o);
 
-                ed.onMouseUp.add(function() {
+                ed.onMouseUp.add(function () {
                     var e = DOM.get(ed.id + '_external');
                     DOM.show(e);
 
                     DOM.hide(lastExtID);
 
-                    var f = Event.add(ed.id + '_external_close', 'click', function() {
+                    var f = Event.add(ed.id + '_external_close', 'click', function () {
                         DOM.hide(ed.id + '_external');
                         Event.remove(ed.id + '_external_close', 'click', f);
 
@@ -448,91 +425,57 @@
                 });
             }
 
-            if (sl == 'top')
+            if (sl == 'top') {
                 t._addStatusBar(tb, o);
-
-            // Create iframe container
-            if (!s.theme_advanced_toolbar_container) {
-                n = DOM.add(tb, 'tr');
-                n = ic = DOM.add(n, 'td', {
-                    'class': 'mceIframeContainer'
-                });
             }
 
-            // Create toolbar container at bottom
-            if (lo == 'bottom')
-                t._addToolbars(tb, o);
-
-            if (sl == 'bottom')
-                t._addStatusBar(tb, o);
-
-            return ic;
-        },
-        _rowLayout: function(s, tb, o) {
-            var t = this, ed = t.editor, dc, da, cf = ed.controlManager, n, ic, to, a;
-
-            dc = s.theme_advanced_containers_default_class || '';
-            da = s.theme_advanced_containers_default_align || 'center';
-
-            each(explode(s.theme_advanced_containers || ''), function(c, i) {
-                var v = s['theme_advanced_container_' + c] || '';
-
-                switch (c.toLowerCase()) {
-                    case 'mceeditor':
-                        n = DOM.add(tb, 'tr');
-                        n = ic = DOM.add(n, 'td', {
-                            'class': 'mceIframeContainer'
-                        });
-                        break;
-
-                    case 'mceelementpath':
-                        t._addStatusBar(tb, o);
-                        break;
-
-                    default:
-                        a = (s['theme_advanced_container_' + c + '_align'] || da).toLowerCase();
-                        a = 'mce' + t._ufirst(a);
-
-                        n = DOM.add(DOM.add(tb, 'tr'), 'td', {
-                            'class': 'mceToolbar ' + (s['theme_advanced_container_' + c + '_class'] || dc) + ' ' + a || da
-                        });
-
-                        to = cf.createToolbar("toolbar" + i);
-                        t._addControls(v, to);
-                        DOM.setHTML(n, to.renderHTML());
-                        o.deltaHeight -= s.theme_advanced_row_height;
-                }
+            // Create iframe container
+            n = ic = DOM.add(tb, 'div', {
+                'class': 'mceIframeContainer'
             });
 
+            // Create toolbar container at bottom
+            if (lo == 'bottom') {
+                t._addToolbars(tb, o);
+            }
+
+            if (sl == 'bottom') {
+                t._addStatusBar(tb, o);
+            }
+
             return ic;
         },
-        _addControls: function(v, tb) {
+
+        _addControls: function (v, tb) {
             var t = this, s = t.settings, ed = t.editor, di, cf = t.editor.controlManager;
 
             if (s.theme_advanced_disable && !t._disabled) {
                 di = {};
 
-                each(explode(s.theme_advanced_disable), function(v) {
+                each(explode(s.theme_advanced_disable), function (v) {
                     di[v] = 1;
                 });
 
                 t._disabled = di;
-            } else
+            } else {
                 di = t._disabled;
+            }
 
-            each(explode(v), function(n) {
+            each(explode(v), function (n) {
                 var c;
 
-                if (di && di[n])
+                if (di && di[n]) {
                     return;
+                }
 
                 c = t.createControl(n, cf);
 
-                if (c)
+                if (c) {
                     tb.add(c);
+                }
             });
         },
-        _addToolbars: function(c, o) {
+        _addToolbars: function (c, o) {
             var t = this, i, tb, ed = t.editor, s = t.settings, v, cf = ed.controlManager, di, n, h = [], a, toolbarGroup, toolbarsExist = false;
 
             toolbarGroup = cf.createToolbarGroup('toolbargroup', {
@@ -545,9 +488,7 @@
             a = s.theme_advanced_toolbar_align.toLowerCase();
             a = 'mce' + t._ufirst(a);
 
-            n = DOM.add(DOM.add(c, 'tr', {
-                role: 'toolbar'
-            }), 'td', {
+            n = DOM.add(c, 'div', {
                 'class': 'mceToolbar ' + a,
                 "role": "toolbar"
             });
@@ -560,13 +501,16 @@
                     'class': 'mceToolbarRow' + i
                 });
 
-                if (s['theme_advanced_buttons' + i + '_add'])
+                if (s['theme_advanced_buttons' + i + '_add']) {
                     v += ',' + s['theme_advanced_buttons' + i + '_add'];
+                }
 
-                if (s['theme_advanced_buttons' + i + '_add_before'])
+                if (s['theme_advanced_buttons' + i + '_add_before']) {
                     v = s['theme_advanced_buttons' + i + '_add_before'] + ',' + v;
+                }
 
                 t._addControls(v, tb);
+
                 toolbarGroup.add(tb);
 
                 o.deltaHeight -= s.theme_advanced_row_height;
@@ -577,25 +521,24 @@
                 o.deltaHeight -= s.theme_advanced_row_height;
             }
 
-            var html = toolbarGroup.renderHTML();
-            html = html.replace(/href="javascript:;"/gi, 'href="#"');
+            h.push(toolbarGroup.renderHTML());
 
-            h.push(html);
             h.push(DOM.createHTML('a', {
                 href: '#',
                 accesskey: 'z',
                 title: ed.getLang("advanced.toolbar_focus"),
                 onfocus: 'tinyMCE.getInstanceById(\'' + ed.id + '\').focus();'
             }, '<!-- IE -->'));
+
             DOM.setHTML(n, h.join(''));
         },
-        _addStatusBar: function(tb, o) {
+        _addStatusBar: function (tb, o) {
             var n, t = this, ed = t.editor, s = t.settings, r, mf, me, td;
 
-            n = DOM.add(tb, 'tr');
-            n = td = DOM.add(n, 'td', {
+            n = td = DOM.add(tb, 'div', {
                 'class': 'mceStatusbar'
             });
+
             n = DOM.add(n, 'div', {
                 id: ed.id + '_path_row',
                 'role': 'group',
@@ -603,18 +546,14 @@
                 'class': 'mcePathRow'
             });
 
-            // WFEditor Path modifications
-
             if (s.theme_advanced_path) {
                 DOM.add(n, 'span', {
                     id: ed.id + '_path_voice',
                     'class': 'mcePathLabel'
                 }, ed.translate('advanced.path') + ': ');
-                //DOM.add(n, 'span', {}, ': ');
             } else {
                 DOM.add(n, 'span', {}, '&#160;');
             }
-
 
             if (s.theme_advanced_resizing) {
                 DOM.add(td, 'a', {
@@ -626,25 +565,26 @@
                 });
 
                 if (s.theme_advanced_resizing_use_cookie) {
-                    ed.onPostRender.add(function() {
+                    ed.onPostRender.add(function () {
                         var o = Cookie.getHash("TinyMCE_" + ed.id + "_size"), c = DOM.get(ed.id + '_tbl');
 
-                        if (!o)
+                        if (!o) {
                             return;
+                        }
 
                         t.resizeTo(o.cw, o.ch);
                     });
                 }
 
-                ed.onPostRender.add(function() {
-                    Event.add(ed.id + '_resize', 'click', function(e) {
+                ed.onPostRender.add(function () {
+                    Event.add(ed.id + '_resize', 'click', function (e) {
                         e.preventDefault();
                     });
 
-                    Event.add(ed.id + '_resize', 'mousedown', function(e) {
+                    Event.add(ed.id + '_resize', 'mousedown', function (e) {
                         var mouseMoveHandler1, mouseMoveHandler2,
-                                mouseUpHandler1, mouseUpHandler2,
-                                startX, startY, startWidth, startHeight, width, height, ifrElm;
+                            mouseUpHandler1, mouseUpHandler2,
+                            startX, startY, startWidth, startHeight, width, height, ifrElm;
 
                         function resizeOnMove(e) {
                             e.preventDefault();
@@ -690,16 +630,16 @@
             o.deltaHeight -= 21;
             n = tb = null;
         },
-        _updateUndoStatus: function(ed) {
+        _updateUndoStatus: function (ed) {
             var cm = ed.controlManager, um = ed.undoManager;
 
             cm.setDisabled('undo', !um.hasUndo() && !um.typing);
             cm.setDisabled('redo', !um.hasRedo());
         },
-        _nodeChanged: function(ed, cm, n, co, ob) {
+        _nodeChanged: function (ed, cm, n, co, ob) {
             var t = this, p, de = 0, v, c, s = t.settings, cl, fz, fn, fc, bc, formatNames, matches;
 
-            tinymce.each(t.stateControls, function(c) {
+            tinymce.each(t.stateControls, function (c) {
                 cm.setActive(c, ed.queryCommandState(t.controls[c][1]));
             });
 
@@ -707,7 +647,7 @@
                 var i, parents = ob.parents, func = name;
 
                 if (typeof(name) == 'string') {
-                    func = function(node) {
+                    func = function (node) {
                         return node.nodeName == name;
                     };
                 }
@@ -736,9 +676,9 @@
 
             if (s.theme_advanced_path && s.theme_advanced_statusbar_location) {
                 p = DOM.get(ed.id + '_path') || DOM.add(ed.id + '_path_row', 'span', {
-                    id: ed.id + '_path',
-                    'class': 'mcePathPath'
-                });
+                        id: ed.id + '_path',
+                        'class': 'mcePathPath'
+                    });
 
                 if (t.statusKeyboardNavigation) {
                     t.statusKeyboardNavigation.destroy();
@@ -747,11 +687,11 @@
 
                 DOM.setHTML(p, '');
 
-                getParent(function(n) {
+                getParent(function (n) {
                     var na = n.nodeName.toLowerCase(), u, pi, ti = '';
 
                     // Ignore non element and bogus/hidden elements
-                    if (n.nodeType != 1 || na === 'br' || n.getAttribute('data-mce-bogus') || DOM.hasClass(n, 'mceItemHidden') || DOM.hasClass(n, 'mceItemRemoved'))
+                    if (n.nodeType != 1 || na === 'br' || n.getAttribute('data-mce-bogus') || DOM.hasClass(n, 'mceItemHidden') || DOM.hasClass(n, 'mceItemRemoved') || DOM.hasClass(n, 'mceItemShim'))
                         return;
 
                     // Handle prefix
@@ -767,9 +707,9 @@
                             na = 'strong';
                             break;
 
-                            /*case 'i':
-                             na = 'em';
-                             break;*/
+                        /*case 'i':
+                         na = 'em';
+                         break;*/
 
                         case 'img':
                             if (v = DOM.getAttrib(n, 'src'))
@@ -852,7 +792,7 @@
                         root: ed.id + "_path_row",
                         items: DOM.select('a', p),
                         excludeFromTabOrder: true,
-                        onCancel: function() {
+                        onCancel: function () {
                             ed.focus();
                         }
                     }, DOM);
@@ -861,36 +801,36 @@
         },
         // Commands gets called by execCommand
 
-        _sel: function(v) {
+        _sel: function (v) {
             this.editor.execCommand('mceSelectNodeDepth', false, v);
         },
         /**
          * WF Editor Custom Help Command
          */
-        _mceHelp: function() {
+        _mceHelp: function () {
             var ed = this.editor;
 
             ed.windowManager.open({
                 url: ed.getParam('site_url') + 'index.php?option=com_jce&view=help&tmpl=component&lang=' + ed.getParam('language') + '&section=editor&category=editor&article=about',
-                width: 780,
-                height: 560,
                 inline: true,
-                popup_css: false
+                width: 780,
+                height: 560
             }, {
                 theme_url: this.url
             });
         },
 
-        _mceNewDocument: function() {
+        _mceNewDocument: function () {
             var ed = this.editor;
 
-            ed.windowManager.confirm('advanced.newdocument', function(s) {
-                if (s)
+            ed.windowManager.confirm('advanced.newdocument', function (s) {
+                if (s) {
                     ed.execCommand('mceSetContent', false, '');
+                }
             });
         },
 
-        _ufirst: function(s) {
+        _ufirst: function (s) {
             return s.substring(0, 1).toUpperCase() + s.substring(1);
         }
     });
