@@ -105,7 +105,7 @@
                 }
             }
 
-            DOM.add(modal, 'div', {'class' : 'mceModalFrame'}, html);
+            DOM.add(modal, 'div', {'class' : 'mceModalFrame', id: id + '_frame'}, html);
 
             //DOM.setStyles(id, {top : -10000, left : -10000});
 
@@ -358,6 +358,10 @@
 
                 DOM.setAttrib(id + '_ifr', 'src', 'javascript:""'); // Prevent leak
                 w.element.remove();
+
+                // remove frame
+                DOM.remove(id + '_frame');
+
                 delete self.windows[id];
 
                 fw = self._frontWindow();
