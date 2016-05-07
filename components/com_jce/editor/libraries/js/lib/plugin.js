@@ -452,6 +452,8 @@
                 var id = $(this).attr('id');
                 var ev = $(this).get(0).onchange;
 
+                $(this).parent().css('position', 'relative');
+
                 var $picker = $('<span role="button" class="pickcolor_icon" title="' + self.translate('browse') + '" id="' + id + '_pick"></span>').insertAfter(this).toggleClass('disabled', $(this).is(':disabled')).attr('aria-disabled', function () {
                     return $(this).hasClass('disabled');
                 });
@@ -510,6 +512,8 @@
             var self = this;
             $('input.browser').each(function () {
                 var input = this, type = $(this).hasClass('image') ? 'image' : 'file';
+
+                $(this).parent().css('position', 'relative');
 
                 var ev = $(this).get(0).onchange;
 
