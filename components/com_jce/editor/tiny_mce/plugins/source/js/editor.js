@@ -3,7 +3,7 @@
     var writer = new tinymce.html.Writer(ed.settings), parser = new tinymce.html.SaxParser(writer, ed.schema);
 
     /* Source Editor Class
-     * Depends on codemirror.js with modes (css, javascript, htmlmixed, xml, php, clike) and utilities (search, searchcursor, matchbrackets, closebrackets, match-highlighter, closetag, mark-selection, active-line) 
+     * Depends on codemirror.js with modes (css, javascript, htmlmixed, xml, php, clike) and utilities (search, searchcursor, matchbrackets, closebrackets, match-highlighter, closetag, mark-selection, active-line)
      */
 
     var SourceEditor = {
@@ -59,7 +59,7 @@
                 var n = DOM.add(self.toolbar, 'span', {
                     'class': 'button source_' + s,
                     'title': ed.getLang('source.' + s, s)
-                });
+                }, '<span class="mceIcon"></span>');
 
                 // create function
                 var func = self[s];
@@ -82,7 +82,7 @@
             var format = DOM.add(self.toolbar, 'span', {
                 'class': 'button source_format',
                 'title': ed.getLang('source.format', 'Format')
-            });
+            }, '<span class="mceIcon"></span>');
 
             DOM.bind(format, 'click', function() {
                 self.format();
@@ -103,7 +103,7 @@
                 var btn = DOM.add(search, 'span', {
                     'class': 'button source_' + s,
                     'title': ed.getLang('source.' + s, s)
-                });
+                }, '<span class="mceIcon"></span>');
 
                 // shortcut for function name, eg: search() or replace()
                 var fn = self[s];
@@ -125,7 +125,7 @@
                 var btn2 = DOM.add(search, 'span', {
                     'class': 'button source_' + s + '_' + k,
                     'title': ed.getLang('source.' + s + '_' + k, s + ' ' + k)
-                });
+                }, '<span class="mceIcon"></span>');
 
                 DOM.bind(btn2, 'click', function() {
                     var f = DOM.get('source_search_value').value, r;
@@ -241,7 +241,7 @@
                     /*DOM.setStyles(scroller, {
                         height: h
                     });*/
-                    
+
                     cm.setSize(w || null, h);
                 };
 
@@ -439,12 +439,12 @@
                     var range = getSelectedRange();
                     cm.autoFormatRange(range.from, range.to);
                 };
-                
+
                 if (o.font_size) {
                     if (/[^\D]/.test(o.font_size)) {
                         o.font_size += 'px';
                     }
-                    
+
                     cm.getWrapperElement().style.fontSize = o.font_size;
                 }
 

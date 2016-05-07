@@ -8,7 +8,7 @@
  * is derivative of works licensed under the GNU General Public License or
  * other free or open source software licenses.
  */
-body { 
+body {
     margin: 0;
     padding: 0;
     width: 100%;
@@ -20,12 +20,11 @@ div#source-container {
 }
 div#source-toolbar {
     width : 100%;
-    background: #F7F7F7 none;
-    border-bottom : 1px solid #eee;
-    padding : 0 2px;
-    font: 10px Verdana, Arial, Helvetica, sans-serif;
+    background: #f5f5f5 none;
+    border-bottom : 1px solid #ddd;
+    padding : 2px;
+    font: 12px "Helvetica Neue", Helvetica, Arial, sans-serif;
     position: relative;
-    
     float : left;
 }
 
@@ -44,48 +43,58 @@ div#source-toolbar span.source_search_container {
 
 div#source-toolbar span.button {
     display: inline-block;
-    width : 20px;
-    height : 20px;
     vertical-align: middle;
-    border : 1px solid #ccc;
+    border : 1px solid #ddd;
     margin : 2px 1px;
-    
-    background : url('../../../themes/advanced/img/icons.png') no-repeat 0 0;
-    
     border-radius: 2px;
-    
     cursor: pointer;
+    padding: 2px;
 }
 
-div#source-toolbar span.button:first-child {
-    margin-left : 5px;
+div#source-toolbar span.button span {
+  background : url('../../../themes/advanced/img/icons.png') no-repeat 0 0;
+  display: block;
+  width: 20px;
+  height: 20px;
+  line-height: 20px;
 }
 
 div#source-toolbar input[type="text"] {
-    margin : 1px 0;
     vertical-align: middle;
     width: 150px;
+    padding: 2px;
+    -webkit-border-radius: 2px;
+    -moz-border-radius: 2px;
+    border-radius: 2px;
+    border: 1px solid #ccc;
+
+    line-height: 16px;
+    height: 20px;
+}
+
+div#source-toolbar input[type="text"]:focus, div#source-toolbar input[type="text"]:active {
+  border-color: #95bdd4;
 }
 
 div#source-toolbar span.button:hover {
-    border:1px solid #0A246A;
-    background-color:#B2BBD0;
+    border:1px solid #99baca;
+    background-color:#ebf7fd;
 }
 
 div#source-toolbar span.button.active {
-    border:1px solid #0A246A;
-    background-color:#C2CBE0;    
+    border:1px solid #99baca;
+    background-color:#ebf7fd;
 }
 
-div#source-toolbar span.button.source_wrap {background-position:-100px -40px;}
-div#source-toolbar span.button.source_linenumbers {background-position:-120px -40px;}
-div#source-toolbar span.button.source_highlight {background-position:-140px -40px;}
-div#source-toolbar span.button.source_format {background-position:-400px 0;}
+div#source-toolbar span.button.source_wrap span {background-position:-100px -40px;}
+div#source-toolbar span.button.source_linenumbers span {background-position:-120px -40px;}
+div#source-toolbar span.button.source_highlight span {background-position:-140px -40px;}
+div#source-toolbar span.button.source_format span {background-position:-400px 0;}
 
-div#source-toolbar span.button.source_search {background-image: url('../img/icons.png'); background-repeat : no-repeat; background-position: 0 0;}
-div#source-toolbar span.button.source_search_prev {background-image: url('../img/icons.png'); background-repeat : no-repeat; background-position: -20px 0;}
-div#source-toolbar span.button.source_replace {background-position:-500px -20px;}
-div#source-toolbar span.button.source_replace_all {background-image: url('../img/icons.png'); background-repeat : no-repeat; background-position: -40px 0;}
+div#source-toolbar span.button.source_search span {background-image: url('../img/icons.png'); background-repeat : no-repeat; background-position: 0 0;}
+div#source-toolbar span.button.source_search_prev span {background-image: url('../img/icons.png'); background-repeat : no-repeat; background-position: -20px 0;}
+div#source-toolbar span.button.source_replace span {background-position:-500px -20px;}
+div#source-toolbar span.button.source_replace_all span {background-image: url('../img/icons.png'); background-repeat : no-repeat; background-position: -40px 0;}
 
 label[for="source_search_regex"] {
     line-height : 20px;
@@ -96,4 +105,17 @@ label[for="source_search_regex"] {
 
 #source_search_regex {
     vertical-align : middle;
+}
+
+input.placeholder, textarea.placeholder {
+    color: #bbb;
+}
+::-webkit-input-placeholder {
+    color: #bbb;
+}
+:-moz-placeholder {
+    color: #bbb;
+}
+:-ms-input-placeholder {
+    color: #bbb;
 }
