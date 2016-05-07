@@ -201,6 +201,18 @@
         return bool;
     })();
 
+    $.fn.datalist = function() {
+      return this.each(function() {
+          var id = $(this).attr('id');
+
+          $(this).attr('id', id + '-select').wrap('<div class="ui-datalist" />');
+
+          $('<input type="text" />').attr('id', id).insertAfter(this);
+
+          $(this).parent().width($(this).outerWidth());
+      });
+    };
+
     $.Plugin = {
         i18n: {},
         language: '',
@@ -309,9 +321,24 @@
                 change: this.options.change
             });
 
+            /*$('select.editable, select.mceEditableSelect').datalist().change(function() {
+              var s, value = this.value;
+
+              if (this.id === "classlist") {
+                var $tmp = $('<span/>').addClass($(this).siblings('input').val()).addClass(value);
+                value = $tmp.attr('class');
+              }
+
+              // multiple values
+              if (s = $(this).data('multiple')) {
+                value = $(this).siblings('input').val() + s + value;
+              }
+
+              $(this).siblings('input').val(value).change();
+            });*/
+
             // activate tooltips
             $('.hastip, .tip, .tooltip').tips();
-
             this._formWidgets();
         },
         /**
