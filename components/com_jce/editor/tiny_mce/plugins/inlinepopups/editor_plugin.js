@@ -1,12 +1,11 @@
 /**
- * @package   	JCE
- * @copyright 	Copyright (c) 2009-2016 Ryan Demmer. All rights reserved.
- * @copyright   Copyright 2009, Moxiecode Systems AB
- * @license   	GNU/LGPL 2.1 or later - http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html
- * JCE is free software. This version may have been modified pursuant
- * to the GNU General Public License, and as distributed it includes or
- * is derivative of works licensed under the GNU General Public License or
- * other free or open source software licenses.
+ * editor_plugin_src.js
+ *
+ * Copyright 2009, Moxiecode Systems AB
+ * Released under LGPL License.
+ *
+ * License: http://tinymce.moxiecode.com/license
+ * Contributing: http://tinymce.moxiecode.com/contributing
  */
 
 (function() {
@@ -19,432 +18,257 @@
                 ed.windowManager = new tinymce.InlineWindowManager(ed);
 
                 if (!ed.settings.compress.css) {
-                    DOM.loadCSS(url + '/css/dialog.css');
+                    DOM.loadCSS(url + '/css/window.css');
                 }
             });
 
-        },
-
-        getInfo : function() {
-            return {
-                longname : 'InlinePopups',
-                author : 'Moxiecode Systems AB',
-                authorurl : 'http://tinymce.moxiecode.com',
-                infourl : 'http://wiki.moxiecode.com/index.php/TinyMCE:Plugins/inlinepopups',
-                version : tinymce.majorVersion + "." + tinymce.minorVersion
-            };
         }
-
     });
+
+    function ucfirst(s) {
+      return s.substring(0, 1).toUpperCase() + s.substring(1);
+    }
 
     tinymce.create('tinymce.InlineWindowManager:tinymce.WindowManager', {
         InlineWindowManager : function(ed) {
-            var t = this;
-	
-            t.parent(ed);
-            t.zIndex = 300000;
-            t.count = 0;
-            t.windows = {};
+            var self = this;
+
+            self.parent(ed);
+            self.zIndex = 300000;
+            self.count = 0;
+            self.windows = {};
         },
-	
+
         open : function(f, p) {
-            var t = this, id, opt = '', ed = t.editor, dw = 0, dh = 0, vp, po, mdf, clf, we, w, u, parentWindow;
+            var self = this, id, opt = '', ed = self.editor, dw = 0, dh = 0, vp, po, mdf, clf, we, w, u, parentWindow;
 
             f = f || {};
             p = p || {};
 
             // Run native windows
-            if (!f.inline)
-                return t.parent(f, p);
+            if (!f.inline) {
+                return self.parent(f, p);
+            }
 
-            parentWindow = t._frontWindow();
+            parentWindow = self._frontWindow();
+
             if (parentWindow && DOM.get(parentWindow.id + '_ifr')) {
                 parentWindow.focussedElement = DOM.get(parentWindow.id + '_ifr').contentWindow.document.activeElement;
             }
-			
+
             // Only store selection if the type is a normal window
-            if (!f.type)
-                t.bookmark = ed.selection.getBookmark(1);
-
-            id = DOM.uniqueId("mce_inlinepopups_");
-            vp = DOM.getViewPort();
-            f.width = parseInt(f.width || 320);
-            f.height = parseInt(f.height || 240) + (tinymce.isIE ? 8 : 0);
-            f.min_width = parseInt(f.min_width || 150);
-            f.min_height = parseInt(f.min_height || 100);
-            f.max_width = parseInt(f.max_width || 2000);
-            f.max_height = parseInt(f.max_height || 2000);
-            f.left = f.left || Math.round(Math.max(vp.x, vp.x + (vp.w / 2.0) - (f.width / 2.0)));
-            f.top = f.top || Math.round(Math.max(vp.y, vp.y + (vp.h / 2.0) - (f.height / 2.0)));
-            f.movable = f.resizable = true;
-            p.mce_width = f.width;
-            p.mce_height = f.height;
-            p.mce_inline = true;
-            p.mce_window_id = id;
-            p.mce_auto_focus = f.auto_focus;
-
-            // Transpose
-            //			po = DOM.getPos(ed.getContainer());
-            //			f.left -= po.x;
-            //			f.top -= po.y;
-
-            t.features = f;
-            t.params = p;
-            t.onOpen.dispatch(t, f, p);
-
-            if (f.type) {
-                if (f.type)
-                    opt += ' ui-dialog-' + f.type.substring(0, 1) + f.type.substring(1);
-
-                f.resizable = false;
-            }
-            
-            // set modal as true by default
-            if (typeof f.modal == 'undefined') {
-                f.modal = true;
-            }
-            
-            var title = f.title || '';
-
-            // get ui container
-            var wrapper = DOM.get('ui-jce-wrapper');
-            
-            if (!wrapper) {
-                this.count = 0;
-                // create ui container
-                wrapper = DOM.add(DOM.doc.body, 'div', {
-                    'id'	: 'ui-jce-wrapper',
-                    'class' : 'ui-jce'
-                });
-            }
-            
-            // Create DOM objects
-            t._addAll(wrapper, 
-                ['div', {
-                    id : id, 
-                    role : 'dialog', 
-                    'aria-labelledby': f.type ? id + '_content' : id + '_title', 
-                    tabindex : -1, 
-                    'class' : 'ui-dialog ui-widget ui-widget-content ui-corner-all ui-draggable ui-resizable' + opt
-                    },
-                // title bar
-                ['div', {
-                    'class' : 'ui-dialog-titlebar ui-widget-header ui-corner-all ui-helper-clearfix'
-                }, 
-                // title
-                ['span', {
-                    id : id + '_title', 
-                    'class' : 'ui-dialog-title'
-                }, f.title || ''],
-                // close button
-                ['a', {
-                    href : '#', 
-                    'class' : 'ui-dialog-titlebar-close ui-corner-all', 
-                    role : 'button'
-                },
-                ['span', {
-                    'class' : 'ui-icon ui-icon-closethick'
-                }, 'close']
-                ]
-                ],
-					
-                // content block
-                ['div', {
-                    id : id + '_content', 
-                    'class' : 'ui-dialog-content ui-widget-content', 
-                    style : 'overflow:hidden;'
-                }],
-
-                // resize handles
-                ['div', {
-                    'class' : 'ui-resizable-handle ui-resizable-n'
-                }],
-                ['div', {
-                    'class' : 'ui-resizable-handle ui-resizable-s'
-                }],
-                ['div', {
-                    'class' : 'ui-resizable-handle ui-resizable-w'
-                }],
-                ['div', {
-                    'class' : 'ui-resizable-handle ui-resizable-e'
-                }],
-                ['div', {
-                    'class' : 'ui-resizable-handle ui-resizable-nw'
-                }],
-                ['div', {
-                    'class' : 'ui-resizable-handle ui-resizable-ne'
-                }],
-                ['div', {
-                    'class' : 'ui-resizable-handle ui-resizable-sw'
-                }],
-                ['div', {
-                    'class' : 'ui-resizable-handle ui-resizable-se ui-icon ui-icon-gripsmall-diagonal-se ui-icon-grip-diagonal-se'
-                }]
-                ]
-                );
-
-            DOM.setStyles(id, {
-                top : -10000, 
-                left : -10000
-            });
-            DOM.addClass(id, 'loading');
-
-            // Measure borders
             if (!f.type) {
-                dh += DOM.get(id).clientHeight;
-
-                f.min_height = f.height + dh;
+                self.bookmark = ed.selection.getBookmark(1);
             }
 
-            // Resize window
-            DOM.setStyles(id, {
-                top : f.top, 
-                left : f.left, 
-                width : f.width + dw, 
-                height : f.height + dh
-                });
+            id = DOM.uniqueId("mce_inlinepopups_"); // Use a prefix so this can't conflict with other ids
+
+            vp = DOM.getViewPort();
+
+            f.width  = parseInt(f.width || 320);
+      			f.height = parseInt(f.height || 240) + (tinymce.isIE ? 8 : 0);
+
+            f.left = f.left || Math.round(Math.max(vp.x, vp.x + (vp.w / 2.0) - (f.width / 2.0)));
+      			f.top  = f.top || Math.round(Math.max(vp.y, vp.y + (vp.h / 2.0) - (f.height / 2.0)));
+
+            p.mce_inline    = true;
+            p.mce_window_id = id;
+
+            p.mce_width     = f.width;
+            p.mce_height    = f.height;
+
+            self.features   = f;
+            self.params     = p;
+
+            self.onOpen.dispatch(self, f, p);
+
+            // modal html
+            var html = '<div class="mceModalBody" id="' + id + '">' +
+                '   <div class="mceModalContainer">' +
+                '       <div class="mceModalHeader mceModalMove" id="' + id + '_header">' +
+                '           <button class="mceModalClose" type="button"></button>' +
+                '           <h3 class="mceModalTitle" id="' + id + '_title">' + (f.title || "") + '</h3>' +
+                '       </div>' +
+                '       <div class="mceModalContent" id="' + id + '_content"></div>' +
+                '   </div>' +
+                '</div>';
+
+            // find modal
+            var modal = DOM.select('.mceModal');
+
+            // create modal
+            if (!modal.length) {
+                modal = DOM.add(DOM.doc.body, 'div', {'class' : 'mceModal', role: 'dialog'}, '');
+
+                if (f.overlay !== false) {
+                  DOM.add(modal, 'div', {'class' : 'mceModalOverlay'});
+                }
+            }
+
+            DOM.add(modal, 'div', {'class' : 'mceModalFrame'}, html);
+
+            //DOM.setStyles(id, {top : -10000, left : -10000});
 
             u = f.url || f.file;
+
             if (u) {
-                if (tinymce.relaxedDomain)
+                if (tinymce.relaxedDomain) {
                     u += (u.indexOf('?') == -1 ? '?' : '&') + 'mce_rdomain=' + tinymce.relaxedDomain;
+                }
 
                 u = tinymce._addVer(u);
             }
 
-            // create iframe
             if (!f.type) {
-                var iframe = DOM.add(id + '_content', 'iframe', {
-                    id : id + '_ifr', 
-                    src : 'javascript:""', 
-                    frameBorder : 0, 
-                    style : 'border:0;width:10px;height:10px'
-                });
-                DOM.setStyles(iframe, {
-                    width : f.width, 
-                    height : f.height
-                    });
+                // add loader
+                DOM.addClass(id, 'mceLoading');
+
+                var iframe = DOM.add(id + '_content', 'iframe', {id : id + '_ifr', src : 'javascript:""', frameBorder : 0});
+
+                try {
+                    iframe.style.minHeight = f.height + 'px';
+                } catch(e) {}
+
                 DOM.setAttrib(iframe, 'src', u);
-				
+
                 Event.add(iframe, 'load', function() {
-                    DOM.removeClass(id, 'loading');
+                    DOM.removeClass(id, 'mceLoading');
                 });
-				
-            // create type dialog ie: confirm, alert etc.
             } else {
-                var pane = DOM.add(id, 'div', {
-                    'class' : 'ui-dialog-buttonpane ui-widget-content ui-helper-clearfix'
-                });
+                // remove title
+                DOM.setHTML(id + '_title', '');
 
-                var set = DOM.add(pane, 'div', {
-                    'class' : 'ui-dialog-buttonset'
-                });
+                DOM.addClass(id, 'mceModal' + ucfirst(f.type));
 
-                DOM.add(set, 'button', {
-                    type 			: 'button', 
-                    id 				: id + '_ok', 
-                    'class' 		: 'ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only ui-button-ok',
-                    'role'			: 'button',
-                    'aria-disabled' : false,
-                    'aria-labelledby' : id + '_ok_text'
-                }, '<span class="ui-button-text" id="' + id + '_ok_text">' + ed.getLang('ok', 'OK') + '</span>');
+                // add footer
+                DOM.add(DOM.select('.mceModalContainer', id), 'div', {'class': 'mceModalFooter', id: id + '_footer'});
+
+                // add buttons
+                DOM.add(id + '_footer', 'button', {id : id + '_ok', 'class' : 'mceButton mceOk', type : 'button'}, f.type == 'confirm' ? 'Yes' : 'Ok');
 
                 if (f.type == 'confirm') {
-                    DOM.add(set, 'button', {
-                        type 			: 'button', 
-                        id 				: id + '_cancel', 
-                        'class' 		: 'ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only ui-button-cancel',
-                        'role'			: 'button',
-                        'aria-disabled' : false,
-                        'aria-labelledby' : id + '_ok_text'
-                    }, '<span class="ui-button-text" id="' + id + '_cancel_text">' + ed.getLang('cancel', 'Cancel') + '</span>');
+                    DOM.add(id + '_footer', 'button', {
+                        'type' : 'button',
+                        'class': 'mceButton mceCancel'
+                    }, 'No');
                 }
-                DOM.setHTML(id + '_content', '<span class="ui-icon ui-icon-'+ f.type +'"></span>' + f.content.replace('\n', '<br />'));
-                
+
+                DOM.setHTML(id + '_content', '<div>' + f.content.replace('\n', '<br />') + '</div>');
+
+                // Close on escape
                 Event.add(id, 'keyup', function(evt) {
-                    var VK_ESCAPE = 27;
-                    if (evt.keyCode === VK_ESCAPE) {
+                    if (evt.keyCode === 27) {
                         f.button_func(false);
                         return Event.cancel(evt);
                     }
                 });
 
                 Event.add(id, 'keydown', function(evt) {
-                    var cancelButton, VK_TAB = 9;
-                    if (evt.keyCode === VK_TAB) {
-                        cancelButton = DOM.get(id + '_cancel');
+
+                    if (evt.keyCode === 9) {
+                        var cancelButton = DOM.select('.mceCancel', id + '_footer')[0];
+
                         if (cancelButton && cancelButton !== evt.target) {
                             cancelButton.focus();
                         } else {
                             DOM.get(id + '_ok').focus();
                         }
+
                         return Event.cancel(evt);
                     }
                 });
             }
 
+            // Measure borders
+            if (!f.type) {
+                dh += DOM.get(id + '_header').clientHeight;
+            }
+
+            // Resize window
+			      DOM.setStyles(id, {width : f.width + dw, height : f.height + dh});
+
             // Register events
-            //mdf = Event.add(DOM.select('.ui-dialog-titlebar, .ui-resizable-handle', id), 'mousedown', function(e) {
             mdf = Event.add(id, 'mousedown', function(e) {
-                var n = e.target, ac;
+                var n = e.target, w, vp;
 
-                t.focus(id);
+                w = self.windows[id];
+                self.focus(id);
 
-                if (DOM.hasClass(n, 'ui-dialog-title')) {
-                    n = n.parentNode;
-                }
+                if (n.nodeName == 'BUTTON') {
+                    if (DOM.hasClass(n, 'mceModalClose')) {
+                        self.close(null, id);
 
-                if (DOM.hasClass(n, 'ui-dialog-titlebar')) {
-                    ac = 'move';
-
-                    return t._startDrag(id, e, ac);
-                }
-
-                if (DOM.hasClass(n, 'ui-resizable-handle')) {
-                    ac = /ui-resizable-(ne|nw|se|sw|n|s|e|w)/.exec(n.className);
-
-                    if (ac)
-                        return t._startDrag(id, e, ac[1]);
+                        return Event.cancel(e);
+                    }
+                } else if (DOM.hasClass(n, 'mceModalMove') || DOM.hasClass(n.parentNode, 'mceModalMove')) {
+                    return self._startDrag(id, e, 'Move');
                 }
             });
-            
-            // Make sure the tab order loops within the dialog.
-            //Event.add(id, function(evt) {
-            Event.add([id + '_left', id + '_right'], 'focus', function(evt) {
-                var iframe = DOM.get(id + '_ifr');
-                if (iframe) {
-                    var body = iframe.contentWindow.document.body;
-                    var focusable = DOM.select(':input:enabled,*[tabindex=0]', body);
-                    focusable[0].focus();
-                } else {
-                    DOM.get(id + '_ok').focus();
-                }
-            });
-			
-            clf = Event.add(id, 'click', function(e) {	
+
+            // click event on modal
+            clf = Event.add(id, 'click', function(e) {
                 var n = e.target;
 
-                t.focus(id);
-                
-                if (DOM.is(n, '.ui-button-cancel, .ui-button-cancel span, .ui-button-ok, .ui-button-ok span')) {
-                    f.button_func(DOM.is(n, '.ui-button-ok, .ui-button-ok span'));
-                } else if (DOM.is(n, '.ui-dialog-titlebar-close, .ui-dialog-titlebar-close span')) {
-                    t.close(null, id);
+                self.focus(id);
+
+                if (n.nodeName == 'BUTTON') {
+                    if (DOM.hasClass(n, 'mceModalClose')) {
+                        self.close(null, id);
+                    }
+
+                    if (DOM.hasClass(n, 'mceButton')) {
+                        f.button_func(DOM.hasClass(n, 'mceOk'));
+                    }
+
+                    return Event.cancel(e);
                 }
-
-                return Event.cancel(e);
-            });
-
-            Event.add(DOM.select('.ui-dialog-titlebar-close', id), 'mouseover', function(e) {
-                var n = e.target;
-
-                if (n.nodeName != 'A') {
-                    n = n.parentNode;
-                }
-
-                DOM.addClass(n, 'ui-state-hover');
-            });
-
-            Event.add(DOM.select('.ui-dialog-titlebar-close', id), 'mouseout', function(e) {
-                var n = e.target;
-
-                if (n.nodeName != 'A') {
-                    n = n.parentNode;
-                }
-
-                DOM.removeClass(n, 'ui-state-hover');
-            });
-
-            Event.add(DOM.select('.ui-dialog-titlebar-close', id), 'focus', function(e) {
-                var n = e.target;
-
-                if (n.nodeName != 'A') {
-                    n = n.parentNode;
-                }
-
-                DOM.addClass(n, 'ui-state-focus');
-            });
-
-            Event.add(DOM.select('.ui-dialog-titlebar-close', id), 'blur', function(e) {
-                var n = e.target;
-
-                if (n.nodeName != 'A') {
-                    n = n.parentNode;
-                }
-
-                DOM.removeClass(n, 'ui-state-focus');
             });
 
             // Add window
-            w = t.windows[id] = {
-                id 				: id,
-                mousedown_func 	: mdf,
-                click_func 		: clf,
-                element 		: new Element(id, {
-                    blocker : 1, 
-                    container : ed.getContainer()
-                    }),
-                iframeElement 	: new Element(id + '_ifr'),
-                features 		: f,
-                deltaWidth 		: dw,
-                deltaHeight 	: dh
+            w = self.windows[id] = {
+                id : id,
+                mousedown_func : mdf,
+                click_func : clf,
+                element : new Element(id),
+                iframeElement : new Element(id + '_ifr'),
+                features : f,
+                deltaWidth : dw,
+                deltaHeight : dh
             };
 
             w.iframeElement.on('focus', function() {
-                t.focus(id);
+                self.focus(id);
             });
-            
-            var overlay = DOM.get('ui-widget-overlay');
-            
-            if (!overlay && f.modal) {
-                overlay = DOM.add(wrapper, 'div', {
-                    id : 'ui-widget-overlay',
-                    'class' : 'ui-widget-overlay',
-                    style : {
-                        position 	: 'fixed',
-                        left		:0,
-                        top			:0,
-                        width		:'100%',
-                        height		:'100%',
-                        zIndex 		: t.zIndex - 1
-                    }
-                });
-            	
-                DOM.show(overlay); // Reduces flicker in IE
-                DOM.setAttrib(DOM.doc.body, 'aria-hidden', 'true');
-            }
-            
+
             DOM.setAttrib(id, 'aria-hidden', 'false');
-            
-            if (tinymce.isIE6 || (tinymce.isIE && !DOM.boxModel) && overlay) {
-                DOM.setStyles(overlay, {
-                    position : 'absolute', 
-                    left : vp.x, 
-                    top : vp.y, 
-                    width : vp.w - 2, 
-                    height : vp.h - 2
-                    });
+
+            self.focus(id);
+
+            // Focus ok button
+            if (DOM.get(id + '_ok')) {
+                DOM.get(id + '_ok').focus();
             }
-            
-            t.focus(id);
-            
-            this.count++;
+
+            self.count++;
 
             return w;
         },
-        
-        focus : function(id) {
-            var t = this, w;
 
-            if (w = t.windows[id]) {
+        focus : function(id) {
+            var self = this, w;
+
+            if (w = self.windows[id]) {
                 w.zIndex = this.zIndex++;
                 w.element.setStyle('zIndex', w.zIndex);
                 w.element.update();
 
-                DOM.removeClass(t.lastId, 'ui-dialog-focus');
-                DOM.addClass(id, 'ui-dialog-focus');
-                t.lastId = id;
-				
+                id = id + '_frame';
+
+                DOM.removeClass(self.lastId, 'mceFocus');
+                DOM.addClass(id, 'mceFocus');
+
+                self.lastId = id;
+
                 if (w.focussedElement) {
                     w.focussedElement.focus();
                 } else if (DOM.get(id + '_ok')) {
@@ -454,335 +278,192 @@
                 }
             }
         },
-        
-        _addAll : function(te, ne) {
-            var i, n, t = this, dom = tinymce.DOM;
-
-            if (is(ne, 'string'))
-                te.appendChild(dom.doc.createTextNode(ne));
-            else if (ne.length) {
-                te = te.appendChild(dom.create(ne[0], ne[1]));
-
-                for (i=2; i<ne.length; i++)
-                    t._addAll(te, ne[i]);
-            }
-        },
 
         _startDrag : function(id, se, ac) {
-            var t = this, mu, mm, d = DOM.doc, eb, w = t.windows[id], we = w.element, sp = we.getXY(), p, sz, ph, cp, vp, sx, sy, sex, sey, dx, dy, dw, dh;
+            var self = this, mu, mm, d = DOM.doc, w = self.windows[id], p, cp, vp, sx, sy, dx, dy;
+
+            if (DOM.hasClass(id, 'dragging')) {
+              end();
+              return Event.cancel(se);
+            }
+
+            DOM.addClass(id, 'dragging');
+
+            p = DOM.getRect(id);
+            vp = DOM.getViewPort();
+
+            DOM.setStyles(id, {'position' : 'absolute', 'left' : p.x - vp.x, 'top': p.y - vp.y});
 
             // Get positons and sizes
-            cp = {
-                x : 0, 
-                y : 0
-            };
-            vp = DOM.getViewPort();
+            cp = {x : 0, y : 0};
 
             // Reduce viewport size to avoid scrollbars while dragging
             vp.w -= 2;
             vp.h -= 2;
 
-            sex = se.screenX;
-            sey = se.screenY;
-            dx = dy = dw = dh = 0;
+            sx = se.screenX;
+            sy = se.screenY;
+
+            function end() {
+              Event.remove(d, 'mouseup', mu);
+              Event.remove(d, 'mousemove', mm);
+
+              DOM.removeClass(id, 'dragging');
+            }
 
             // Handle mouse up
             mu = Event.add(d, 'mouseup', function(e) {
-                Event.remove(d, 'mouseup', mu);
-                Event.remove(d, 'mousemove', mm);
-
-                DOM.removeClass(id, 'ui-dialog-dragging');
-
-                if (eb)
-                    eb.remove();
-
-                we.moveBy(dx, dy);
-                we.resizeBy(dw, dh);
-
-                sz = we.getSize();
-                DOM.setStyles(id + '_ifr', {
-                    width : sz.w - w.deltaWidth, 
-                    height : sz.h - w.deltaHeight
-                    });
+                end();
 
                 return Event.cancel(e);
             });
 
-            if (ac != 'move')
-                startMove();
+            // Handle mouse move/drag
+            mm = Event.add(d, 'mousemove', function(e) {
+                var x, y, v;
 
-            function startMove() {
-                if (eb)
-                    return;
+                x = e.screenX - sx;
+                y = e.screenY - sy;
 
-                DOM.addClass(id, 'ui-dialog-dragging');
+                dx = Math.max(p.x + x, 10);
+                dy = Math.max(p.y + y, 10);
 
-                // Setup event blocker
-                var blocker = DOM.add(DOM.get('ui-jce-wrapper'), 'div', {
-                    id		: 'ui-dialog-blocker',
-                    'class' : 'ui-widget ui-dialog-blocker',
-                    style 	: {
-                        zIndex : t.zIndex + 1
-                        }
-                });
+                DOM.setStyles(id, {'left' : dx - vp.x, 'top': dy - vp.y});
 
-                if (tinymce.isIE6 || (tinymce.isIE && !DOM.boxModel))
-                    DOM.setStyles(blocker, {
-                        position : 'absolute', 
-                        left : vp.x, 
-                        top : vp.y, 
-                        width : vp.w - 2, 
-                        height : vp.h - 2
-                        });
+                return Event.cancel(e);
+            });
 
-                eb = new Element(blocker);
-                eb.update();
+            return Event.cancel(se);
+        },
 
-                // Setup placeholder
-                sz = {
-                    w : DOM.get(id).clientWidth,
-                    h : DOM.get(id).clientHeight
-                };
+        close : function(win, id) {
+            var self = this, w, d = DOM.doc, fw, id;
 
-                sx = cp.x + sp.x - vp.x;
-                sy = cp.y + sp.y - vp.y;
+            id = self._findId(id || win);
 
-                DOM.add(eb.get(), 'div', {
-                    id : 'ui-dialog-placeholder', 
-                    'class' : 'ui-widget-content ui-widget-overlay', 
-                    style : {
-                        left : sx, 
-                        top : sy, 
-                        width : sz.w, 
-                        height : sz.h
-                        }
-                    });
-            ph = new Element('ui-dialog-placeholder');
-        };
-
-        // Handle mouse move/drag
-        mm = Event.add(d, 'mousemove', function(e) {
-            var x, y, v;
-
-            startMove();
-
-            x = e.screenX - sex;
-            y = e.screenY - sey;
-
-            switch (ac) {
-                case 'w':
-                    dx = x;
-                    dw = 0 - x;
-                    break;
-
-                case 'e':
-                    dw = x;
-                    break;
-
-                case 'n':
-                case 'nw':
-                case 'ne':
-                    if (ac == "nw") {
-                        dx = x;
-                        dw = 0 - x;
-                    } else if (ac == "ne")
-                        dw = x;
-
-                    dy = y;
-                    dh = 0 - y;
-                    break;
-
-                case 's':
-                case 'sw':
-                case 'se':
-                    if (ac == "sw") {
-                        dx = x;
-                        dw = 0 - x;
-                    } else if (ac == "se")
-                        dw = x;
-
-                    dh = y;
-                    break;
-
-                case 'move':
-                    dx = x;
-                    dy = y;
-                    break;
+            // Probably not inline
+            if (!self.windows[id]) {
+                self.parent(win);
+                return;
             }
 
-            // Boundary check
-            if (dw < (v = w.features.min_width - sz.w)) {
-                if (dx !== 0)
-                    dx += dw - v;
+            self.count--;
 
-                dw = v;
+            if (w = self.windows[id]) {
+                self.onClose.dispatch(self);
+                Event.remove(d, 'mousedown', w.mousedownFunc);
+                Event.remove(d, 'click', w.clickFunc);
+                Event.clear(id);
+                Event.clear(id + '_ifr');
+
+                DOM.setAttrib(id + '_ifr', 'src', 'javascript:""'); // Prevent leak
+                w.element.remove();
+                delete self.windows[id];
+
+                fw = self._frontWindow();
+
+                if (fw) {
+                    self.focus(fw.id);
+                }
             }
 
-            if (dh < (v = w.features.min_height - sz.h)) {
-                if (dy !== 0)
-                    dy += dh - v;
+            if (self.count === 0) {
+                DOM.remove(DOM.select('.mceModal'));
+                DOM.setAttrib(DOM.doc.body, 'aria-hidden', 'false');
+                self.editor.focus();
+            }
+        },
 
-                dh = v;
+        // Find front most window
+        _frontWindow : function() {
+            var fw, ix = 0;
+            // Find front most window and focus that
+            each (this.windows, function(w) {
+                if (w.zIndex > ix) {
+                    fw = w;
+                    ix = w.zIndex;
+                }
+            });
+            return fw;
+        },
+
+        setTitle : function(w, ti) {
+            var e;
+
+            w = this._findId(w);
+
+            if (e = DOM.get(w + '_title')) {
+                e.innerHTML = DOM.encode(ti);
+            }
+        },
+
+        alert : function(txt, cb, s) {
+            var self = this, w;
+
+            w = self.open({
+                title : self,
+                type : 'alert',
+                button_func : function(s) {
+                    if (cb) {
+                        cb.call(s || self, s);
+                    }
+                    self.close(null, w.id);
+                },
+                content : DOM.encode(self.editor.getLang(txt, txt)),
+                inline : 1,
+                height: 160
+            });
+        },
+
+        confirm : function(txt, cb, s) {
+            var self = this, w;
+
+            w = self.open({
+                title   : self,
+                type    : 'confirm',
+                button_func : function(s) {
+                    if (cb) {
+                        cb.call(s || self, s);
+                    }
+                    self.close(null, w.id);
+                },
+                content : DOM.encode(self.editor.getLang(txt, txt)),
+                inline : 1,
+                height: 160
+            });
+        },
+
+        resizeBy : function(dw, dh, id) {
+    			var w = this.windows[id];
+
+    			if (w) {
+    				w.element.resizeBy(dw, dh);
+    				w.iframeElement.resizeBy(dw, dh);
+    			}
+    		},
+
+        // Internal functions
+
+        _findId : function(w) {
+            var self = this;
+
+            if (typeof(w) == 'string') {
+                return w;
             }
 
-            dw = Math.min(dw, w.features.max_width - sz.w);
-            dh = Math.min(dh, w.features.max_height - sz.h);
-            dx = Math.max(dx, vp.x - (sx + vp.x));
-            dy = Math.max(dy, vp.y - (sy + vp.y));
-            dx = Math.min(dx, (vp.w + vp.x) - (sx + sz.w + vp.x));
-            dy = Math.min(dy, (vp.h + vp.y) - (sy + sz.h + vp.y));
+            each(self.windows, function(wo) {
+                var ifr = DOM.get(wo.id + '_ifr');
 
-            // Move if needed
-            if (dx + dy !== 0) {
-                if (sx + dx < 0)
-                    dx = 0;
+                if (ifr && w == ifr.contentWindow) {
+                    w = wo.id;
+                    return false;
+                }
+            });
 
-                if (sy + dy < 0)
-                    dy = 0;
-
-                ph.moveTo(sx + dx, sy + dy);
-            }
-
-            // Resize if needed
-            if (dw + dh !== 0)
-                ph.resizeTo(sz.w + dw, sz.h + dh);
-
-            return Event.cancel(e);
-        });
-
-        return Event.cancel(se);
-    },
-
-    resizeBy : function(dw, dh, id) {
-        var w = this.windows[id];
-
-        if (w) {
-            w.element.resizeBy(dw, dh);
-            w.iframeElement.resizeBy(dw, dh);
-        }
-    },
-
-    close : function(win, id) {
-        var t = this, w, d = DOM.doc, ix = 0, fw, id;
-
-        id = t._findId(id || win);
-
-        // Probably not inline
-        if (!t.windows[id]) {
-            t.parent(win);
-            return;
-        }
-
-        if (w = t.windows[id]) {            	
-            t.onClose.dispatch(t);
-            Event.remove(d, 'mousedown', w.mousedownFunc);
-            Event.remove(d, 'click', w.clickFunc);
-            Event.clear(id);
-            Event.clear(id + '_ifr');
-                
-            DOM.setAttrib(id + '_ifr', 'src', 'javascript:""'); // Prevent leak
-            w.element.remove();
-            delete t.windows[id];
-
-            fw = t._frontWindow();
-
-            if (fw)
-                t.focus(fw.id);
-
-            this.count--;
-
-            if (fw)
-                t.focus(fw.id);
-        }
-            
-        // no windows open, remove wrapper and overlay
-        if (this.count == 0) {
-            DOM.remove('ui-jce-wrapper');
-            DOM.setAttrib(DOM.doc.body, 'aria-hidden', 'false');
-        }
-    },
-
-    alert : function(txt, cb, s) {
-        var t = this, w;
-
-        w = t.open({
-            title : t,
-            type : 'alert',
-            button_func : function(s) {
-                if (cb)
-                    cb.call(t, s);
-
-                t.close(null, w.id);
-            },
-            content : DOM.encode(t.editor.getLang(txt, txt)),
-            inline : 1,
-            width : 400,
-            height : 150
-        });
-    },
-
-    confirm : function(txt, cb, s) {
-        var t = this, w;
-
-        w = t.open({
-            title : t,
-            type : 'confirm',
-            button_func : function(s) {					
-                if (cb)
-                    cb.call(t, s);
-
-                t.close(null, w.id);
-            },
-            content : DOM.encode(t.editor.getLang(txt, txt)),
-            inline : 1,
-            width : 400,
-            height : 150
-        });
-    },
-
-    setTitle : function(w, ti) {
-        var e;
-
-        w = this._findId(w);
-
-        if (e = DOM.get(w + '_title'))
-            e.innerHTML = DOM.encode(ti);
-    },
-		
-    // Find front most window
-    _frontWindow : function() {
-        var fw, ix = 0;
-        // Find front most window and focus that
-        each (this.windows, function(w) {
-            if (w.zIndex > ix) {
-                fw = w;
-                ix = w.zIndex;
-            }
-        });
-        return fw;
-    },
-
-    // Internal functions
-
-    _findId : function(w) {
-        var t = this;
-
-        if (typeof(w) == 'string')
             return w;
-
-        each(t.windows, function(wo) {
-            var ifr = DOM.get(wo.id + '_ifr');
-
-            if (ifr && w == ifr.contentWindow) {
-                w = wo.id;
-                return false;
-            }
-        });
-
-        return w;
-    }
+        }
     });
 
-// Register plugin
-tinymce.PluginManager.add('inlinepopups', tinymce.plugins.InlinePopups);
-    })();
+    // Register plugin
+    tinymce.PluginManager.add('inlinepopups', tinymce.plugins.InlinePopups);
+})();
