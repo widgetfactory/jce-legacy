@@ -38,19 +38,19 @@ div#search-browser span#searchbox span.search-icon {
     width: 20px;
     height: 20px;
     dispaly : none;*/
-    
+
     height: 16px;
     position: absolute;
     right: 4px;
     top: 0;
     width: 16px;
-    
+
     visibility: hidden;
 }
 
 div#search-browser span#searchbox span.search-icon.clear {
     /*background: url("../../../libraries/img/icons.png") no-repeat 0 -920px;*/
-    
+
     visibility: visible;
     opacity: 0.5;
     filter: alpha(opacity=50);
@@ -59,7 +59,7 @@ div#search-browser span#searchbox span.search-icon.clear {
 }
 div#search-browser span#searchbox span.search-icon.loading {
     background: url("../../../libraries/img/load.gif") no-repeat center;
-    
+
     visibility: visible;
 }
 div#search-browser div#search-result {
@@ -92,7 +92,7 @@ div#search-browser div#search-result dl dt {
     font-weight: bold;
     margin : 10px 0 5px 0;
     text-decoration: underline;
-    
+
     text-overflow: ellipsis;
     overflow: hidden;
     white-space: pre;
@@ -132,7 +132,7 @@ div#search-browser #search-options {
     position : absolute;
     background: #fff none;
     border: 1px solid #ccc;
-    margin : 2px 0;
+    margin : 0;
     -moz-box-shadow:    1px 1px 3px #ccc;
     -webkit-box-shadow: 1px 1px 3px #ccc;
     box-shadow:         1px 1px 3px #ccc;
@@ -190,3 +190,5 @@ div#search-options fieldset.search_only ul {
 div#search-options fieldset.search_only ul li {
     display : inline-block;
 }
+
+.phrases-box input[type="radio"] {margin: 0 5px 2px 0;}

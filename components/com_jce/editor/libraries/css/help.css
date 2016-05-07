@@ -14,8 +14,6 @@ html {
     overflow : hidden;
 }
 body.contentpane {
-    font-size: 8pt;
-    line-height: 10pt;
     margin: 0;
     padding: 0;
 }
@@ -98,7 +96,7 @@ div#help-menu dd {
     margin: 0;
     padding: 0px 0px 0px 25px;
     background: url("../img/icons.png") no-repeat 0 -400px;
-    line-height: 20px; 
+    line-height: 20px;
     overflow: hidden;
     cursor:pointer;
 }

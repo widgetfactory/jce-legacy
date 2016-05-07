@@ -26,11 +26,11 @@
                     });
                     applyStyleToBlocks = true;
                 }
-                
+
                 ed.windowManager.open({
                     file 	: ed.getParam('site_url') + 'index.php?option=com_jce&view=editor&layout=plugin&plugin=style',
                     width 	: 620 + parseInt(ed.getLang('style.delta_width', 0)),
-                    height 	: 360 + parseInt(ed.getLang('style.delta_height', 0)),
+                    height 	: 380 + parseInt(ed.getLang('style.delta_height', 0)),
                     inline 	: 1,
                     popup_css : false
                 }, {
@@ -53,7 +53,7 @@
 
             // Register buttons
             ed.addButton('style', {
-                title : 'style.desc', 
+                title : 'style.desc',
                 cmd : 'mceStyleProps'
             });
         },

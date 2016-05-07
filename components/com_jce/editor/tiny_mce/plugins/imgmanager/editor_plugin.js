@@ -30,8 +30,7 @@
                     width: 780 + ed.getLang('imgmanager.delta_width', 0),
                     height: 640 + ed.getLang('imgmanager.delta_height', 0),
                     inline: 1,
-                    popup_css: false,
-                    size: 'large-landscape'
+                    popup_css: false
                 }, {
                     plugin_url: url
                 });
@@ -60,7 +59,7 @@
 
             /*ed.onBeforeRenderUI.add(function() {
              var DOM = tinymce.DOM;
-             
+
              if (ed.getParam('imgmanager_hide_xtd_buttons', true)) {
              tinymce.each(DOM.select('div.image', 'editor-xtd-buttons'), function(n) {
              DOM.hide(n.parentNode);
