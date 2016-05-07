@@ -26,14 +26,15 @@ defined('_JEXEC') or die('RESTRICTED');
             <div id="colorpicker_template" title="<?php echo WFText::_('WF_COLORPICKER_TEMPLATE'); ?>" data-type="template" class="tab-pane"><!-- Gets filled with template colors--></div>
         </div>
     </div>
-    <div id="colorpicker_preview">
-        <div id="colorpicker_preview_text">
-            <input type="text" id="colorpicker_color" size="8" maxlength="8" value="#000000" class="ui-corner-all" aria-required="true" />
-        </div>
-        <div id="colorpicker_preview_color" style="background-color: rgb(0, 0, 0);" class="ui-widget-content ui-corner-all"></div>
-    </div>
 </div>
-<input type="hidden" id="tmp_color" />	
+<input type="hidden" id="tmp_color" />
 <div class="mceActionPanel">
+  <div id="colorpicker_preview">
+      <div id="colorpicker_preview_text">
+          <input type="text" id="colorpicker_color" size="8" maxlength="8" value="#000000" class="ui-corner-all" aria-required="true" />
+          <div id="colorpicker_preview_color" style="background-color: rgb(0, 0, 0);" class="ui-widget-content ui-corner-all"></div>
+      </div>
+    </div>
+
     <button type="button" id="colorpicker_insert" onclick="ColorPicker.insert();"><?php echo WFText::_('WF_LABEL_APPLY'); ?></button>
 </div>
