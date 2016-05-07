@@ -131,9 +131,9 @@ ul#upload-queue li input {
 }
 
 #upload-queue .queue-item-progress {
-	height: 10px;
-	background: #cae1ff none;
-	display: none;
+	height: 5px;
+	background: #00a8e6 none;
+	display: block;
 	margin: 5px 0 0 0;
 	width: 0;
 }
