@@ -14,10 +14,11 @@ defined( '_JEXEC' ) or die('RESTRICTED');
 ?>
 <form onsubmit="return false;" action="<?php echo $this->action;?>" target="_self" method="post" enctype="multipart/form-data">
 	<div id="browser">
-		<fieldset>
-			<legend><span id="layout-full-toggle" role="button"></span><?php echo WFText::_('WF_LABEL_BROWSER');?></legend>
-			
 			<div class="layout-top">
+				<span id="layout-full-toggle" role="button">
+					<i class="ui-icon ui-icon-arrowthickstop-1-n"></i>
+					<i class="ui-icon ui-icon-arrowthickstop-1-s"></i>
+				</span>
 				<div class="layout-header">
 					<div id="browser-message"></div>
 					<div id="browser-actions"></div>
@@ -46,7 +47,7 @@ defined( '_JEXEC' ) or die('RESTRICTED');
 							<div class="spacer"></div>
 							<span class="layout-icon sort">&nbsp;<span id="sort-name-label"><?php echo WFText::_('WF_LABEL_NAME');?></span></span>
 						</div>
-						
+
 						<!-- Sort Date -->
 						<div id="sort-date" role="button" data-sort-type="date" aria-labelledby="sort-date-label" aria-hidden="true">
 							<div class="spacer"></div>
@@ -65,7 +66,7 @@ defined( '_JEXEC' ) or die('RESTRICTED');
 							<span class="layout-icon search"></span>
 						</div>
 						<div id="searchbox" class="hide" role="popup"><input id="search" /><span class="search-icon"></span></div>
-						
+
 						<!-- Toggle Details -->
 						<div id="show-details" role="button">
 							<div class="spacer"></div>
@@ -78,7 +79,7 @@ defined( '_JEXEC' ) or die('RESTRICTED');
 							<li class="limit-left" role="button"></li>
 							<li class="limit-left-end" role="button"></li>
 						</ul>
-		                <div class="limit-text"> 
+		                <div class="limit-text">
 							<label for="browser-list-limit-select"><?php echo WFText::_('WF_LABEL_SHOW');?></label>
 							<select id="browser-list-limit-select">
 		                    	<option value="10">10</option>
@@ -94,7 +95,7 @@ defined( '_JEXEC' ) or die('RESTRICTED');
 						</ul>
 					</div>
 				</div>
-			
+
 				<div class="layout-right">
 					<div class="header"><?php echo WFText::_('WF_LABEL_DETAILS');?></div>
 					<div id="browser-details">
@@ -110,8 +111,7 @@ defined( '_JEXEC' ) or die('RESTRICTED');
 					</div>
 				</div>
 			</div>
-		</fieldset>
 	</div>
-	<!--input type="hidden" name="<?php echo $this->session->getName();?>" value="<?php echo $this->session->getId();?>" /--> 
+	<!--input type="hidden" name="<?php echo $this->session->getName();?>" value="<?php echo $this->session->getId();?>" /-->
 	<input type="hidden" name="<?php echo WFToken::getToken();?>" value="1" />
 </form>
