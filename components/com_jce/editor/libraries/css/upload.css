@@ -39,7 +39,7 @@ div#upload-body button.uploadButton.removeQueue {
 	float: right;
 }
 div#upload-body button.uploadButton.addQueue span.ui-icon-circle-plus {
-	background: url(../img/icons.png) no-repeat 0 -300px;	
+	background: url(../img/icons.png) no-repeat 0 -300px;
 }
 div#upload-body div.uploadButton.addQueue.loading span.ui-icon-remove {
 	background: url(../img/load.gif) no-repeat;
@@ -47,7 +47,7 @@ div#upload-body div.uploadButton.addQueue.loading span.ui-icon-remove {
 	color: gray;
 }
 div#upload-body button.uploadButton.removeQueue span.ui-icon-circle-minus {
-	background: url(../img/icons.png) no-repeat 0 -340px; 
+	background: url(../img/icons.png) no-repeat 0 -340px;
 }
 div#upload-body button.uploadButton input {
 	top: 0;
@@ -68,7 +68,7 @@ ul#upload-queue {
 	white-space: nowrap;
 	margin: 0px;
 	vertical-align: middle;
-	
+
 	box-shadow: 0 0 2px #333 inset;
     -moz-box-shadow: 0 0 2px #333 inset;
     -webkit-box-shadow: 0 0 1.5px #333 inset;
@@ -77,51 +77,69 @@ ul#upload-queue {
     border-radius: 3px;
     -moz-border-radius: 3px;
     -webkit-border-radius: 3px;
-    
+
     min-height: 240px;
     max-height: 300px;
     overflow: auto;
 }
 ul#upload-queue li {
     margin: 2px;
-    min-height: 20px;
     padding: 1px;
     position: relative;
     text-shadow: 0 1px 0 #FFFFFF;
     background-color: transparent;
-    border: 1px solid #ccc;
 }
 
-ul#upload-queue li.load {
+ul#upload-queue .load .file {
 	background: url(../img/load.gif) no-repeat center left;
+}
+.queue-item-extension {
+	position: absolute;
+	right: -30px;
+	top: 0px;
+	line-height: 24px;
+	height: auto;
+	color: #aaa;
+}
+
+.queue-item .file {
+	width: 20px;
+	height: 20px;
+	background-color: transparent;
+}
+
+.queue-item-actions span {
+	height: 20px;
+	line-height: 20px;
+}
+
+ul#upload-queue .queue-item-input {
+	width: 70%;
+	position: relative;
+	margin-right: 34px;
 }
 
 ul#upload-queue li span {
 	cursor: pointer;
-    height: 20px;
-    line-height: 20px;
-    vertical-align: middle;
-    z-index: 4;
+  vertical-align: middle;
 	margin: 0 2px;
 	display: inline-block;
 }
 ul#upload-queue li input {
 	width: 100%;
-	z-index: 10000;
-	height: 16px;
-	position: absolute;
-	top: -1px;
+	padding-right: 30px;
 }
-ul#upload-queue li span.queue-item-name {
-	float: left;
-	margin: 0 0 0 24px;
-	width: 65%;
-	position: relative;
-	cursor: default;
+
+#upload-queue .queue-item-progress {
+	height: 10px;
+	background: #cae1ff none;
+	display: none;
+	margin: 5px 0 0 0;
+	width: 0;
 }
-ul#upload-queue li span.queue-item-actions {
-	float: right;
-}
+
+ul#upload-queue li span.queue-item-actions {}
+
 ul#upload-queue li span.queue-item-name span.queue-item-name-text {
 	position: absolute;
 	left: 2px;
@@ -131,20 +149,10 @@ ul#upload-queue li span.queue-item-actions span.queue-item-size {
     text-align: left;
 	cursor: default;
 }
-ul#upload-queue li span.queue-item-name span.queue-item-progress {
-	display: none;
-	position: absolute;
-	width: 0;
-	background: #cae1ff none;
-	z-index: 1;
-}
-ul#upload-queue li span.queue-item-actions span.queue-item-rename {
-	width: 20px;
-	background:	url(../img/icons.png) no-repeat 0 -420px; 
-}
+
 ul#upload-queue li span.queue-item-actions span.queue-item-insert {
 	width: 20px;
-	background:	url(../img/icons.png) no-repeat 0 -1240px; 
+	background:	url(../img/icons.png) no-repeat 0 -1240px;
 }
 ul#upload-queue li span.queue-item-actions span.queue-item-status {
 	width: 20px;

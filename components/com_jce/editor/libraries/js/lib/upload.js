@@ -287,11 +287,11 @@
             // Add loader
             $(el).addClass('load');
             // disable insert, rename, name
-            $('span.queue-item-rename, span.queue-item-insert', '#upload-queue').addClass('disabled');
+            $('input[type="text"], span.queue-item-insert', '#upload-queue').addClass('disabled');
             // show progressbar for flash
             if (this.uploader.runtime != 'html4') {
                 // show progress bar
-                $('span.queue-item-progress', el).show();
+                $('.queue-item-progress', el).show();
             }
         },
         _isError: function (err) {
@@ -333,7 +333,7 @@
                 // show error text
                 $(file.element).addClass('error').after('<li class="queue-item-error"><span>' + msg + '</span></li>');
                 // hide progress
-                $('span.queue-item-progress', file.element).hide();
+                $('.queue-item-progress', file.element).hide();
             } else {
                 $(file.element).addClass(status);
 
@@ -529,10 +529,7 @@
 
                 var status = doc.createElement('span');
                 var size = doc.createElement('span');
-                var name = doc.createElement('span');
-                var rename = doc.createElement('span');
                 var insert = doc.createElement('span');
-                var input = doc.createElement('input');
 
                 // status
                 $(status).attr({
@@ -546,32 +543,16 @@
                     return self._removeFile(file);
                 });
 
-                // text
-                $(name).attr({
-                    'title': title,
-                    'role': 'presentation'
-                }).addClass('queue-item-name').append('<span class="queue-item-progress" role="presentation"></span><span class="queue-item-name-text">' + title + '</span>').appendTo(file.element);
-
                 // size
                 $(size).attr({
                     'title': plupload.formatSize(file.size),
                     'role': 'presentation'
                 }).addClass('queue-item-size').html(plupload.formatSize(file.size));
 
-                // input
-                $(input).attr({
-                    'type': 'text',
-                    'aria-hidden': true
-                }).appendTo(name).hide();
+                var name  = $.String.stripExt(file.name);
+                var ext   = $.String.getExt(file.name);
 
-                // rename
-                $(rename).attr({
-                    'title': $.Plugin.translate('rename', 'Rename'),
-                    'role': 'button'
-                }).addClass('queue-item-rename').not('.disabled').click(function (e) {
-                    $('span.queue-item-name-text', name).click();
-                    e.preventDefault();
-                });
+                var input = $('<span class="file ' + ext + '"></span><span class="queue-item-input"><input type="text" value="' + name + '" /><span class="queue-item-extension">.' + ext + '</span></span>').appendTo(file.element);
 
                 // insert
                 $(insert).attr({
@@ -589,7 +570,7 @@
 
                 }).addClass('queue-item-insert disabled').toggle(self.options.insert);
 
-                var buttons = [size, rename, insert, status];
+                var buttons = [size, insert, status];
 
                 // add optional buttons
                 $.each(self.options.buttons, function (name, props) {
@@ -610,14 +591,28 @@
                 // create actions container
                 $('<span class="queue-item-actions"></span>').appendTo(file.element).append(buttons);
 
-                $('#upload-body').click(function (e) {
-                    if ($(e.target).is('input, span.queue-item-rename, span.queue-item-name-text', file.element))
+                // progress
+                $('<span class="queue-item-progress" role="presentation"></span>').appendTo(file.element);
+
+                $('input[type="text"]', input).on('change keyup', function(e) {
+                    var v = this.value;
+                    // make web safe
+                    v = $.String.safe(this.value, self.options.websafe_mode, self.options.websafe_spaces);
+
+                    if (v !== this.value) {
+                        $(this).addClass('invalid');
+
                         return;
+                    }
 
-                    $(input).blur();
-                });
+                    $(this).removeClass('invalid');
 
-                $('span.queue-item-name-text', name).click(function (e) {
+                    if (e.type === "change") {
+                        self._renameFile(file, v + '.' + ext);
+                    }
+                }).change();
+
+                /*$('span.queue-item-name-text', name).click(function (e) {
                     if (self.uploading) {
                         e.preventDefault();
                         return;
@@ -661,9 +656,9 @@
                     });
 
                     $(input).focus();
-                });
+                });*/
 
-                $(file.element).addClass('queue-item').addClass('file').addClass($.String.getExt(file.name)).appendTo($(self.element));
+                $(file.element).addClass('queue-item').appendTo($(self.element));
 
                 self._trigger('fileSelect', null, file);
             });
