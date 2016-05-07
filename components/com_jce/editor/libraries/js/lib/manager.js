@@ -330,7 +330,7 @@
             });
 
             // Full Height Layout button
-            $('#layout-full-toggle').toggle(this.options.expandable).click(function () {
+            $('#layout-full-toggle').toggleClass('hide', !this.options.expandable).click(function () {
                 $('#browser').toggleClass('full-height');
                 self.resize(ih);
 
@@ -515,8 +515,12 @@
                 if (src.indexOf('://' + this.options.base) !== -1) {
                     // remove scheme
                     src = src.replace(/http(s)?:\/\//i, '');
+
                     // remove query etc.
-                    src = src.substr(0, src.indexOf('?'));
+                    if (src.indexOf('?') !== -1) {
+                      src = src.substr(0, src.indexOf('?'));
+                    }
+
                     // remove base
                     src = src.replace(this.options.base, '');
                 }
@@ -814,7 +818,7 @@
                 message: '',
                 state: ''
             });
-            // add list		
+            // add list
             $status.empty();
 
             var $pathway = $('<ul/>').addClass('pathway').appendTo($status);
@@ -1226,12 +1230,12 @@
                             /*$('#upload-overwrite').empty().append( function() {
                              return $.map(self.options.upload.conflict, function(v, k) {
                              var o = document.createElement('option');
-                             
+
                              $(o).attr('value', k).html(self._translate(v, v));
-                             
+
                              return o;
                              });
-                             
+
                              });*/
 
                             /**
@@ -1600,7 +1604,7 @@
                 this._actions[name] = action;
             }
 
-            $(this.options.dialog.actions).append('<span class="spacer"></span>').append(action);
+            $(this.options.dialog.actions).append(action);
 
             if (!$.support.cssFloat && !window.XMLHttpRequest) {
                 $(action).hover(function () {
@@ -2129,7 +2133,7 @@
             // show navigation buttons
             if (n > 1) {
 
-                // get active item index				
+                // get active item index
                 var index = $items.index($items.filter('.active'));
 
                 if (index) {
@@ -2195,10 +2199,10 @@
 
             var callback = function () {
                 var name = title, ext = '';
-                
+
                 $(self.element).next('span.loader').remove();
 
-                if (type == 'file') {                    
+                if (type == 'file') {
                     name = $.String.stripExt(title);
                     ext = $.String.getExt(title) + ' ';
                 }
@@ -2334,12 +2338,12 @@
 
             if (!$(item).data('url') && type === "file") {
                 $(this.element).after('<span class="loader" />');
-                
+
                 $.JSON.request('getFileDetails', [path], function(o) {
                     if ($.isPlainObject(o)) {
                         $(item).data('url', o.url || '').data('preview', o.preview || o.url || '');
                     }
-                    
+
                     callback();
                 }, this);
             } else {
