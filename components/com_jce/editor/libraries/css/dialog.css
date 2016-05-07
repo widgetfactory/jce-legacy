@@ -13,7 +13,7 @@ html {
 }
 body#jce {
     padding: 5px !important;
-    font: 10px Verdana, Arial, Helvetica, sans-serif;
+    font: 12px "Helvetica Neue", Helvetica, Arial, sans-serif;
     background-color: #FFF;
     margin: 0;
     position: relative;
@@ -21,12 +21,14 @@ body#jce {
     overflow: hidden;
 
     -webkit-overflow-scrolling : 'touch';
+
+    box-sizing: border-box;
 }
 #jce {
     border: 0 none;
 }
 #jce select, #jce input #jce textarea {
-    font: 10px Verdana, Arial, Helvetica, sans-serif;
+    font: 12px "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
 #jce .ui-widget {}
@@ -46,10 +48,9 @@ a:hover {
 }
 fieldset {
     margin:0;
-    padding:4px;
+    padding: 0 5px;
 }
 legend {
-    color:#2B6FB6;
     font-weight: bold;
     padding: 0 5px;
 }
@@ -64,10 +65,6 @@ input.invalid {
     border:1px solid #E00;
 }
 
-input, select, textarea {
-    font-size:10px;
-    border:1px solid gray;
-}
 a.browse span {
     display:block;
     width:20px;
@@ -101,14 +98,12 @@ a.pickcolor span {
 }
 
 h1, h2, h3, h4, h5 {
-    color:#2B6FB6;
     margin:0;
     padding: 2px 0;
 }
 .title {
-    font-size:12px;
+    font-size:1.1em;
     font-weight:700;
-    color:#2B6FB6;
 }
 #plugintable thead {
     font-weight:700;
@@ -135,12 +130,13 @@ label.disabled {
     color:#ccc;
 }
 input[type="text"], select {
-    line-height:14px;
+    line-height:16px;
     padding: 1px;
+    height:20px;
 }
-input[type="text"] {
-    height:16px;
-}
+
+select {padding: 2px 1px}
+
 input[type="checkbox"] {
     margin: 2px;
     vertical-align: middle;
@@ -292,27 +288,31 @@ a.browse {
 a.browse span.image, span.browser_icon.image {
     background:url(../img/icons.png) 0 -980px;
 }
-a.browse:hover span, span.browser_icon:hover {
-    border:1px solid #0A246A;
-    background-color:#B2BBD0;
-}
+
 a.browse span.disabled, span.browser_icon.disabled {
     border:1px solid #FFF;
     opacity:0.3;
     -ms-filter:"progid:DXImageTransform.Microsoft.Alpha(Opacity=30)";
     filter: alpha(opacity=30);
 }
-a.browse:hover span.disabled, span.browser_icon.disabled:hover {
-    border:1px solid #FFF;
-    background-color:transparent;
-}
-a.pickcolor:hover span, span.pickcolor_icon:hover {
-    background-color:#B2BBD0;
-}
+
 .mceActionPanel, div.actionPanel {
-    position: absolute;
-    bottom: 25px;
-    right: 4px;
+  /*position: absolute;
+  bottom: 10px;
+  right: 5px;
+  left: 5px;
+  text-align: right;*/
+
+  position: absolute;
+bottom: 0;
+right: 0;
+left: 0;
+text-align: right;
+background: #fafafa;
+height: 30px;
+border: 0 solid #ddd;
+border-top-width: 1px;
+padding: 10px;
 }
 label, input, select {
     vertical-align:middle;
@@ -351,7 +351,7 @@ span.ui-slider {
     left: 5px;
 }
 
-#jce div.ui-dialog div.ui-dialog-content div.confirm, 
+#jce div.ui-dialog div.ui-dialog-content div.confirm,
 #jce div.ui-dialog div.ui-dialog-content div.alert {
     display: inline-block;
     font-size: 1.1em;
@@ -362,7 +362,7 @@ span.ui-slider {
     word-wrap: break-word;
 }
 
-#jce div.ui-dialog div.ui-dialog-content div.confirm span.icon, 
+#jce div.ui-dialog div.ui-dialog-content div.confirm span.icon,
 #jce div.ui-dialog div.ui-dialog-content div.alert span.icon {
     display: inline-block;
     float: left;
@@ -449,7 +449,7 @@ div#popups_tab {
     vertical-align: middle;
     cursor:pointer;
     display: inline-block;
-}	
+}
 
 /* spinner */
 .spinner {
@@ -480,3 +480,29 @@ to {-o-transform:rotate(360deg);}
     from {transform:rotate(0deg);}
 to {transform:rotate(360deg);}
 }
+
+#margin_top, #margin_right, #margin_bottom, #margin_left, #border_width {width: 35px;}
+#margin_top, #margin_right, #margin_bottom, #margin_left, #border_style, #border_width, #border_color, #clear {margin: 0 3px !important}
+
+[data-plugin="iframe"] fieldset, [data-plugin="mediamanager"] fieldset {
+  border: 0 none;
+}
+
+[data-plugin="iframe"] .ui-tabs-panel {height: 240px}
+
+[data-plugin="iframe"] legend, [data-plugin="mediamanager"] legend {
+  padding: 0;
+}
+
+.ui-datalist {position: relative; display: inline-block;}
+
+.ui-datalist input {
+  position: absolute;
+  z-index: 2;
+  left: 0;
+  max-width: 91%;
+  max-width: calc(100% - 20px);
+  border-right-width: 0px !important;
+}
+
+.ui-datalist #border_width {margin: 0 !important;}

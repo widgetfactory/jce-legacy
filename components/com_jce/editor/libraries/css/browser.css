@@ -1,8 +1,11 @@
+.hide {display: none !important;}
+
 div#browser {
     margin: 5px 0 0;
     background-color: #FFF;
     width: 100%;
     position: relative;
+    display: table;
 }
 
 #jce form:first-child div#browser {
@@ -53,11 +56,16 @@ div#browser span#layout-full-toggle {
     display: inline-block;
     vertical-align: middle;
     cursor: pointer;
-    background: url('../img/icons.png') no-repeat 0 -1200px;
-    width: 20px;
-    height: 20px;
-    margin: 0 5px 0 0;
+    position: absolute;
+    left: 0;
+    top: 0;
+    opacity: 0.5;
+    padding: 8px 2px;
 }
+
+div#browser span#layout-full-toggle i + i {display: none}
+div#browser.full-height span#layout-full-toggle i {display: none}
+div#browser.full-height span#layout-full-toggle i + i {display: block}
 
 div#browser.full-height span#layout-full-toggle {
     background-position: 0 -1220px;
@@ -85,6 +93,11 @@ div.layout-left div.header {
 div.layout-top div.layout-header {
     border: 1px solid #ccc;
     height: 30px;
+    padding-left: 20px;
+}
+
+.hide + div.layout-header {
+  padding: 0 !important;
 }
 
 div#browser-actions {
@@ -222,10 +235,10 @@ div#browser-list-actions div:first-child {
 
 div#browser-buttons {
     position: absolute;
-    right: 0;
-    top: 22px;
+    right: 3px;
+    top: 25px;
     height: 220px;
-    padding: 3px 2px 4px 2px;
+    padding: 0;
 }
 
 div.layout-right div.spacer {
@@ -321,7 +334,7 @@ div#browser-message ul.pathway {
     list-style : none;
     overflow: visible;
     white-space: nowrap;
-    margin : 0 0 0 30px;	
+    margin : 0 0 0 30px;
     padding : 0;
 }
 div#browser-message ul.pathway li {
@@ -830,7 +843,7 @@ ul.item-list {
 
 ul.item-list li {
     cursor: pointer;
-    margin: 1px 2px 1px 30px;
+    margin: 2px 2px 2px 30px;
     padding: 0px;
     line-height: 20px;
     position: relative;
@@ -863,8 +876,8 @@ ul.item-list li a {
     display : inline-block;
 }
 
-div#browser.full-width ul.item-list li a { 
-    width: 170px;	
+div#browser.full-width ul.item-list li a {
+    width: 170px;
 }
 
 ul.item-list li a:visited,ul.item-list li a:active,ul.item-list li a:link {
@@ -937,20 +950,8 @@ div#browser-buttons {
 
 }
 
-div#browser-actions span.spacer {
-    width: 1px;
-    height: 32px;
-    margin: -1px 0px 2px;
-    border: 1px solid #ccc;
-    border-top-width: 0;
-    border-bottom-width: 0;
-    background-color: #FFF;
-    display: inline-block;
-}
-
 div.button {
     color: #919B9C;
-    border: 1px solid #ccc;
     width: 20px;
     height: 20px;
     padding: 1px;
@@ -965,8 +966,7 @@ span.action {
     height: 24px;
     width: 24px;
     cursor: pointer;
-    border: 1px solid #ccc;
-    margin: 3px 3px 6px;
+    margin: 3px 6px;;
 }
 
 span.action span {
@@ -978,7 +978,7 @@ span.button:hover {
 }
 
 div.button {
-    margin: 2px 0;
+    margin: 3px 0;
 }
 
 div.button span {
@@ -1043,11 +1043,11 @@ div.actionPanel div {
         display: none;
         width : 0;
     }
-    
+
     #browser div.layout-bottom div.layout-center {
         width : 70%;
     }
-    
+
     #browser div#browser-list-actions div#show-details {
         display: none;
     }
