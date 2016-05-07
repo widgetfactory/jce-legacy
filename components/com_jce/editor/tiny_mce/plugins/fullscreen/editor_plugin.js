@@ -128,7 +128,7 @@
 
                     s.id = 'mce_fullscreen';
                     s.width = n.clientWidth;
-                    s.height = n.clientHeight - 15;
+                    s.height = n.clientHeight - 33;
                     s.fullscreen_is_enabled = true;
                     s.fullscreen_editor_id = ed.id;
                     s.theme_advanced_resizing = false;
