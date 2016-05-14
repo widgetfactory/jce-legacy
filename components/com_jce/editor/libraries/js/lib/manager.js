@@ -54,8 +54,7 @@
                 types: {},
                 overwrite: true,
                 limit: false,
-                runtimes: 'html5,flash,html4',
-                chunk_size: '1mb',
+                runtimes: 'html5,html4',
                 insert: true,
                 dialog: {},
                 elements: null,
@@ -1275,8 +1274,6 @@
 
                             // Initialize uploader
                             $('#upload-queue').uploader($.extend({
-                                swf: site + 'components/com_jce/editor/libraries/plupload/plupload.flash.swf',
-                                xap: site + 'components/com_jce/editor/libraries/plupload/plupload.silverlight.xap',
                                 url: $('form:first').attr('action'),
                                 field: $('input[name=file]:first'),
                                 fileSelect: function (e, file) {
