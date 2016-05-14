@@ -103,7 +103,7 @@ class WFJoomlaFileSystem extends WFFileSystem {
             }
         }
 
-        JDispatcher::getInstance()->trigger('onWfFileSystemGetRootDir', array($root));
+        JDispatcher::getInstance()->trigger('onWfFileSystemGetRootDir', array(&$root));
 
         return $root;
     }
@@ -384,7 +384,7 @@ class WFJoomlaFileSystem extends WFFileSystem {
 
         $path = WFUtility::makePath($this->getBaseDir(), $src);
 
-        JDispatcher::getInstance()->trigger('onWfFileSystemBeforeDelete', array($path));
+        JDispatcher::getInstance()->trigger('onWfFileSystemBeforeDelete', array(&$path));
 
         if (is_file($path)) {
             $result->type = 'files';
@@ -415,7 +415,7 @@ class WFJoomlaFileSystem extends WFFileSystem {
         $src = WFUtility::makePath($this->getBaseDir(), rawurldecode($src));
         $dir = dirname($src);
 
-        JDispatcher::getInstance()->trigger('onWfFileSystemBeforeRename', array($src, $dest));
+        JDispatcher::getInstance()->trigger('onWfFileSystemBeforeRename', array(&$src, &$dest));
 
         $result = new WFFileSystemResult();
 
@@ -443,7 +443,7 @@ class WFJoomlaFileSystem extends WFFileSystem {
             $result->path = $path;
         }
 
-        JDispatcher::getInstance()->trigger('onWfFileSystemAfterRename', array($path, $result->state));
+        JDispatcher::getInstance()->trigger('onWfFileSystemAfterRename', array(&$result));
 
         return $result;
     }
@@ -460,7 +460,7 @@ class WFJoomlaFileSystem extends WFFileSystem {
         $src = WFUtility::makePath($this->getBaseDir(), $file);
         $dest = WFUtility::makePath($this->getBaseDir(), WFUtility::makePath($destination, basename($file)));
 
-        JDispatcher::getInstance()->trigger('onWfFileSystemBeforeCopy', array($src, $dest));
+        JDispatcher::getInstance()->trigger('onWfFileSystemBeforeCopy', array(&$src, &$dest));
 
         // src is a file
         if (is_file($src)) {
@@ -478,7 +478,7 @@ class WFJoomlaFileSystem extends WFFileSystem {
             $result->path = $dest;
         }
 
-        JDispatcher::getInstance()->trigger('onWfFileSystemAfterCopy', array($dest, $result->state));
+        JDispatcher::getInstance()->trigger('onWfFileSystemAfterCopy', array(&$result));
 
         return $result;
     }
@@ -495,7 +495,7 @@ class WFJoomlaFileSystem extends WFFileSystem {
         $src = WFUtility::makePath($this->getBaseDir(), $file);
         $dest = WFUtility::makePath($this->getBaseDir(), WFUtility::makePath($destination, basename($file)));
 
-        JDispatcher::getInstance()->trigger('onWfFileSystemBeforeMove', array($src, $dest));
+        JDispatcher::getInstance()->trigger('onWfFileSystemBeforeMove', array(&$src, &$dest));
 
         if ($src != $dest) {
             // src is a file
@@ -509,7 +509,7 @@ class WFJoomlaFileSystem extends WFFileSystem {
             }
         }
 
-        JDispatcher::getInstance()->trigger('onWfFileSystemAfterMove', array($dest, $result->state));
+        JDispatcher::getInstance()->trigger('onWfFileSystemAfterMove', array(&$result));
 
         return $result;
     }
@@ -597,14 +597,14 @@ class WFJoomlaFileSystem extends WFFileSystem {
             }
         }
 
-        JDispatcher::getInstance()->trigger('onWfFileSystemBeforeUpload', array($src, $dest));
+        JDispatcher::getInstance()->trigger('onWfFileSystemBeforeUpload', array(&$src, &$dest));
 
         if (JFile::upload($src, $dest, false, true)) {
             $result->state = true;
             $result->path = $dest;
         }
 
-        JDispatcher::getInstance()->trigger('onWfFileSystemAfterUpload', array($dest, $result->state));
+        JDispatcher::getInstance()->trigger('onWfFileSystemAfterUpload', array(&$result));
 
         return $result;
     }
@@ -624,7 +624,7 @@ class WFJoomlaFileSystem extends WFFileSystem {
     public function write($file, $content) {
         $path = WFUtility::makePath($this->getBaseDir(), rawurldecode($file));
 
-        JDispatcher::getInstance()->trigger('onWfFileSystemBeforeWrite', array($path, $content));
+        JDispatcher::getInstance()->trigger('onWfFileSystemBeforeWrite', array(&$path, &$content));
 
         $result = JFile::write($path, $content);
 
