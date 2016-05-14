@@ -7,15 +7,15 @@
  * License: http://tinymce.moxiecode.com/license
  * Contributing: http://tinymce.moxiecode.com/contributing
  *
- * This file should only be used while developing TinyMCE 
+ * This file should only be used while developing TinyMCE
  * tiny_mce.js or tiny_mce_src.js should be used in a production environment.
  * This file loads the js files from classes instead of a merged copy.
  */
 
 (function() {
 	var i, base, src, p, query = '', it, scripts = [];
-    
-        base = '../../../tinymce-for-jce2/jscripts/tiny_mce';
+
+        base = '../../../tinymce-for-jce-proton/jscripts/tiny_mce';
 
 	function include(u) {
 		scripts.push(base + '/classes/' + u);
@@ -29,7 +29,7 @@
 
 		document.write(html);
 	};
-	
+
 	// Core ns
 	include('tinymce.js');
 
