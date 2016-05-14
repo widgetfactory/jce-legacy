@@ -268,12 +268,12 @@
             });
 
             // create styled form elements
-            $(document).ready(function () {
+            /*$(document).ready(function () {
                 // custom checkbox
                 $('input[type="checkbox"]').checkbox();
                 // custom radio
                 $('input[type="radio"]').radio();
-            });
+            });*/
 
             // remove loader
             $(document).ready(function () {
@@ -408,7 +408,7 @@
                             }
 
                             $(el).trigger('visibility:toggle', state);
-                            // set function when element is toggled itself    
+                            // set function when element is toggled itself
                         }).on('visibility:toggle', function (e, state) {
                             if (state) {
                                 $(el).parent().show();
