@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @package   	JCE
  * @copyright 	Copyright (c) 2009-2015 Ryan Demmer. All rights reserved.
@@ -8,9 +9,8 @@
  * is derivative of works licensed under the GNU General Public License or
  * other free or open source software licenses.
  */
+defined('_JEXEC') or die('RESTRICTED');
 
-if (is_file(WF_EDITOR_LIBRARIES . '/pro/classes/manager.php')) {
-  require_once(WF_EDITOR_LIBRARIES . '/pro/classes/manager.php');
-} else {
-  require_once(dirname( __FILE__ ).'/manager/manager.php');
-}
+require_once(dirname(__FILE__) . '/base.php');
+
+class WFMediaManager extends WFMediaManagerBase {}
