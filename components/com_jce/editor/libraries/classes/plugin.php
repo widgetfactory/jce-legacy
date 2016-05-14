@@ -46,16 +46,20 @@ class WFEditorPlugin extends JObject {
         // get plugin name
         $plugin = JRequest::getCmd('plugin');
 
-        // check plugin is valid
-        //$this->checkPlugin($plugin) or die('RESTRICTED');
-        
+        // get name and caller from plugin name
+        if (strpos($plugin, '.') !== false) {
+            list ($plugin, $caller) = explode('.', $plugin);
+            // store caller
+            $this->set('caller', $caller);
+        }
+
         // set plugin name
         $this->set('name', $plugin);
 
-        // set config
-        if (!array_key_exists('type', $config)) {
-            $config['type'] = 'standard';
-        }
+        // load core language
+        WFLanguage::load('com_jce', JPATH_ADMINISTRATOR);
+        // Load Plugin language
+        WFLanguage::load('com_jce_' . trim($plugin));
 
         if (!array_key_exists('base_path', $config)) {
             $config['base_path'] = WF_EDITOR_PLUGINS . '/' . $plugin;
@@ -171,11 +175,6 @@ class WFEditorPlugin extends JObject {
 
     public function execute() {
         WFToken::checkToken() or die('Access to this resource is restricted');
-        
-        // load core language
-        WFLanguage::load('com_jce', JPATH_ADMINISTRATOR);
-        // Load Plugin language
-        WFLanguage::load('com_jce_' . trim($this->getName()));
 
         // JSON request or upload action
         if ($this->isRequest()) {
@@ -426,6 +425,9 @@ class WFEditorPlugin extends JObject {
     public function getParam($key, $fallback = '', $default = '', $type = 'string', $allowempty = true) {
         // get plugin name
         $name = $this->getName();
+        // get caller if any
+        $caller = $this->get('caller');
+
         // get all keys
         $keys = explode('.', $key);
 
@@ -438,7 +440,15 @@ class WFEditorPlugin extends JObject {
         } else {
             // get fallback
             $fallback = $wf->getParam('editor.' . $key, $fallback, $allowempty);
-            // get param for plugin
+
+            if ($caller) {
+                // get fallback from plugin (with editor parameter as fallback)
+                $fallback = $wf->getParam($name . '.' . $key, $fallback, $default, $type, $allowempty);
+                // set name to caller
+                $name = $caller;
+            }
+
+            // return parameter
             return $wf->getParam($name . '.' . $key, $fallback, $default, $type, $allowempty);
         }
     }
