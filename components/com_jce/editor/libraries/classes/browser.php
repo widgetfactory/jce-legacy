@@ -42,8 +42,6 @@ class WFFileBrowser extends JObject {
             'filesystem' => 'joomla',
             'filetypes' => 'images=jpg,jpeg,png,gif',
             'upload' => array(
-                'runtimes' => 'html5,flash,silverlight,html4',
-                'chunk_size' => null,
                 'max_size' => 1024,
                 'validate_mimetype' => 1,
                 'add_random' => 0,
@@ -1345,32 +1343,11 @@ class WFFileBrowser extends JObject {
             $size = $upload_max / 1024 . 'kb';
         }
 
-        $runtimes = array();
-
-        if (is_string($upload['runtimes'])) {
-            $runtimes = explode(',', $upload['runtimes']);
-        } else {
-            foreach ($upload['runtimes'] as $k => $v) {
-                $runtimes[] = $v;
-            }
-        }
-
-        // remove flash runtime if $chunk_size is 0 (no chunking)
-        /* if (!$chunk_size) {
-          unset($runtimes[array_search('flash', $runtimes)]);
-          } */
-
         $defaults = array(
-            'runtimes' => implode(',', $runtimes),
             'size' => $size,
             'filter' => $this->mapUploadFileTypes(true),
             'elements' => $elements
         );
-
-        // only add chunk size if it has a value
-        /* if ($chunk_size) {
-          $defaults['chunk_size'] = $chunk_size;
-          } */
 
         if (isset($features['dialog'])) {
             $defaults['dialog'] = $features['dialog'];
