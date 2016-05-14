@@ -11,7 +11,7 @@ plugins/quickicon/*
 administrator/modules/*
 
 # config
-!.gitignore
+#!.gitignore
 !.tx
 
 components/com_jce/editor/.gitignore
