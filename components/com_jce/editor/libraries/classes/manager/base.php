@@ -58,13 +58,34 @@ class WFMediaManagerBase extends WFEditorPlugin {
      * @return object WFBrowserExtension
      */
     public function getBrowser() {
+        return $this->getFileBrowser();
+    }
+    
+    /**
+     * Get the File Browser instance
+     * @access public
+     * @return object WFBrowserExtension
+     */
+    protected function getFileBrowser() {
         $name = $this->getName();
 
         if (!isset(self::$browser[$name])) {
-            self::$browser[$name] = new WFFileBrowser($this->getProperties());
+            self::$browser[$name] = new WFFileBrowser($this->getFileBrowserConfig());
         }
 
         return self::$browser[$name];
+    }
+
+    protected function addFileBrowserAction($name, $options = array()) {
+        $this->getFileBrowser()->addAction($name, $options);
+    }
+
+    protected function addFileBrowserButton($type = 'file', $name, $options = array()) {
+        $this->getFileBrowser()->addButton($type, $name, $options);
+    }
+
+    protected function addFileBrowserEvent($name, $function = array()) {
+      $this->getFileBrowser()->addEvent($name, $function);
     }
 
     /**
@@ -118,29 +139,33 @@ class WFMediaManagerBase extends WFEditorPlugin {
      * @return array
      */
     private function getConfig() {
-        $filesystem = $this->getFileSystem();
-
-        $filetypes = $this->getParam('extensions', $this->get('_filetypes', 'images=jpg,jpeg,png,gif'));
-
-        $textcase = $this->getParam('editor.websafe_textcase', 'any');
+        return $this->getFileBrowserConfig();
+    }
+    
+    /**
+     * Get the Media Manager configuration
+     * @access private
+     * @return array
+     */
+    protected function getFileBrowserConfig($config = array()) {
+        $filetypes  = $this->getParam('extensions', $this->get('_filetypes'));
+        $textcase   = $this->getParam('editor.websafe_textcase', 'any');
 
         if (!empty($textcase) && is_array($textcase)) {
             $textcase = count($textcase) > 1 ? 'any' : array_shift($textcase);
         }
 
-        $config = array(
+        $base = array(
             'dir' => $this->getParam('dir', '', '', 'string', false),
-            'filesystem' => $filesystem,
-            'filetypes' => $filetypes,
+            'filesystem'  => $this->getFileSystem(),
+            'filetypes'   => $filetypes,
             'upload' => array(
-                'runtimes' => $this->getParam('editor.upload_runtimes', array('html5', 'flash', 'silverlight', 'html4'), '', 'array', false),
-                'chunk_size' => null,
-                'max_size' => $this->getParam('max_size', 1024, '', 'string', false),
-                'validate_mimetype' => (int) $this->getParam('validate_mimetype', 1),
-                'add_random' => (int) $this->getParam('editor.upload_add_random', 0),
-                'total_files' => (float) $this->getParam('editor.total_files', 0),
-                'total_size' => (float) $this->getParam('editor.total_size', 0),
-                'remove_exif' => (int) $this->getParam('editor.upload_remove_exif', 0)
+                'max_size'          => $this->getParam('max_size', 1024, '', 'string', false),
+                'validate_mimetype' => (int) $this->getParam('editor.validate_mimetype', 1),
+                'add_random'        => (int) $this->getParam('editor.upload_add_random', 0),
+                'total_files'       => (float) $this->getParam('editor.total_files', 0),
+                'total_size'        => (float) $this->getParam('editor.total_size', 0),
+                'remove_exif'       => (int) $this->getParam('editor.upload_remove_exif', 0)
             ),
             'folder_tree' => $this->getParam('editor.folder_tree', 1),
             'list_limit' => $this->getParam('editor.list_limit', 'all'),
@@ -148,15 +173,15 @@ class WFMediaManagerBase extends WFEditorPlugin {
             'features' => array(
                 'upload' => $this->getParam('upload', 1),
                 'folder' => array(
-                    'create' => $this->getParam('folder_new', 1),
-                    'delete' => $this->getParam('folder_delete', 1),
-                    'rename' => $this->getParam('folder_rename', 1),
-                    'move' => $this->getParam('folder_move', 1)
+                    'create'  => $this->getParam('folder_new', 1),
+                    'delete'  => $this->getParam('folder_delete', 1),
+                    'rename'  => $this->getParam('folder_rename', 1),
+                    'move'    => $this->getParam('folder_move', 1)
                 ),
                 'file' => array(
-                    'delete' => $this->getParam('file_delete', 1),
-                    'rename' => $this->getParam('file_rename', 1),
-                    'move' => $this->getParam('file_move', 1)
+                    'delete'  => $this->getParam('file_delete', 1),
+                    'rename'  => $this->getParam('file_rename', 1),
+                    'move'    => $this->getParam('file_move', 1)
                 )
             ),
             'websafe_mode' => $this->getParam('editor.websafe_mode', 'utf-8'),
@@ -165,7 +190,7 @@ class WFMediaManagerBase extends WFEditorPlugin {
             'date_format' => $this->getParam('editor.date_format', '%d/%m/%Y, %H:%M')
         );
 
-        return $config;
+        return WFUtility::array_merge_recursive_distinct($base, $config);
     }
 
     /**
