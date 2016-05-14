@@ -23,7 +23,7 @@
         // shortcut
         var $profiles = $jce.Profiles;
 
-        // validate form	
+        // validate form
         if ($profiles.validate()) {
 
             // trigger onSubmit callback
@@ -97,18 +97,16 @@
             });
 
             $('#paramseditorwidth').change(function() {
-                var v = $(this).val() || 600, s = v + 'px';
+                var v = $(this).val() || 800, s = v + 'px';
 
                 if (/%/.test(v)) {
-                    s = v, v = 600;
+                    s = v, v = 800;
                 } else {
                     v = parseInt(v), s = v + 'px';
                 }
 
-                $('span.widthMarker span', '#profileLayoutTable').html(s);
-
-                $('#editor_container').width(v);
-                $('span.widthMarker, #statusbar_container span.mceStatusbar').width(v);
+                $('.widthMarker span', '#profileLayoutTable').html(s);
+                $('.widthMarker, .mceEditor', '.profileLayoutContainerCurrent').width(v);
             });
 
             $('#paramseditorheight').change(function() {
@@ -137,12 +135,9 @@
                     v += 'Skin';
                 }
 
-                $('span.profileLayoutContainer').each(function() {
-                    var cls = this.className;
-                    cls = cls.replace(/([a-z0-9]+)Skin([a-z0-9]*)/gi, '');
-
-                    this.className = $.trim(cls);
-                }).addClass(v);
+                $('.profileLayoutContainer .mceEditor').attr('class', function(i, value) {
+                    return $.trim(value.replace(/([a-z0-9]+)Skin([a-z0-9]*)/gi, ''));
+                }).addClass('defaultSkin ' + v);
             });
 
             // Toolbar Alignment
@@ -235,7 +230,7 @@
                 // skip on init
                 if (init) {
                     return;
-                }                
+                }
                 // get name as escaped string
                 var name = this.name.replace('!"#$%&()*+,./:;<=>?@[\]^`{|}~', '\\$1', 'g');
                 // add class to this element and any that share it's name, eg: param[]
@@ -255,7 +250,7 @@
                 // trigger change event, set value, remove name
                 $(this).change().val(s ? 1 : 0).removeAttr('name');
 
-                // set value for proxy and trigger change, add isdirty class (edited)                
+                // set value for proxy and trigger change, add isdirty class (edited)
                 $(proxy).val(s ? 1 : 0).change();
 
                 // disable default select and reset value
@@ -303,37 +298,37 @@
             $('#tabs-features :input[name], #tabs-editor :input[name], #tabs-plugins :input[name]').not('.isdirty').prop('disabled', true).parents('.ui-radio, .ui-checkbox').addClass('disabled');
         },
         _fixLayout: function() {
-            $('span.mceButton, span.mceSplitButton').removeClass('mceStart mceEnd');
+            $('.mceToolBarItem').removeClass('mceToolBarItemEnd mceToolBarItemStart');
+
+            $('.mceButton, .mceSplitButton').parent().addClass('mceToolBarItemButton');
+            $('.mceListBox').parent().addClass('mceToolBarItemListBox');
 
             // fix for buttons before or after lists
-            $('span.mceListBox').parent('span.sortableRowItem').prev('span.sortableRowItem').children('span.mceButton:last, span.mceSplitButton:last').addClass('mceEnd');
-            $('span.mceListBox').parent('span.sortableRowItem').next('span.sortableRowItem').children('span.mceButton:first, span.mceSplitButton:first').addClass('mceStart');
+            $('.mceListBox').parent().prev('.mceToolBarItemButton').addClass('mceToolBarItemEnd');
+            $('.mceListBox').parent().next('.mceToolBarItemButton').addClass('mceToolBarItemStart');
         },
         createLayout: function() {
             var self = this;
 
             // List items
-            $("ul.sortableList").sortable({
-                connectWith: 'ul.sortableList',
+            $(".sortableList").sortable({
+                connectWith: '.sortableList',
                 axis: 'y',
                 update: function(event, ui) {
                     self.setRows();
                     self.setPlugins();
                 },
-                start: function(event, ui) {
-                    $(ui.placeholder).width($(ui.item).width());
-                },
-                placeholder: 'sortableListItem sortable-highlight',
+                placeholder: 'mceToolbarRow sortableListItem ui-sortable-highlight',
                 opacity: 0.8
             });
 
-            $('span.sortableOption').hover(function() {
+            $('.sortableOption').hover(function() {
                 $(this).append('<span role="button"/>');
             }, function() {
                 $(this).empty();
             }).click(function() {
-                var $parent = $(this).parents('li.sortableListItem').first();
-                var $target = $('ul.sortableList', '#profileLayoutTable').not($parent.parent());
+                var $parent = $(this).parents('.sortableListItem').first();
+                var $target = $('.sortableList', '#profileLayoutTable').not($parent.parent());
 
                 $parent.appendTo($target);
 
@@ -343,8 +338,8 @@
                 self.setPlugins();
             });
 
-            $('span.sortableRow').sortable({
-                connectWith: 'span.sortableRow',
+            $('.sortableRow').sortable({
+                connectWith: '.sortableRow',
                 tolerance: 'pointer',
                 update: function(event, ui) {
                     self.setRows();
@@ -356,7 +351,7 @@
                     $(ui.placeholder).width($(ui.item).width());
                 },
                 opacity: 0.8,
-                placeholder: 'sortableRowItem sortable-highlight'
+                placeholder: 'mceToolBarItem sortableRowItem ui-sortable-highlight'
             });
 
             this._fixLayout();
@@ -364,8 +359,8 @@
         setRows: function() {
             var rows = [];
 
-            $('span.sortableRow', '#toolbar_container').has('span.sortableRowItem').each(function() {
-                rows.push($.map($('span.sortableRowItem', this), function(el) {
+            $('.sortableRow', '.profileLayoutContainerCurrent').has('.sortableRowItem').each(function() {
+                rows.push($.map($('.sortableRowItem', this), function(el) {
                     return $(el).data('name');
                 }).join(','));
             });
@@ -376,7 +371,7 @@
             $('input[name="rows"]').val(v).change();
         },
         setLayout: function() {
-            var $spans = $('span.profileLayoutContainerCurrent > span').not('span.widthMarker');
+            var $spans = $('.profileLayoutContainerCurrent > span').not('.widthMarker');
 
             $.each(['toolbar', 'editor', 'statusbar'], function() {
                 $('#paramseditor' + this + '_location').val($spans.index($('#' + this + '_container')));
@@ -390,7 +385,7 @@
         setPlugins: function() {
             var self = this, plugins = [];
 
-            $('span.sortableRow span.plugin', '#toolbar_container').each(function() {
+            $('.sortableRow .plugin', '.profileLayoutContainerCurrent').each(function() {
                 plugins.push($(this).data('name'));
             });
 

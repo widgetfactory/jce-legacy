@@ -114,7 +114,7 @@
             }).val(n.value);
 
             // Add label
-            $(li).append('<label class="checkbox inline widget-checklist-' + n.value + '" title="' + n.name + '">' + n.name + '</label>');
+            $(li).append('<span class="mceToolBarItem"><span class="mceIcon mce_' + n.value + '"></span></span><label class="checkbox inline widget-checklist-' + n.value + '" title="' + n.name + '">' + n.name + '</label>');
 
 
             if (button && $(el).hasClass('buttonlist')) {
@@ -140,10 +140,10 @@
                         $(this).removeAttr('selected').prop('selected', false);
                     }
                 });
-                
+
                 // remove "Array"
                 el.name = el.name.replace("[]", "");
-                
+
                 if (x.length === 0) {
                     $(el).change().removeClass('isdirty').after('<input type="hidden" name="' + el.name + '" value="" class="isdirty" />');
                 } else {
@@ -151,7 +151,7 @@
                     $(el).change().next('input[type="hidden"]').remove();
                     // add "Array"
                     el.name += "[]";
-                }                
+                }
             } else {
                 $(el).val(x.join(',')).change();
             }

@@ -29,7 +29,7 @@ input#components-all, input#components-select, label[for="components-all"], labe
     display: inline;
     margin: 0 5px 0 0;
 }
-#jce a.ui-button span.icon-add, #jce a.ui-button span.icon-remove, #jce a.ui-button span.icon-legend {
+#jce a.ui-button span.icon-add, #jce a.ui-button span.icon-remove {
     left: 0;
     margin-top: -10px;
     width: 20px;
@@ -57,13 +57,13 @@ input#components-all, input#components-select, label[for="components-all"], labe
     display: inline;
 }
 
-div#plugin_params span.mceIcon {
+#plugin_params .mceIcon {
     display: inline-block;
     vertical-align: middle;
     margin: 0 2px 0 0;
 }
 
-div#plugin_params fieldset {
+#plugin_params fieldset {
     margin-left: 0;
 }
 div#plugin_params h2 {
@@ -124,9 +124,6 @@ html[dir="rtl"] .ui-jce .ui-tabs-vertical .ui-tabs-panel {
 }
 
 #jce #tabs-setup input.checkbox-list-toggle-all, #jce #tabs-setup input#components-select-all {
-    /*margin : 2px 1px;*/
-    
-    margin : 2px 10px 2px 6px;
 }
 
 #jce ul.checkbox-list {
@@ -219,11 +216,11 @@ html[dir="rtl"] .ui-jce .ui-tabs-vertical .ui-tabs-panel {
 }*/
 
 
-#jce div.buttonlist li span.mceIcon {
+#jce .buttonlist .mceIcon {
     cursor: default;
 }
 
-#jce div.buttonlist li span.mceButton, #jce div.buttonlist li span.mceSplitButton {
+#jce .buttonlist .mceButton, #jce .buttonlist .mceSplitButton {
     margin : 0 10px 0 0;
     vertical-align: middle;
 }
@@ -258,7 +255,7 @@ html[dir="rtl"] .ui-jce .ui-tabs-vertical .ui-tabs-panel {
 }
 
 #jce div.tabs-plugin-parameters input[type="checkbox"], #jce div.tabs-plugin-parameters .ui-checkbox {
-    margin : 5px 7px;
+    margin : 0 5px;
     background-color: #fff;
 }
 
@@ -267,7 +264,7 @@ html[dir="rtl"] .ui-jce .ui-tabs-vertical .ui-tabs-panel {
 }
 
 #jce table td.order input[type="text"] {
-    max-width : 30px; 
+    max-width : 30px;
     margin : 0 10px;
 }
 
@@ -312,4 +309,14 @@ input#profile_description {
 a.browser {
     display: inline-block;
     margin : 8px 0;
+}
+
+ul#profileAdditionalFeatures li input[type="checkbox"] {margin: 0px 10px 2px 0px}
+ul#profileAdditionalFeatures li span {line-height: 30px;display: inline-block;}
+
+.buttonlist .widget-checklist .mceToolBarItem {
+  display: inline-block;
+  line-height: 30px;
+  vertical-align: middle;
+  margin: 0px 5px;
 }

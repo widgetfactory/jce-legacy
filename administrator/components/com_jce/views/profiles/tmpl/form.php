@@ -35,7 +35,7 @@ defined('_JEXEC') or die('RESTRICTED');
                     <ul class="nav nav-tabs">
                         <?php
                         $x = 0;
-                        foreach ($this->profile->editor_groups as $group) :                            
+                        foreach ($this->profile->editor_groups as $group) :
                             echo '<li><a href="#tabs-editor-' . $group . '"><span>' . WFText::_('WF_PROFILES_EDITOR_' . strtoupper($group)) . '</span></a></li>';
                             $x++;
                         endforeach;
@@ -57,7 +57,7 @@ defined('_JEXEC') or die('RESTRICTED');
 
                                 $class = in_array($plugin->name, explode(',', $this->profile->plugins)) ? '' : 'tab-disabled';
 
-                                echo '<li class="defaultSkin ' . $class . '" data-name="' . $plugin->name . '"><a href="#tabs-plugin-' . $plugin->name . '">' . $icon . '<span class="tabs-label">' . WFText::_($plugin->title) . '</span></a></li>';
+                                echo '<li class="defaultSkin ' . $class . '" data-name="' . $plugin->name . '"><a href="#tabs-plugin-' . $plugin->name . '" class="mceToolBarItem">' . $icon . '<span class="tabs-label">' . WFText::_($plugin->title) . '</span></a></li>';
                             endif;
                         endforeach;
                         ?>

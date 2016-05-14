@@ -10,7 +10,6 @@
 		</param-->
         <param name="toolbar_theme" type="list" default="default" label="WF_PARAM_EDITOR_TOOLBAR_THEME" description="WF_PARAM_EDITOR_TOOLBAR_THEME_DESC">
             <option value="default">WF_LABEL_DEFAULT</option>
-            <option value="classic">WF_PARAM_EDITOR_SKIN_CLASSIC</option>
             <option value="o2k7">WF_PARAM_EDITOR_SKIN_OFFICE_BLUE</option>
             <option value="o2k7.silver">WF_PARAM_EDITOR_SKIN_OFFICE_SILVER</option>
             <option value="o2k7.black">WF_PARAM_EDITOR_SKIN_OFFICE_BLACK</option>

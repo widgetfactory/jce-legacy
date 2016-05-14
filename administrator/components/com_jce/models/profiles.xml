@@ -54,7 +54,7 @@
             <area>0</area>
             <device>desktop,tablet,phone</device>
             <rows>bold,italic,strikethrough,lists,blockquote,spacer,justifyleft,justifycenter,justifyright,spacer,link,unlink,imgmanager,article,spellchecker,fullscreen,kitchensink;formatselect,styleselect,underline,justifyfull,clipboard,removeformat,charmap,indent,outdent,undo,redo,help</rows>
-            <plugins>link,imgmanager,article,spellchecker,fullscreen,kitchensink,clipboard,contextmenu,inlinepopups,lists,formatselect,styleselect</plugins>	
+            <plugins>link,imgmanager,article,spellchecker,fullscreen,kitchensink,clipboard,contextmenu,inlinepopups,lists,formatselect,styleselect,textpattern</plugins>
             <published>0</published>
             <ordering>3</ordering>
             <params>
@@ -70,12 +70,28 @@
             <area>0</area>
             <device>tablet,phone</device>
             <rows>undo,redo,spacer,bold,italic,underline,formatselect,spacer,justifyleft,justifycenter,justifyfull,justifyright,spacer,fullscreen,kitchensink;styleselect,lists,spellchecker,article,link,unlink</rows>
-            <plugins>fullscreen,kitchensink,spellchecker,article,link,inlinepopups,lists,formatselect,styleselect</plugins>
+            <plugins>fullscreen,kitchensink,spellchecker,article,link,inlinepopups,lists,formatselect,styleselect,textpattern</plugins>
             <published>0</published>
             <ordering>4</ordering>
             <params>
                 <param>{"editor":{"toolbar_theme":"mobile","resizing":"0","resize_horizontal":"0","resizing_use_cookie":"0","toggle":"0","links":{"popups":{"default":"","jcemediabox":{"enable":"0"},"window":{"enable":"0"}}}}}</param>
             </params>
         </profile>
+        <profile>
+      			<name>Markdown</name>
+            <description>Sample Markdown Profile</description>
+            <users></users>
+            <types>6,7,3,4,5,8</types>
+            <components></components>
+            <area>0</area>
+            <device>desktop,tablet,phone</device>
+            <rows>fullscreen,justifyleft,justifycenter,justifyfull,justifyright,link,unlink,imgmanager,styleselect</rows>
+            <plugins>fullscreen,link,imgmanager,styleselect,inlinepopups,media,textpattern</plugins>
+            <published>0</published>
+            <ordering>5</ordering>
+            <params>
+                <param>{"editor":{"toolbar_theme":"mobile"}}</param>
+            </params>
+		</profile>
     </profiles>
 </profiles>

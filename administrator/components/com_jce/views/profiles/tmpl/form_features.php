@@ -2,7 +2,7 @@
 
 /**
  * @package   	JCE
- * @copyright 	Copyright (c) 2009-2016 Ryan Demmer. All rights reserved.
+ * @copyright 	Copyright (c) 2009-2015 Ryan Demmer. All rights reserved.
  * @license   	GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  * JCE is free software. This version may have been modified pursuant
  * to the GNU General Public License, and as distributed it includes or
@@ -11,10 +11,10 @@
  */
 defined('_JEXEC') or die('RESTRICTED');
 
-$position = 'mce' . ucfirst($this->profile->layout_params->get('toolbar_align', 'center'));
+$position = 'mce' . ucfirst($this->profile->layout_params->get('toolbar_align', 'left'));
 
 // width and height
-$width  = $this->profile->layout_params->get('editor_width', 600);
+$width  = $this->profile->layout_params->get('editor_width', 800);
 $height = $this->profile->layout_params->get('editor_height', 'auto');
 
 if (is_numeric($width) || strpos('%', $width) === false) {
@@ -36,7 +36,7 @@ $theme = $this->profile->layout_params->get('toolbar_theme', 'default');
 if (strpos($theme, '.') === false) {
     $theme = $theme.'Skin';
 } else {
-    $theme = str_replace(array('o2k7.silver', 'o2k7.black'), array('o2k7.Silver', 'o2k7.Black'), $theme);   
+    $theme = str_replace(array('o2k7.silver', 'o2k7.black'), array('o2k7.Silver', 'o2k7.Black'), $theme);
     $theme = preg_replace('#([\w]+)\.([\w]+)#', '$1Skin $1Skin$2', $theme);
 }
 ?>
@@ -55,77 +55,84 @@ if (strpos($theme, '.') === false) {
         <!-- Active Editor Layout -->
         <li>
             <label class="wf-tooltip" title="<?php echo WFText::_('WF_PROFILES_FEATURES_LAYOUT_EDITOR') . '::' . WFText::_('WF_PROFILES_FEATURES_LAYOUT_EDITOR_DESC'); ?>"><?php echo WFText::_('WF_PROFILES_FEATURES_LAYOUT_EDITOR'); ?></label>
-            <span class="profileLayoutContainer profileLayoutContainerCurrent <?php echo $theme; ?>">
+
+            <div class="profileLayoutContainer profileLayoutContainerCurrent">
+              <div class="mceEditor defaultSkin <?php echo $theme; ?>" role="application">
+
                 <span id="editor_toggle"><?php echo $this->profile->layout_params->get('toggle_label', '[Toggle Editor]');?></span>
                 <span class="widthMarker" style="width:<?php echo $width; ?>;"><span><?php echo $width; ?></span></span>
-                <!-- Toolbar -->
-                <span id="toolbar_container" class="profileLayoutContainerToolbar">
-                    <ul class="sortableList <?php echo $position; ?>">
-                        <?php for ($i = 1; $i <= count($this->rows); $i++) : ?>
-                            <li class="sortableListItem">
-                                <span class="sortableRow mceToolbar">
-                                    <?php for ($x = 1; $x <= count($this->rows); $x++) : ?>
-                                        <?php if ($i == $x) : ?>
-                                            <?php foreach (explode(',', $this->rows[$x]) as $icon) : ?>
-                                                <?php if ($icon == 'spacer') : ?>
-                                                    <span class="sortableRowItem spacer" data-name="spacer"><span class="mceSeparator"></span></span>
-                                                <?php endif; ?>
-                                                <?php foreach ($this->plugins as $plugin) : ?>
-                                                    <?php if ($plugin->icon && $plugin->name == $icon) : ?>
-                                                        <span data-name="<?php echo $plugin->name; ?>" class="sortableRowItem <?php echo $plugin->type; ?> wf-tooltip wf-tooltip-cancel-ondrag" title="<?php echo WFText::_($plugin->title);?>::<?php echo WFText::_($plugin->description);?>"><?php echo $this->model->getIcon($plugin); ?></span>
-                                                    <?php
-                                                    endif;
-                                                endforeach;
-                                            endforeach;
-                                        endif;
-                                    endfor;
-                                    ?>
-                                </span>
-                                <span class="sortableRowHandle"><span class="ui-icon ui-icon-arrowthick-2-n-s"></span></span>
-                                <span class="sortableOption"></span>
-                            </li>
-                        <?php endfor; ?>
-                    </ul>
-                </span>
-                <!--  Editor -->
-                <span id="editor_container" class="profileLayoutContainerEditor mceIframeContainer" style="width:<?php echo $width; ?>;height:<?php echo $height; ?>"><p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p></span>
-                <!--  Statusbar -->
-                <span id="statusbar_container" class="profileLayoutContainerStatusBar"><span class="mceStatusbar"><span><span class="mcePathLabel">Path: </span></span><a href="#" class="mceResize"></a></span></span>
-            </span>
+
+                <div class="mceLayout" role="presentation" style="max-width:<?php echo $width;?>">
+                    <div role="toolbar" class="sortableList mceToolbar <?php echo $position;?> mceFirst">
+                          <?php for ($i = 1; $i <= count($this->rows); $i++) : ?>
+                              <div class="sortableListItem">
+                                <div class="sortableRow mceToolbarRow mceToolbarRow<?php echo $i;?> Enabled" role="toolbar" tabindex="-1">
+                                  <?php for ($x = 1; $x <= count($this->rows); $x++) : ?>
+                                      <?php if ($i == $x) : ?>
+                                          <?php foreach (explode(',', $this->rows[$x]) as $icon) : ?>
+                                              <?php if ($icon == 'spacer') : ?>
+                                                  <div class="mceToolBarItem sortableRowItem spacer" data-name="spacer"><div class="mceSeparator"></div></div>
+                                              <?php endif;
+                                              foreach ($this->plugins as $plugin) :
+                                                  if ($plugin->icon && $plugin->name == $icon) : ?>
+                                                      <div data-name="<?php echo $plugin->name; ?>" class="mceToolBarItem sortableRowItem <?php echo $plugin->type; ?> wf-tooltip wf-tooltip-cancel-ondrag" title="<?php echo WFText::_($plugin->title);?>::<?php echo WFText::_($plugin->description);?>"><?php echo $this->model->getIcon($plugin); ?></div>
+                                                  <?php
+                                                  endif;
+                                              endforeach;
+                                          endforeach;
+                                      endif;
+                                  endfor;
+                                  ?>
+                                </div>
+                                <div class="sortableRowHandle"><span class="ui-icon ui-icon-arrowthick-2-n-s"></span></div>
+                                <div class="sortableOption"></div>
+                            </div>
+                          <?php endfor; ?>
+                    </div>
+                    <!--  Editor -->
+                    <div id="editor_container" class="profileLayoutContainerEditor mceIframeContainer" style="height:<?php echo $height; ?>">
+                      <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+                    </div>
+
+                    <div class="mceStatusbar mceLast">
+                        <div tabindex="-1" style="display: block;" class="mcePathRow" role="group" >
+                          <span class="mcePathLabel">Path: </span>
+                          <span class="mcePathPath"><a tabindex="-1" class="mcePath_0" onmousedown="return false;" role="button" href="javascript:;">p</a></span></div>
+                          <a tabindex="-1" class="mceResize" onclick="return false;" href="javascript:;"></a>
+                        <div style="float: right; display: block;">Words: <span>69</span></div>
+                    </div>
+                </div>
+            </div>
+          </div>
         </li>
         <!-- Available Buttons -->
         <li>
             <label class="wf-tooltip" title="<?php echo WFText::_('WF_PROFILES_FEATURES_LAYOUT_AVAILABLE') . '::' . WFText::_('WF_PROFILES_FEATURES_LAYOUT_AVAILABLE_DESC'); ?>"><?php echo WFText::_('WF_PROFILES_FEATURES_LAYOUT_AVAILABLE'); ?></label>
-            <span class="profileLayoutContainer <?php echo $theme; ?>">
-                <span class="profileLayoutContainerToolbar">
-                <ul class="sortableList">
-                    <?php for ($i = 1; $i <= 5; $i++) :?>
-                        <li class="sortableListItem">
-                            <span class="sortableRow mceToolbar">
-                                <?php if ($i == 5) :
-                                    for ($x = 1; $x <= 10; $x++) :
-                                ?>
-                                    <span class="sortableRowItem spacer" data-name="spacer"><span class="mceSeparator"></span></span>
-                                <?php
-                                    endfor;
-                                endif;
+            <div class="profileLayoutContainer profileLayoutContainerToolbar" style="width:<?php echo $width;?>">
+                <div class="mceEditor defaultSkin <?php echo $theme; ?>" role="application">
 
-                                foreach ($this->plugins as $plugin) :
+                  <div class="mceLayout" role="presentation">
+                    <div role="toolbar" class="sortableList mceToolbar <?php echo $position;?> mceFirst mceLast">
+                          <?php for ($i = 1; $i <= 5; $i++) :?>
+                              <div class="sortableListItem">
+                              <div class="sortableRow mceToolbarRow mceToolbarRow<?php echo $i;?> Enabled" role="toolbar" tabindex="-1">
+                                <?php foreach ($this->plugins as $plugin) :
                                     if (!in_array($plugin->name, explode(',', implode(',', $this->rows)))) :
                                         if ($plugin->icon && (int)$plugin->row == $i) :
-                                            echo '<span class="sortableRowItem ' . $plugin->type . ' wf-tooltip wf-tooltip-cancel-ondrag" data-name="' . $plugin->name . '" title="' . WFText::_($plugin->title) . '::' . WFText::_($plugin->description) . '">' . $this->model->getIcon($plugin) . '</span>';
+                                            echo '<div class="mceToolBarItem sortableRowItem ' . $plugin->type . ' wf-tooltip wf-tooltip-cancel-ondrag" data-name="' . $plugin->name . '" title="' . WFText::_($plugin->title) . '::' . WFText::_($plugin->description) . '">' . $this->model->getIcon($plugin) . '</div>';
                                         endif;
                                     endif;
                                 endforeach;
                                 ?>
-                            </span>
-                            <span class="sortableRowHandle"><span class="ui-icon ui-icon-arrowthick-2-n-s"></span></span>
-                            <span class="sortableOption"></span>
-                        </li>
-                    <?php endfor; ?>
-                </ul>
-                </span>
-            </span>	
+                              </div>
+                              <div class="sortableRowHandle"><span class="ui-icon ui-icon-arrowthick-2-n-s"></span></div>
+                              <div class="sortableOption"></div>
+                            </div>
+                          <?php endfor; ?>
+                    </div>
+                  </div>
+                </div>
+            </div>
         </li>
     </ul>
     <input type="hidden" name="rows" value="<?php echo $this->profile->rows; ?>" />
@@ -143,13 +150,13 @@ if (strpos($theme, '.') === false) {
                     <li class="editable">
                         <label valign="top" class="key"><?php echo WFText::_($plugin->title); ?></label>
                         <input type="checkbox" value="<?php echo $plugin->name; ?>" <?php echo in_array($plugin->name, explode(',', $this->profile->plugins)) ? 'checked="checked"' : ''; ?>/>
-            <?php echo WFText::_('WF_' . strtoupper($plugin->name) . '_DESC'); ?>
+                        <span><?php echo WFText::_('WF_' . strtoupper($plugin->name) . '_DESC'); ?></span>
                     </li>
-                    <?php else : ?>
+                <?php else : ?>
                     <li>
                         <label><?php echo WFText::_($plugin->title); ?></label>
                         <input type="checkbox" value="<?php echo $plugin->name; ?>" <?php echo in_array($plugin->name, explode(',', $this->profile->plugins)) ? 'checked="checked"' : ''; ?>/>
-                    <?php echo WFText::_('WF_' . strtoupper($plugin->name) . '_DESC'); ?>
+                        <span><?php echo WFText::_('WF_' . strtoupper($plugin->name) . '_DESC'); ?></span>
                     </li>
                 <?php
                 endif;

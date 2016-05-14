@@ -1654,6 +1654,10 @@
         renderMenu: function () {
             var t = this, ed = this.editor, m, i = 0, s = t.settings, n, tb, tr, w, context, bm;
 
+            if (s['class'].indexOf('defaultSkin') === -1) {
+              s['class'] = 'defaultSkin ' + s['class'];
+            }
+
             w = DOM.add(s.menu_container, 'div', {
                 role: 'listbox',
                 id: t.id + '_menu',
@@ -1669,8 +1673,7 @@
 
             n = DOM.add(m, 'table', {
                 role: 'presentation',
-                'class': 'mceTableSplitMenu',
-                'border': 1
+                'class': 'mceTableSplitMenu'
             });
             tb = DOM.add(n, 'tbody');
 

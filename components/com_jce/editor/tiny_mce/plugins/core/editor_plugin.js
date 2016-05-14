@@ -244,7 +244,11 @@
         renderDialog: function() {
             var t = this, m, s = this.settings, w, v, ed = this.editor;
 
-            s['class'] += ' ' + ed.getParam('skin') + 'Skin';
+            s['class'] += ' defaultSkin';
+
+            if (ed.getParam('skin') !== "default") {
+              s['class'] += ' ' + ed.getParam('skin') + 'Skin';
+            }
 
             if (v = ed.getParam('skin_variant')) {
                 s['class'] += ' ' + ed.getParam('skin') + 'Skin' + v.substring(0, 1).toUpperCase() + v.substring(1);

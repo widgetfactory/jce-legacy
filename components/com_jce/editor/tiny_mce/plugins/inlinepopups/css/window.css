@@ -186,7 +186,7 @@
   border: 1px solid #E6E6E6;
   margin: 0 5px;
 }
-.mceButton:focus, .mceButton:hover {
+.mceModal .mceButton:focus, .mceModal .mceButton:hover {
   background-color: #fafafa;
   color: #444;
   outline: 0;

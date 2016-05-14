@@ -324,6 +324,15 @@
         <row>4</row>
         <core>1</core>
     </plugin>
+    <plugin name="textpattern">
+        <name>textpattern</name>
+        <title>WF_TEXTPATTERN_TITLE</title>
+        <description>WF_TEXTPATTERN_DESC</description>
+        <icon></icon>
+        <editable>0</editable>
+        <row>4</row>
+        <core>1</core>
+    </plugin>
     <plugin name="visualchars">
         <name>visualchars</name>
         <title>WF_VISUALCHARS_TITLE</title>

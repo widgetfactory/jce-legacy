@@ -147,10 +147,12 @@ class WFModelEditor extends WFModelBase {
             $settings['height'] = $wf->getParam('editor.height');
 
             // 'Look & Feel'
-
-            $skin = explode('.', $wf->getParam('editor.toolbar_theme', 'default', 'default'));
-            $settings['skin'] = $skin[0];
-            $settings['skin_variant'] = isset($skin[1]) ? $skin[1] : '';
+            list($settings['skin'], $settings['skin_variant']) = explode('.', $wf->getParam('editor.toolbar_theme', 'default', 'default'));
+            
+            // classic has been removed
+            if ($settings['skin'] === "classic") {
+              $settings['skin'] = "default";
+            }
 
             // get body class if any
             $body_class = $wf->getParam('editor.body_class', '');
@@ -386,7 +388,7 @@ class WFModelEditor extends WFModelBase {
             foreach ((array) $settings['plugins'] as $plugin) {
                 $path = WF_EDITOR_PLUGINS . '/' . $plugin;
 
-                // if english file exists then the installed language file should too 
+                // if english file exists then the installed language file should too
                 if (JFile::exists($path . '/langs/en.js') && !JFile::exists($path . '/langs/' . $language . '.js')) {
                     $plugins[] = $plugin;
                 }
@@ -723,7 +725,7 @@ class WFModelEditor extends WFModelBase {
      * @return string font family list
      * @param string $add Font family to add
      * @param string $remove Font family to remove
-     * 
+     *
      * Deprecated in 2.3.4
      */
     public function getEditorFonts() {
@@ -935,7 +937,7 @@ class WFModelEditor extends WFModelBase {
                 // add to existing list
                 if ($profile === 0) {
                     $files = array_merge($files, $custom);
-                    // overwrite global config value	
+                    // overwrite global config value
                 } else {
                     $files = (array) $custom;
                 }

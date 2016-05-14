@@ -8,9 +8,14 @@
  * other free or open source software licenses.
  */
 (function() {
-    var DOM = tinymce.DOM, Event = tinymce.dom.Event, is = tinymce.is, each = tinymce.each;
+    var DOM = tinymce.DOM,
+        Event = tinymce.dom.Event,
+        is = tinymce.is,
+        each = tinymce.each;
     var Node = tinymce.html.Node;
-    var VK = tinymce.VK, BACKSPACE = VK.BACKSPACE, DELETE = VK.DELETE;
+    var VK = tinymce.VK,
+        BACKSPACE = VK.BACKSPACE,
+        DELETE = VK.DELETE;
 
     tinymce.create('tinymce.plugins.AnchorPlugin', {
         init: function(ed, url) {
@@ -54,7 +59,8 @@
                 // Display "a#name" instead of "img" in element path
                 if (ed.theme && ed.theme.onResolveName) {
                     ed.theme.onResolveName.add(function(theme, o) {
-                        var n = o.node, v, href = n.href;
+                        var n = o.node,
+                            v, href = n.href;
 
                         if (o.name === 'a' && (!href || href.charAt(0) == '#') && (n.name || n.id)) {
                             v = n.name || n.id;
@@ -70,16 +76,19 @@
                     ed.dom.loadCSS(url + "/css/content.css");
             });
 
-            // Pre-init			
+            // Pre-init
             ed.onPreInit.add(function() {
                 // Convert anchor elements to image placeholder
                 ed.parser.addNodeFilter('a', function(nodes) {
                     for (var i = 0, len = nodes.length; i < len; i++) {
-                        var node = nodes[i], href = node.attr('href'), cls = node.attr('class') || '', name = node.attr('name') || node.attr('id');
+                        var node = nodes[i],
+                            href = node.attr('href'),
+                            cls = node.attr('class') || '',
+                            name = node.attr('name') || node.attr('id');
 
                         if ((!href || href.charAt(0) == '#') && name) {
                             if (!cls || /mceItemAnchor/.test(cls) === false) {
-                                cls += ' mceItemAnchor';                                
+                                cls += ' mceItemAnchor';
                                 node.attr('class', tinymce.trim(cls));
                             }
                         }
@@ -93,7 +102,9 @@
             });
         },
         _removeAnchor: function(e) {
-            var ed = this.editor, s = ed.selection, n = s.getNode();
+            var ed = this.editor,
+                s = ed.selection,
+                n = s.getNode();
 
             if (!s.isCollapsed() && ed.dom.getParent(n, 'a.mceItemAnchor')) {
                 ed.undoManager.add();
@@ -106,7 +117,9 @@
             }
         },
         _getAnchor: function() {
-            var ed = this.editor, n = ed.selection.getNode(), v;
+            var ed = this.editor,
+                n = ed.selection.getNode(),
+                v;
 
             n = ed.dom.getParent(n, 'a.mceItemAnchor');
             v = ed.dom.getAttrib(n, 'name') || ed.dom.getAttrib(n, 'id');
@@ -114,7 +127,8 @@
             return v;
         },
         _insertAnchor: function(v) {
-            var ed = this.editor, attrib;
+            var ed = this.editor,
+                attrib;
 
             if (!v) {
                 ed.windowManager.alert('anchor.invalid');
@@ -154,7 +168,9 @@
                 if (ed.selection.isCollapsed()) {
                     at[attrib] = v;
 
-                    ed.execCommand('mceInsertContent', 0, ed.dom.createHTML('a', {id: '__mce_tmp'}, '\uFEFF'));
+                    ed.execCommand('mceInsertContent', 0, ed.dom.createHTML('a', {
+                        id: '__mce_tmp'
+                    }, '\uFEFF'));
 
                     n = ed.dom.get('__mce_tmp');
 
@@ -187,17 +203,16 @@
             return true;
         },
         createControl: function(n, cm) {
-            var self = this, ed = this.editor;
+            var self = this,
+                ed = this.editor;
 
             switch (n) {
                 case 'anchor':
                     var content = DOM.create('div');
 
-                    var fieldset = DOM.add(content, 'fieldset', {}, '<legend>' + ed.getLang('anchor.desc', 'Insert / Edit Anchor') + '</legend>');
+                    DOM.add(content, 'h4', {}, ed.getLang('anchor.desc', 'Insert / Edit Anchor'));
 
-                    DOM.add(fieldset, 'label', {'for': ed.id + '_anchor'}, ed.getLang('anchor.name', 'Name'));
-
-                    var input = DOM.add(fieldset, 'input', {
+                    var input = DOM.add(content, 'input', {
                         type: 'text',
                         id: ed.id + '_anchor'
                     });
@@ -205,27 +220,28 @@
                     var c = new tinymce.ui.ButtonDialog(cm.prefix + 'anchor', {
                         title: ed.getLang('anchor.desc', 'Inserts an Anchor'),
                         'class': 'mce_anchor',
-                        'content': content,
+                        'content': content.innerHTML,
                         'width': 250,
                         'buttons': [{
-                                title: ed.getLang('insert', 'Insert'),
-                                id: 'insert',
-                                click: function(e) {
-                                    return self._insertAnchor(input.value);
-                                },
-                                scope: self
-                            }, {
-                                title: ed.getLang('anchor.remove', 'Remove'),
-                                id: 'remove',
-                                click: function(e) {
-                                    if (!DOM.hasClass(e.target, 'disabled')) {
-                                        self._removeAnchor();
-                                    }
+                            title: ed.getLang('insert', 'Insert'),
+                            id: 'insert',
+                            click: function(e) {
+                                return self._insertAnchor(input.value);
+                            },
+                            classes: 'mceDialogButtonPrimary',
+                            scope: self
+                        }, {
+                            title: ed.getLang('anchor.remove', 'Remove'),
+                            id: 'remove',
+                            click: function(e) {
+                                if (!DOM.hasClass(e.target, 'disabled')) {
+                                    self._removeAnchor();
+                                }
 
-                                    return true;
-                                },
-                                scope: self
-                            }]
+                                return true;
+                            },
+                            scope: self
+                        }]
                     }, ed);
 
                     c.onShowDialog.add(function() {

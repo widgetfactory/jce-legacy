@@ -1,6 +1,6 @@
 /**
  * @package   	JCE
- * @copyright 	Copyright (c) 2009-2016 Ryan Demmer. All rights reserved.
+ * @copyright 	Copyright (c) 2009-2015 Ryan Demmer. All rights reserved.
  * @copyright   Copyright 2009, Moxiecode Systems AB
  * @license   	GNU/LGPL 2.1 or later - http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html
  * JCE is free software. This version may have been modified pursuant
@@ -171,8 +171,12 @@
 
             self.lookup = lookup;
 
-            function isMedia(n) {
-                return n && n.nodeName == 'IMG' && /mceItem(Flash|ShockWave|WindowsMedia|QuickTime|RealMedia|DivX|Silverlight|Audio|Video|Generic|Iframe)/.test(n.className);
+            function isMediaNode(n) {
+                return n && (ed.dom.is(n, '.mceItemMedia') || ed.dom.getParent(n, '.mceItemMedia') !== null);
+            }
+
+            function isMediaClass(cls) {
+                return cls && /mceItem(Media|Flash|ShockWave|WindowsMedia|QuickTime|RealMedia|DivX|Silverlight|Audio|Video|Generic|Iframe)/.test(cls);
             }
 
             ed.onPreInit.add(function() {
@@ -208,37 +212,56 @@
                     }
                 });
 
-                // Convert image placeholders to video elements
-                ed.serializer.addNodeFilter('img', function(nodes, name, args) {
-                    var i = nodes.length, node;
+                // Convert placeholders to video elements (legacy conversion)
+                ed.serializer.addNodeFilter('img,span', function(nodes, name, args) {
+                    var i = nodes.length, node, cls;
 
                     while (i--) {
                         node = nodes[i];
-                        if (/mceItem(Flash|ShockWave|WindowsMedia|QuickTime|RealMedia|DivX|Silverlight|Audio|Video|Generic|Embed|Iframe)/.test(node.attr('class') || '')) {
+                        cls = node.attr('class') || '';
+
+                        if (isMediaClass(cls)) {
                             self.restoreElement(node, args);
                         }
                     }
                 });
-
             });
 
             ed.onInit.add(function() {
                 // Display "media" instead of "img" in element path
                 if (ed.theme && ed.theme.onResolveName) {
                     ed.theme.onResolveName.add(function(theme, o) {
-                        if (o.name === 'img' && /mceItem(Object|Embed|Audio|Video|Generic)/.test(o.node.className)) {
-                            o.name = 'media';
-                        }
+                        var n = o.node;
 
-                        if (o.name === 'img' && /mceItemIframe/.test(o.node.className)) {
-                            o.name = 'iframe';
+                        if (n) {
+                            if (n.className.indexOf('mceItemMedia') !== -1) {
+                                o.name = 'media';
+                            }
+
+                            if (n.className.indexOf('mceItemIframe') !== -1) {
+                                o.name = 'iframe';
+                            }
                         }
                     });
-
                 }
 
-                if (!ed.settings.compress.css)
+                if (!ed.settings.compress.css) {
                     ed.dom.loadCSS(url + "/css/content.css");
+                }
+            });
+
+            ed.onNodeChange.add(function(ed, cm, n) {
+                var s = isMediaNode(n);
+
+                ed.dom.removeClass(ed.dom.select('.mceItemSelected.mceItemPreview'), 'mceItemSelected');
+
+                if (s) {
+                    var p = ed.dom.getParent(n, '.mceItemMedia.mceItemPreview');
+
+                    ed.dom.addClass(p, 'mceItemSelected');
+
+                    ed.selection.select(p);
+                }
             });
 
             ed.onBeforeSetContent.add(function(ed, o) {
@@ -261,18 +284,6 @@
                     return '<' + b + c + '>' + d + '</' + b + '>';
                 });
 
-                // convert frameborder in HTML5
-                if (ed.settings.schema === "html5-strict") {
-                  h = h.replace(/frameborder="(0|1)"/gi, function(a, b) {
-
-                    if (parseInt(b) === 0) {
-                      return 'seamless="seamless"';
-                    }
-
-                    return "";
-                  });
-                }
-
                 o.content = h;
             });
 
@@ -286,6 +297,7 @@
                 version: '@@version@@'
             };
         },
+
         /**
          * Convert a URL
          */
@@ -441,14 +453,19 @@
          * @return img Image Element
          */
         toImage: function(n) {
-            var self = this, ed = this.editor, type, name, o = {}, data = {}, classid = '', styles, matches;
+            var self = this, ed = this.editor, type, name, o = {}, data = {}, classid = '', styles, matches, placeholder;
 
             // If node isn't in document or is child of media node
-            if (!n.parent || /^(object|audio|video|embed|iframe)$/.test(n.parent.name))
+            if (!n.parent || /^(object|audio|video|embed|iframe)$/.test(n.parent.name)) {
                 return;
+            }
 
             // Create image
-            var img = new Node('img', 1);
+            if (n.name === "iframe" && ed.getParam('media_live_embed')) {
+                placeholder = new Node('span', 1);
+            } else {
+                placeholder = new Node('img', 1);
+            }
 
             if (n.name === 'script') {
                 if (n.firstChild)
@@ -468,8 +485,8 @@
                 var style = Styles.parse(n.attr('style'));
 
                 // get width an height
-                var w = n.attr('width') || style.width || '';
-                var h = n.attr('height') || style.height || '';
+                var w = n.attr('width')     || style.width  || '';
+                var h = n.attr('height')    || style.height || '';
 
                 var type = n.attr('type');
 
@@ -567,19 +584,19 @@
 
                 // standard attributes
                 each(['id', 'lang', 'dir', 'tabindex', 'xml:lang', 'style', 'title'], function(at) {
-                    img.attr(at, n.attr(at));
+                    placeholder.attr(at, n.attr(at));
                 });
+
+                style.width   = w + 'px';
+                style.height  = h + 'px'; 
 
                 // add styles
                 if (styles = ed.dom.serializeStyle(style)) {
-                    img.attr('style', styles);
+                    placeholder.attr('style', styles);
                 }
             }
 
             o[name] = data;
-
-            // Replace the video/object/embed element with a placeholder image containing the data
-            n.replace(img);
 
             // get classes as array
             var classes = [];
@@ -592,7 +609,11 @@
             name = name.toLowerCase();
 
             // add identifier class
-            classes.push('mceItem' + ucfirst(name));
+            classes.push('mceItemMedia mceItem' + ucfirst(name));
+
+            if (placeholder.name === "span") {
+                classes.push('mceItemPreview');
+            }
 
             // add type class
             if (type && name !== type.toLowerCase()) {
@@ -607,13 +628,43 @@
             }
 
             // Set data attribute and class
-            img.attr({
-                src: this.url + '/img/trans.gif',
-                width: w,
-                height: h,
-                'class': classes.join(' '),
+            placeholder.attr({
+                width   : w,
+                height  : h,
+                'class' : classes.join(' '),
                 'data-mce-json': JSON.serialize(o)
             });
+
+            if (name === "iframe" && ed.getParam('media_live_embed')) {
+                var preview = new tinymce.html.Node(name, 1);
+
+                var attrs = o.iframe;
+
+                tinymce.extend(attrs, {
+                    src             : n.attr('src'),
+                    allowfullscreen : n.attr('allowfullscreen'),
+                    width           : n.attr('width') || w,
+                    height          : n.attr('height') || h,
+                    frameborder     : '0'
+                });
+
+                preview.attr(attrs);
+
+                placeholder.attr({
+                    contentEditable : 'false'
+                });
+
+                var shim = new tinymce.html.Node('span', 1);
+                shim.attr('class', 'mceItemShim');
+
+                placeholder.append(preview);
+                placeholder.append(shim);
+            } else {
+                placeholder.attr({'src' : this.url + '/img/trans.gif'});
+            }
+
+            // Replace the video/object/embed element with a placeholder image containing the data
+            n.replace(placeholder);
         },
         /**
          * Serialize node attributes into JSON Object
@@ -675,7 +726,7 @@
                             break;
                         case 'frameborder':
                             // remove in html5
-                            if (parseInt(v) == 0 && ed.settings.schema === 'html5-strict') {
+                            if (parseInt(v) == 0 && ed.settings.schema === 'html5') {
                                 attribs['seamless'] = 'seamless';
                             } else {
                                 attribs[k] = v;

@@ -69,7 +69,7 @@ form[name="adminForm"] #jce {
 }
 
 #jce label.radio input[type="radio"], #jce label.checkbox input[type="checkbox"], #jce label input[type="text"] {
-    margin: 2px 10px 2px 6px;
+    margin: 3px 10px 3px 0;
 }
 
 /* Parameters */
@@ -118,7 +118,7 @@ form[name="adminForm"] #jce {
     display: inline-block;
     width: 100%;
 }
-html[dir="rtl"] #jce ul.adminformlist > li, 
+html[dir="rtl"] #jce ul.adminformlist > li,
 html[dir="rtl"] #jce dl.adminformlist > dd {
     background-position: right;
 }
@@ -140,8 +140,8 @@ html[dir="rtl"] #jce dl.adminformlist > dd {
 #jce dl.adminformlist dd {
     margin: 10px 2px;
 }
-#jce ul.adminformlist > li > label:first-child, #jce ul.adminformlist > li > h4:first-child, 
-#jce ul.adminformlist > li > span:first-child, #jce dl.adminformlist > dd > label:first-child, 
+#jce ul.adminformlist > li > label:first-child, #jce ul.adminformlist > li > h4:first-child,
+#jce ul.adminformlist > li > span:first-child, #jce dl.adminformlist > dd > label:first-child,
 #jce dl.adminformlist > dd > span:first-child {
     display: inline-block;
     margin: 0 5px;
@@ -153,10 +153,10 @@ html[dir="rtl"] #jce dl.adminformlist > dd {
     line-height: 30px;
     float: left;
 }
-html[dir="rtl"] #jce ul.adminformlist > li > label:first-child, 
-html[dir="rtl"] #jce ul.adminformlist > li > h4:first-child, 
-html[dir="rtl"] #jce ul.adminformlist > li > span:first-child, 
-html[dir="rtl"] #jce dl.adminformlist > dd > label:first-child, 
+html[dir="rtl"] #jce ul.adminformlist > li > label:first-child,
+html[dir="rtl"] #jce ul.adminformlist > li > h4:first-child,
+html[dir="rtl"] #jce ul.adminformlist > li > span:first-child,
+html[dir="rtl"] #jce dl.adminformlist > dd > label:first-child,
 html[dir="rtl"] #jce dl.adminformlist > dd > span:first-child {
     float: none;
 }
@@ -230,7 +230,7 @@ html[dir="rtl"] #jce dl.adminformlist > dd > span:first-child {
 
 #jce ul.widget-checklist li.ui-state-highlight {
     border: 1px dashed #ccc;
-    height: 22px; 
+    height: 22px;
 }
 /* Formats */
 #jce ul.widget-checklist.sortable li label.widget-checklist-p {}
@@ -325,10 +325,10 @@ dl.adminformlist dd.ie_adminformlist, #jce ul.adminformlist li.ie_adminformlist 
 
 #jce dl.adminformlist dd.ie_adminformlist {
     display: block;
-    float: none;	
+    float: none;
 }
 
-#jce ul.adminformlist li.ie_adminformlist label.ie_adminformlist_child, #jce ul.adminformlist li.ie_adminformlist span.ie_adminformlist_child, 
+#jce ul.adminformlist li.ie_adminformlist label.ie_adminformlist_child, #jce ul.adminformlist li.ie_adminformlist span.ie_adminformlist_child,
 #jce dl.adminformlist dd.ie_adminformlist label.ie_adminformlist_child, #jce dl.adminformlist dd.ie_adminformlist span.ie_adminformlist_child {
     display: inline-block;
     margin: 2px 5px;
@@ -477,7 +477,7 @@ html[dir="rtl"] .ui-jce .ui-tabs .ui-tabs-nav li {
     content : "";
     width: 13px;
     height: 11px;
-    display: inline-block;    
+    display: inline-block;
     background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA0AAAALCAYAAACksgdhAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAA/ppVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuMy1jMDExIDY2LjE0NTY2MSwgMjAxMi8wMi8wNi0xNDo1NjoyNyAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wTU09Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9tbS8iIHhtbG5zOnN0UmVmPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvc1R5cGUvUmVzb3VyY2VSZWYjIiB4bWxuczp4bXA9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC8iIHhtbG5zOmRjPSJodHRwOi8vcHVybC5vcmcvZGMvZWxlbWVudHMvMS4xLyIgeG1wTU06T3JpZ2luYWxEb2N1bWVudElEPSJ1dWlkOjY1RTYzOTA2ODZDRjExREJBNkUyRDg4N0NFQUNCNDA3IiB4bXBNTTpEb2N1bWVudElEPSJ4bXAuZGlkOkFFRDU2NUNDRkU5QzExRTFCNkYwODQ2MzkzQkU0QzU4IiB4bXBNTTpJbnN0YW5jZUlEPSJ4bXAuaWlkOkFFRDU2NUNCRkU5QzExRTFCNkYwODQ2MzkzQkU0QzU4IiB4bXA6Q3JlYXRvclRvb2w9IkFkb2JlIElsbHVzdHJhdG9yIENTNiAoTWFjaW50b3NoKSI+IDx4bXBNTTpEZXJpdmVkRnJvbSBzdFJlZjppbnN0YW5jZUlEPSJ4bXAuaWlkOjAxODAxMTc0MDcyMDY4MTE4MDgzRUZFRDQ2NDFEODMyIiBzdFJlZjpkb2N1bWVudElEPSJ4bXAuZGlkOjAyODAxMTc0MDcyMDY4MTE4MDgzRTdGNDQzQTE0MUI2Ii8+IDxkYzp0aXRsZT4gPHJkZjpBbHQ+IDxyZGY6bGkgeG1sOmxhbmc9IngtZGVmYXVsdCI+Z2x5cGhpY29uc19oYWxmbGluZ3M8L3JkZjpsaT4gPC9yZGY6QWx0PiA8L2RjOnRpdGxlPiA8L3JkZjpEZXNjcmlwdGlvbj4gPC9yZGY6UkRGPiA8L3g6eG1wbWV0YT4gPD94cGFja2V0IGVuZD0iciI/PtCEoh0AAACLSURBVHjaYvj//z8DISwrKy0AxAtANIjPCCLwATk5GQEgdQCI9YH4IhA74NWEpgEGFuLUhEMD2CYmqAIDIN4AVYhXw6NHTz4wAj1nAFXAD5UIAOINuDSAOCxA3ADVwABVeB/NpSgaQADkvASoBDaAoQGsCSrggEUjVg0wmxiwaMSpAQzwxTwuDBBgABDrfcvq+ba5AAAAAElFTkSuQmCC);
 }
 
@@ -529,7 +529,7 @@ html[dir="rtl"] .ui-jce .ui-tabs .ui-tabs-nav li {
     -webkit-appearance: none;
     -moz-appearance:    none;
     appearance:         none;
-    
+
     cursor: pointer;
 }
 
@@ -567,7 +567,7 @@ html[dir="rtl"] .ui-jce .ui-tabs .ui-tabs-nav li {
     width : 1%;
 }
 
-#jce #profiles-list tr:first-child span.order-up, 
+#jce #profiles-list tr:first-child span.order-up,
 #jce #profiles-list tr:last-child span.order-down,
 #jce #profiles-list tr.last span.order-down {
     visibility : hidden;
@@ -696,13 +696,13 @@ html[dir="rtl"] .ui-jce .ui-tabs .ui-tabs-nav li {
 }
 
 #jce .btn.loading i[class^="icon-"] {
-    background-position: -240px -24px; 
+    background-position: -240px -24px;
     -webkit-animation: spinner 1s infinite linear; /* Safari 4+ */
     -moz-animation:    spinner 1s infinite linear; /* Fx 5+ */
     -o-animation:      spinner 1s infinite linear; /* Opera 12+ */
     animation:         spinner 1s infinite linear; /* IE 10+ */
 }
- 
+
 @-webkit-keyframes spinner {
     from {-webkit-transform:rotate(0deg);}
 to {-webkit-transform:rotate(360deg);}

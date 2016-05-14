@@ -57,9 +57,9 @@ div.mceEditor table.mceLayout td.mceIframeContainer iframe.offleft {
 }
 
 div#wf_upload_button {
-    background: url("../img/cloud_upload.png") no-repeat scroll center center #EEEEEE;
-    border: 2px dashed #999999;
-    border-radius: 3px;
+    background: url("../img/cloud_upload.png") no-repeat center #fafafa;
+    border: 1px dashed #ddd;
+    border-radius: 2px;
     cursor: pointer;
     display: none;
     height: 56px;
@@ -70,10 +70,10 @@ div#wf_upload_button {
 }
 
 div#wf_upload_button label {
-    text-shadow: 0 1px 0 #FFFFFF;
+    text-shadow: 0 1px 0 #fff;
     position: relative;
     font-size: 12px;
-    font-family: Arial,Helvetica,sans-serif;
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
     margin-top: 38px;
     display: inline-block;
     color : #666;
@@ -87,4 +87,5 @@ div#wf_upload_button input[type="file"] {
     right: 0;
     top: 0;
     cursor: pointer;
+    height: 100%;
 }
