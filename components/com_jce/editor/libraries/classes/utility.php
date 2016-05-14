@@ -276,16 +276,16 @@ abstract class WFUtility
     public static function isUtf8($string)
     {
         if (!function_exists('mb_detect_encoding')) {
-            // From http://w3.org/International/questions/qa-forms-utf-8.html 
-            return preg_match('%^(?: 
-	              [\x09\x0A\x0D\x20-\x7E]          	 # ASCII 
-	            | [\xC2-\xDF][\x80-\xBF]             # non-overlong 2-byte 
-	            |  \xE0[\xA0-\xBF][\x80-\xBF]        # excluding overlongs 
-	            | [\xE1-\xEC\xEE\xEF][\x80-\xBF]{2}  # straight 3-byte 
-	            |  \xED[\x80-\x9F][\x80-\xBF]        # excluding surrogates 
-	            |  \xF0[\x90-\xBF][\x80-\xBF]{2}     # planes 1-3 
-	            | [\xF1-\xF3][\x80-\xBF]{3}          # planes 4-15 
-	            |  \xF4[\x80-\x8F][\x80-\xBF]{2}     # plane 16 
+            // From http://w3.org/International/questions/qa-forms-utf-8.html
+            return preg_match('%^(?:
+	              [\x09\x0A\x0D\x20-\x7E]          	 # ASCII
+	            | [\xC2-\xDF][\x80-\xBF]             # non-overlong 2-byte
+	            |  \xE0[\xA0-\xBF][\x80-\xBF]        # excluding overlongs
+	            | [\xE1-\xEC\xEE\xEF][\x80-\xBF]{2}  # straight 3-byte
+	            |  \xED[\x80-\x9F][\x80-\xBF]        # excluding surrogates
+	            |  \xF0[\x90-\xBF][\x80-\xBF]{2}     # planes 1-3
+	            | [\xF1-\xF3][\x80-\xBF]{3}          # planes 4-15
+	            |  \xF4[\x80-\x8F][\x80-\xBF]{2}     # plane 16
 	        )*$%xs', $string);
         }
 
@@ -451,6 +451,50 @@ abstract class WFUtility
         }
 
         return true;
+    }
+
+    /**
+    * array_merge_recursive does indeed merge arrays, but it converts values with duplicate
+    * keys to arrays rather than overwriting the value in the first array with the duplicate
+    * value in the second array, as array_merge does. I.e., with array_merge_recursive,
+    * this happens (documented behavior):
+    *
+    * array_merge_recursive(array('key' => 'org value'), array('key' => 'new value'));
+    *     => array('key' => array('org value', 'new value'));
+    *
+    * array_merge_recursive_distinct does not change the datatypes of the values in the arrays.
+    * Matching keys' values in the second array overwrite those in the first array, as is the
+    * case with array_merge, i.e.:
+    *
+    * array_merge_recursive_distinct(array('key' => 'org value'), array('key' => 'new value'));
+    *     => array('key' => array('new value'));
+    *
+    * Parameters are passed by reference, though only for performance reasons. They're not
+    * altered by this function.
+    *
+    * @param array $array1
+    * @param array $array2
+    * @return array
+    * @author Daniel <daniel (at) danielsmedegaardbuus (dot) dk>
+    * @author Gabriel Sobrinho <gabriel (dot) sobrinho (at) gmail (dot) com>
+    */
+    public static function array_merge_recursive_distinct ( array &$array1, array &$array2 )
+    {
+      $merged = $array1;
+
+      foreach ( $array2 as $key => &$value )
+      {
+        if ( is_array ( $value ) && isset ( $merged [$key] ) && is_array ( $merged [$key] ) )
+        {
+          $merged [$key] = self::array_merge_recursive_distinct ( $merged [$key], $value );
+        }
+        else
+        {
+          $merged [$key] = $value;
+        }
+      }
+
+      return $merged;
     }
 }
 
