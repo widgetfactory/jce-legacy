@@ -185,7 +185,7 @@ WFPopups.addPopup('jcemediabox', {
                     pdfjs: 0
                 }
             };
-            
+
             var o = JCEMediaBox.Popup.getAddon(n.href);
 
             if (o && o.type) {
@@ -247,17 +247,17 @@ WFPopups.addPopup('jcemediabox', {
         }
 
         // parameter format eg: title[title]
-        if (/\w+\[[^\]]+\]/.test(s)) { 
+        if (/\w+\[[^\]]+\]/.test(s)) {
             var data = {};
-            
+
             tinymce.each(tinymce.explode(s, ';'), function(p) {
                 var args = p.match(/([\w-]+)\[(.*)\]$/);
-                
+
                 if (args && args.length === 3) {
                     data[args[1]] = args[2];
                 }
             });
-            
+
             return data;
 
             /*s = s.replace(/([\w-]+)\[([^\]]+)\](;)?/g, function (a, b, c, d) {
@@ -287,7 +287,7 @@ WFPopups.addPopup('jcemediabox', {
         var icon = /noicon/g.test(n.className);
         var hide = /noshow/g.test(n.className);
 
-        // Auto popup        
+        // Auto popup
         if (/(autopopup(.?|-single|-multiple))/.test(n.className)) {
             v = /autopopup-multiple/.test(n.className) ? 'autopopup-multiple' : 'autopopup-single';
 
@@ -321,7 +321,7 @@ WFPopups.addPopup('jcemediabox', {
             if (rv = relRX.exec(rel)) {
                 // pass on rel value
                 ra = rv[1];
-                // remove rel values	
+                // remove rel values
                 rel = rel.replace(relRX, '');
             }
 
@@ -339,11 +339,11 @@ WFPopups.addPopup('jcemediabox', {
         }
 
         var params = [];
-        
+
         if ($.isEmptyObject(data)) {
             $.each(ed.dom.getAttribs(n), function(i, at) {
                 var name = at.name;
-                
+
                 if (name && name.indexOf('data-mediabox-') !== -1) {
                     var k = name.replace('data-mediabox-', '');
                     data[k] = ed.dom.getAttrib(n, name);
@@ -361,7 +361,7 @@ WFPopups.addPopup('jcemediabox', {
 
         $.each(data, function (k, v) {
             if ($('#jcemediabox_popup_' + k).get(0) && v !== "") {
-                
+
                 if (k == 'title' || k == 'caption' || k == 'group') {
                     v = decodeURIComponent(v);
                 }
@@ -382,11 +382,11 @@ WFPopups.addPopup('jcemediabox', {
         // process remaining data values as params
         $.each(data, function (k, v) {
             if (v !== '') {
-                
+
                 try {
                     v = decodeURIComponent(v);
                 } catch(e) {}
-                
+
                 if (x == 0) {
                     $('li:first input.name', '#jcemediabox_popup_params').val(k);
                     $('li:first input.value', '#jcemediabox_popup_params').val(v);
@@ -464,7 +464,7 @@ WFPopups.addPopup('jcemediabox', {
                     return;
                 }
             }
-            
+
             /*if (k == 'title' || k == 'caption' || k == 'group') {
                 v = encodeURIComponent(v);
             }*/
@@ -541,8 +541,10 @@ WFPopups.addPopup('jcemediabox', {
             ed.dom.addClass(n, 'noshow');
         }
 
-        // Set target
-        ed.dom.setAttrib(n, 'target', '_blank');
+        // Set target if not set
+        if (!ed.dom.getAttrib(n, 'target')) {
+            ed.dom.setAttrib(n, 'target', '_blank');
+        }
     },
     /**
      * Set the poup icon option
