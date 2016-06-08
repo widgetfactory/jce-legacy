@@ -104,8 +104,8 @@ function jInsertEditorText(text, editor) {
                 keep_styles: false,
                 update_styles: true,
                 compress: {
-                    'css': true,
-                    'javascript': true
+                    'css': false,
+                    'javascript': false
                 }
             }, settings);
 
@@ -158,11 +158,11 @@ function jInsertEditorText(text, editor) {
                     load('plugins/' + n + '/editor_plugin' + suffix + '.js');
                 });
             }
-            
+
             // Mark themes loaded
             load('themes/advanced/editor_template' + suffix + '.js');
             load('themes/none/editor_template' + suffix + '.js');
-            
+
             if (s.compress.javascript == 1) {
                 // Add plugins with languages
                 each(s.plugins.split(','), function (n) {
@@ -394,7 +394,7 @@ function jInsertEditorText(text, editor) {
         },
         toggle: function (el, use_cookies) {
             var self = this, ed = tinyMCE.get(el.id), DOM = tinymce.DOM;
-            
+
             var state = !ed || ed.isHidden() ? 1 : 0
             // set cookie
             if (use_cookies) {
@@ -416,11 +416,11 @@ function jInsertEditorText(text, editor) {
                     DOM.addClass(el, 'wfNoEditor');
                 }
             }
-            
+
             tinymce.execCommand('mceToggleEditor', false, el.id);
         },
         _wrapText: function (el, s) {
-            
+
             if (s) {
                 el.setAttribute("wrap", "soft");
             } else {
