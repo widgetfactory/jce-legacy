@@ -381,7 +381,7 @@
                     if (all) {
                         for (var cursor = cm.getSearchCursor(query); cursor.findNext(); ) {
                             if (typeof query != "string") {
-                                var match = cm.getRange(cursor.from(), cursor.to()).match(query);
+                                var match = cm.getRange(cursor.pos.from, cursor.pos.to).match(query);
                                 cursor.replace(text.replace(/\$(\d)/, function(w, i) {
                                     return match[i];
                                 }));
@@ -395,20 +395,21 @@
                         var cursor = cm.getSearchCursor(query, cm.getCursor());
 
                         function advance() {
-                            var start = cursor.from(), match;
+                            var start = cursor.pos.from, match;
+
                             if (!(match = cursor.findNext())) {
                                 cursor = cm.getSearchCursor(query);
-                                if (!start || !(match = cursor.findNext()) || (cursor.from().line == start.line && cursor.from().ch == start.ch)) {
+                                if (!start || !(match = cursor.findNext()) || (cursor.pos.from.line == start.line && cursor.pos.from.ch == start.ch)) {
                                     cm.focus();
                                     return false;
                                 }
                             }
-                            cm.setSelection(cursor.from(), cursor.to());
+                            cm.setSelection(cursor.pos.from, cursor.pos.to);
 
                             doReplace(match);
-                            cm.setCursor(cursor.to());
+                            cm.setCursor(cursor.pos.to);
 
-                            cm.scrollIntoView(cursor.to());
+                            cm.scrollIntoView(cursor.pos.to);
 
                             //cm.focus();
                         }
@@ -417,8 +418,6 @@
                             cursor.replace(typeof query == "string" ? text : text.replace(/\$(\d)/, function(w, i) {
                                 return match[i];
                             }));
-
-                            console.log(match, text);
                         }
 
                         advance();
