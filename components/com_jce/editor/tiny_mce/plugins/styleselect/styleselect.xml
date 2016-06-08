@@ -15,7 +15,7 @@
             <option value="stylesheet">WF_STYLESELECT_STYLESHEET</option>
             <option value="custom">WF_STYLESELECT_CUSTOM</option>
         </param>
-        <param name="custom_classes" type="text" default="" label="WF_STYLESELECT_CUSTOM_CLASSES" description="WF_STYLESELECT_CUSTOM_CLASSES_DESC" parent="styles[custom]" />
+        <param name="custom_classes" type="text" default="" placeholder="eg: class1,class2,class3" label="WF_STYLESELECT_CUSTOM_CLASSES" description="WF_STYLESELECT_CUSTOM_CLASSES_DESC" parent="styles[custom]" />
         <param name="custom_styles" type="styleformat" default="" label="WF_STYLESELECT_CUSTOM" description="WF_STYLESELECT_CUSTOM_DESC" parent="styles[custom]" />
     </params>
     <help></help>
