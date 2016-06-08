@@ -3,7 +3,7 @@
     var writer = new tinymce.html.Writer(ed.settings), parser = new tinymce.html.SaxParser(writer, ed.schema);
 
     /* Source Editor Class
-     * Depends on codemirror.js with modes (css, javascript, htmlmixed, xml, php, clike) and utilities (search, searchcursor, matchbrackets, closebrackets, match-highlighter, closetag, mark-selection, active-line) 
+     * Depends on codemirror.js with modes (css, javascript, htmlmixed, xml, php, clike) and utilities (search, searchcursor, matchbrackets, closebrackets, match-highlighter, closetag, mark-selection, active-line)
      */
 
     var SourceEditor = {
@@ -133,7 +133,6 @@
                     // replace
                     if (s == 'replace') {
                         r = DOM.get('source_replace_value').value;
-
                         return fn.call(self, f, r, true, DOM.get('source_search_regex').checked);
                     }
 
@@ -241,7 +240,7 @@
                     /*DOM.setStyles(scroller, {
                         height: h
                     });*/
-                    
+
                     cm.setSize(w || null, h);
                 };
 
@@ -270,7 +269,7 @@
                 cm.getSearchState = function() {
                     function SearchState() {
                         this.posFrom = this.posTo = this.query = null;
-                        this.marked = [];
+                        this.overlay = null;
                     }
 
                     return cm.state.search || (cm.state.search = new SearchState());
@@ -278,19 +277,17 @@
 
                 cm.clearSearch = function() {
                     cm.operation(function() {
-                        var state = cm.getSearchState(cm);
+                        var state = cm.getSearchState();
 
                         if (!state.query) {
                             return;
                         }
-                        state.query = null;
-                        for (var i = 0; i < state.marked.length; ++i) {
-                            state.marked[i].clear();
-                        }
-
-                        state.marked.length = 0;
-
+                        state.query = state.queryText = null;
                         cm.removeOverlay(state.overlay);
+                        if (state.annotate) {
+                          state.annotate.clear();
+                          state.annotate = null;
+                        }
                     });
                 };
 
@@ -413,13 +410,15 @@
 
                             cm.scrollIntoView(cursor.to());
 
-                            cm.focus();
+                            //cm.focus();
                         }
 
                         function doReplace(match) {
                             cursor.replace(typeof query == "string" ? text : text.replace(/\$(\d)/, function(w, i) {
                                 return match[i];
                             }));
+
+                            console.log(match, text);
                         }
 
                         advance();
@@ -439,12 +438,12 @@
                     var range = getSelectedRange();
                     cm.autoFormatRange(range.from, range.to);
                 };
-                
+
                 if (o.font_size) {
                     if (/[^\D]/.test(o.font_size)) {
                         o.font_size += 'px';
                     }
-                    
+
                     cm.getWrapperElement().style.fontSize = o.font_size;
                 }
 
