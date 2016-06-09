@@ -116,8 +116,13 @@ class WFFileSystem extends WFExtension {
                 // Joomla! 1.6+
                 if (method_exists('JUserHelper', 'getUserGroups')) {
                     $groups = JUserHelper::getUserGroups($user->id);
+
+                    // get keys only
+                    $groups = array_keys($groups);
+
                     // get the first group
-                    $group_id = array_keys($groups)[0];
+                    $group_id = array_shift($groups);
+
                     // Joomla! 2.5?
                     if (is_int($group_id)) {
                         // usergroup table
