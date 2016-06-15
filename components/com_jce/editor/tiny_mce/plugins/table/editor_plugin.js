@@ -33,7 +33,7 @@
      * Table Grid class.
      */
     function TableGrid(table, dom, selection, settings) {
-        var grid, startPos, endPos, selectedCell;
+        var grid, startPos, endPos, selectedCell, gridWidth;
 
         buildGrid();
         selectedCell = dom.getParent(selection.getStart(), 'th,td');
@@ -54,6 +54,7 @@
             var startY = 0;
 
             grid = [];
+            gridWidth = 0;
 
             each(['thead', 'tbody', 'tfoot'], function (part) {
                 var rows = dom.select('> ' + part + ' tr', table);
@@ -89,6 +90,8 @@
                                 };
                             }
                         }
+
+                        gridWidth = Math.max(gridWidth, x + 1);
                     });
                 });
 
@@ -762,6 +765,34 @@
             }
         }
 
+        function moveRelIdx(cellElm, delta) {
+    			var pos, index, cell;
+
+    			pos = getPos(cellElm);
+    			index = pos.y * gridWidth + pos.x;
+
+    			do {
+    				index += delta;
+    				cell = getCell(index % gridWidth, Math.floor(index / gridWidth));
+
+    				if (!cell) {
+    					break;
+    				}
+
+    				if (cell.elm != cellElm) {
+    					selection.select(cell.elm, true);
+
+    					if (dom.isEmpty(cell.elm)) {
+    						selection.collapse(true);
+    					}
+
+    					return true;
+    				}
+    			} while (cell.elm == cellElm);
+
+    			return false;
+    		}
+
         // Expose to public
         tinymce.extend(this, {
             deleteTable: deleteTable,
@@ -776,7 +807,9 @@
             pasteRows: pasteRows,
             getPos: getPos,
             setStartCell: setStartCell,
-            setEndCell: setEndCell
+            setEndCell: setEndCell,
+            moveRelIdx: moveRelIdx,
+			      refresh: buildGrid
         });
     }
 
@@ -1009,7 +1042,7 @@
                 });
                 function tableCellSelected(ed, rng, n, currentCell) {
                     // The decision of when a table cell is selected is somewhat involved.  The fact that this code is
-                    // required is actually a pointer to the root cause of this bug. A cell is selected when the start 
+                    // required is actually a pointer to the root cause of this bug. A cell is selected when the start
                     // and end offsets are 0, the start container is a text, and the selection node is either a TR (most cases)
                     // or the parent of the table (in the case of the selection containing the last cell of a table).
                     var TEXT_NODE = 3, table = ed.dom.getParent(rng.startContainer, 'TABLE'),
@@ -1065,7 +1098,7 @@
                              m.add({title: 'advanced.unlink_desc', icon: 'unlink', cmd: 'UnLink'});
                              m.addSeparator();
                              }
-                             
+
                              if (el.nodeName == 'IMG' && el.className.indexOf('mceItem') == -1) {
                              m.add({title: 'advanced.image_desc', icon: 'image', cmd: ed.plugins.advimage ? 'mceAdvImage' : 'mceImage', ui: true});
                              m.addSeparator();
@@ -1456,6 +1489,32 @@
                 });
 
             });
+
+            // Enable tab key cell navigation
+        		if (ed.settings.table_tab_navigation !== false) {
+        			ed.onKeyDown.add(function(ed, e) {
+        				var cellElm, grid, delta;
+
+        				if (e.keyCode == 9) {
+        					cellElm = ed.dom.getParent(ed.selection.getStart(), 'th,td');
+
+        					if (cellElm) {
+        						e.preventDefault();
+
+        						grid = createTableGrid();
+        						delta = e.shiftKey ? -1 : 1;
+
+        						ed.undoManager.add();
+
+        							if (!grid.moveRelIdx(cellElm, delta) && delta > 0) {
+        								grid.insertRow();
+        								grid.refresh();
+        								grid.moveRelIdx(cellElm, delta);
+        							}
+        					}
+        				}
+        			});
+        		}
         },
         createControl: function (n, cm) {
             var t = this, ed = t.editor;
@@ -1846,4 +1905,4 @@
             DOM.remove(this.id + '_menu');
         }
     });
-})(tinymce); 
+})(tinymce);
