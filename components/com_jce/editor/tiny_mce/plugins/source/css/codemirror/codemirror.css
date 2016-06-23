@@ -5,6 +5,9 @@
   font-family: monospace;
   height: 300px;
 }
+
+.CodeMirror textarea {background: inherit; border: inherit; box-shadow: inherit;}
+
 .CodeMirror-scroll {
   /* Set scrolling behaviour here */
   overflow: auto;
