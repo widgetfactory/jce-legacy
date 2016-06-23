@@ -1544,6 +1544,7 @@
                         width: ed.getParam('table_default_width'),
                         height: ed.getParam('table_default_height'),
                         border: border,
+                        align: ed.getParam('table_default_align', ''),
                         classes: ed.getParam('table_classes', '')
                     }, ed);
 
@@ -1604,7 +1605,8 @@
                 rows: 4,
                 width: '',
                 height: '',
-                border: 0
+                border: 0,
+                align: ''
             }, t.settings);
 
             /**
@@ -1825,6 +1827,19 @@
 
                     if (t.settings.border != '') {
                         html += ' border="' + t.settings.border + '"';
+                    }
+
+                    if (t.settings.align != '' && ed.settings.schema === "html4") {
+                        html += ' align="' + t.settings.align + '"';
+                    }
+
+                    if (t.settings.align != '' && ed.settings.schema !== "html4") {
+                        if (t.settings.align === "center") {
+                            styles.push('margin-left: auto');
+                            styles.push('margin-right: auto');
+                        } else {
+                            styles.push('float: ' + t.settings.align);
+                        }
                     }
 
                     if (t.settings.classes) {
