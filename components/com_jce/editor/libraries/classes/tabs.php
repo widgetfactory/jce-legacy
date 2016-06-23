@@ -2,7 +2,7 @@
 
 /**
  * @package   	JCE
- * @copyright 	Copyright (c) 2009-2016 Ryan Demmer. All rights reserved.
+ * @copyright 	Copyright (c) 2009-2015 Ryan Demmer. All rights reserved.
  * @license   	GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  * JCE is free software. This version may have been modified pursuant
  * to the GNU General Public License, and as distributed it includes or
@@ -145,20 +145,23 @@ final class WFTabs extends JObject {
      * @access	public
      */
     public function render() {
-        $output = '';
+        $output = "";
+
+        if (!empty($this->_tabs)) {
+            $output .= '<div id="tabs">';
+        }
 
         // add tabs
-        if (!empty($this->_tabs)) {
-            $output .= '<div id="tabs" class="ui-tabs ui-widget ui-widget-content ui-corner-all">';
-            $output .= '<ul class="ui-tabs-nav ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all">' . "\n";
+        if (count($this->_tabs) > 1) {
+            $output .= '<ul class="ui-tab">' . "\n";
 
             $x = 0;
 
             foreach ($this->_tabs as $tab) {
-                $class = "ui-state-default ui-corner-top";
+                $class = "";
 
-                if ($x == 0) {
-                    $class .= " ui-tabs-active ui-state-active";
+                if ($x === 0) {
+                    $class .= " ui-active";
                 }
 
                 $output .= "\t" . '<li class="' . $class . '"><a href="#' . $tab . '_tab">' . WFText::_('WF_TAB_' . strtoupper($tab)) . '</a></li>' . "\n";
@@ -167,30 +170,38 @@ final class WFTabs extends JObject {
 
             $output .= "</ul>\n";
         }
+
         // add panels
         if (!empty($this->_panels)) {
             $x = 0;
 
-            foreach ($this->_panels as $key => $panel) {
-                $state = $panel->state ? '' : ' style="display:none;"';
-                if (!empty($this->_tabs)) {
-                    $class = "ui-tabs-panel ui-widget-content ui-corner-bottom";
+            $output .= '<div class="ui-switcher">';
 
-                    if ($x) {
+            foreach ($this->_panels as $key => $panel) {
+                $class = "";
+                //$state = $panel->state ? '' : ' style="display:none;"';
+                if (!empty($this->_tabs)) {
+
+                    if ($x === 0) {
+                        $class .= " ui-active";
+                    } else {
                         $class .= " ui-tabs-hide";
                     }
 
-                    $output .= '<div id="' . $key . '_tab"' . $state . ' class="' . $class . '">';
+                    $output .= '<div id="' . $key . '_tab" class="' . $class . '">';
                     $output .= $panel->loadTemplate();
                     $output .= '</div>';
                 } else {
-                    $output .= '<div id="' . $key . '"' . $state . '>';
+                    $output .= '<div id="' . $key . '">';
                     $output .= $panel->loadTemplate();
                     $output .= '</div>';
                 }
                 $x++;
             }
+
+            $output .= '</div>';
         }
+
         // add closing div
         if (!empty($this->_tabs)) {
             $output .= "</div>\n";
