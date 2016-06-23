@@ -65,8 +65,8 @@
 
             vp = DOM.getViewPort();
 
-            f.width  = parseInt(f.width || 320);
-      			f.height = parseInt(f.height || 240) + (tinymce.isIE ? 8 : 0);
+            f.width  = parseInt(f.width);
+      			f.height = parseInt(f.height) + (tinymce.isIE ? 8 : 0);
 
             f.left = f.left || Math.round(Math.max(vp.x, vp.x + (vp.w / 2.0) - (f.width / 2.0)));
       			f.top  = f.top || Math.round(Math.max(vp.y, vp.y + (vp.h / 2.0) - (f.height / 2.0)));
@@ -74,8 +74,8 @@
             p.mce_inline    = true;
             p.mce_window_id = id;
 
-            p.mce_width     = f.width;
-            p.mce_height    = f.height;
+            //p.mce_width     = f.width;
+          //  p.mce_height    = f.height;
 
             self.features   = f;
             self.params     = p;
@@ -84,14 +84,14 @@
 
             // modal html
             var html = '<div class="mceModalBody" id="' + id + '">' +
-                '   <div class="mceModalContainer">' +
+            	'   <div class="mceModalContainer">' +
                 '       <div class="mceModalHeader mceModalMove" id="' + id + '_header">' +
                 '           <button class="mceModalClose" type="button"></button>' +
                 '           <h3 class="mceModalTitle" id="' + id + '_title">' + (f.title || "") + '</h3>' +
                 '       </div>' +
                 '       <div class="mceModalContent" id="' + id + '_content"></div>' +
                 '   </div>' +
-                '</div>';
+                '   </div>';
 
             // find modal
             var modal = DOM.select('.mceModal');
@@ -106,8 +106,6 @@
             }
 
             DOM.add(modal, 'div', {'class' : 'mceModalFrame', id: id + '_frame'}, html);
-
-            //DOM.setStyles(id, {top : -10000, left : -10000});
 
             u = f.url || f.file;
 
@@ -184,8 +182,19 @@
                 dh += DOM.get(id + '_header').clientHeight;
             }
 
-            // Resize window
-			      DOM.setStyles(id, {width : f.width + dw, height : f.height + dh});
+            // set size classes
+            if (f.size) {
+                DOM.addClass(id, f.size);
+            } else {
+                // Resize window
+                DOM.setStyles(id, {width : f.width + dw, height : f.height + dh});
+            }
+
+            Event.add(window, 'resize', function() {
+                vp = DOM.getViewPort();
+
+                DOM.setStyles(id, {'left' : vp.x, 'top': vp.y});
+            });
 
             // Register events
             mdf = Event.add(id, 'mousedown', function(e) {
@@ -223,6 +232,9 @@
                     return Event.cancel(e);
                 }
             });
+
+            // position modal
+            DOM.setStyles(id, {'left' : vp.x, 'top': vp.y});
 
             // Add window
             w = self.windows[id] = {
@@ -262,8 +274,6 @@
                 w.element.setStyle('zIndex', w.zIndex);
                 w.element.update();
 
-                id = id + '_frame';
-
                 DOM.removeClass(self.lastId, 'mceFocus');
                 DOM.addClass(id, 'mceFocus');
 
@@ -292,7 +302,7 @@
             p = DOM.getRect(id);
             vp = DOM.getViewPort();
 
-            DOM.setStyles(id, {'position' : 'absolute', 'left' : p.x - vp.x, 'top': p.y - vp.y});
+            //DOM.setStyles(id, {'left' : p.x - vp.x, 'top': p.y - vp.y});
 
             // Get positons and sizes
             cp = {x : 0, y : 0};
@@ -328,7 +338,7 @@
                 dx = Math.max(p.x + x, 10);
                 dy = Math.max(p.y + y, 10);
 
-                DOM.setStyles(id, {'left' : dx - vp.x, 'top': dy - vp.y});
+                DOM.setStyles(id, {'left' : x + vp.x, 'top': y + vp.y});
 
                 return Event.cancel(e);
             });
