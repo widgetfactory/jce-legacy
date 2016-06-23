@@ -45,7 +45,7 @@
                 ed.windowManager.open({
                     file 	: ed.getParam('site_url') + 'index.php?option=com_jce&view=editor&layout=plugin&plugin=link',
                     width 	: 500 + ed.getLang('link.delta_width', 0),
-                    height 	: 550 + ed.getLang('link.delta_height', 0),
+                    height 	: 560 + ed.getLang('link.delta_height', 0),
                     inline 	: 1,
                     popup_css : false
                 }, {

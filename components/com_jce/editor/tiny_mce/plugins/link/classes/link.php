@@ -73,6 +73,9 @@ class WFLinkPlugin extends WFEditorPlugin {
 
         // add link stylesheet
         $document->addStyleSheet(array('link'), 'plugins');
+
+        $document->addScript(array('link.min'), 'libraries');
+
         // add link scripts last
         $document->addScript(array('link'), 'plugins');
     }
