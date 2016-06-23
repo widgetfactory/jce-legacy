@@ -1,5 +1,5 @@
 <?xml version="1.0" ?>
-<install version="2.0" type="plugin" plugin="searchreplace" core="1" editable="0">
+<extension version="3.0" type="plugin" plugin="searchreplace" core="1" editable="0">
 	<name>WF_SEARCHREPLACE_TITLE</name>
 	<version>@@version@@</version>
 	<creationDate>@@date@@</creationDate>
@@ -11,8 +11,6 @@
 	<description>WF_SEARCHREPLACE_DESC</description>
 	<icon>search,replace</icon>
 	<params></params>
-	<help>
-		<topic key="searchreplace.about" title="WF_SEARCHREPLACE_HELP_ABOUT" />
-	</help>
+	<help></help>
 	<languages></languages>
-</install>
+</extension>

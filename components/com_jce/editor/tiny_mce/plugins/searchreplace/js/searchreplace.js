@@ -1,6 +1,6 @@
 /**
  * @package   	JCE
- * @copyright 	Copyright (c) 2009-2016 Ryan Demmer. All rights reserved.
+ * @copyright 	Copyright (c) 2009-2015 Ryan Demmer. All rights reserved.
  * @license   	GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  * JCE is free software. This version may have been modified pursuant
  * to the GNU General Public License, and as distributed it includes or
@@ -12,72 +12,44 @@
 var SearchReplaceDialog = {
     settings: {},
     init: function(ed) {
-        var self = this, m = tinyMCEPopup.getWindowArg("mode");
+        var self = this;
 
         $.Plugin.init();
 
-        $('button#next').button({
+        $('#next').button({
             icons: {
-                primary: 'ui-icon-arrowthick-1-e'
-            }
+                primary: 'ui-icon-arrow-right'
+            },
+            classes: 'ui-button-primary'
         }).click(function(e) {
             self.searchNext('none');
             e.preventDefault();
         });
 
-        $('button#replaceBtn').button({
+        $('#replaceBtn').button({
             icons: {
-                primary: 'ui-icon-transferthick-e-w'
-            }
+                primary: 'ui-icon-reply'
+            },
+            classes: 'ui-button-danger'
         }).click(function(e) {
             self.searchNext('current');
             e.preventDefault();
         });
 
-        $('button#replaceAllBtn').button({
+        $('#replaceAllBtn').button({
             icons: {
-                primary: 'ui-icon-transferthick-e-w'
-            }
+                primary: 'ui-icon-refresh'
+            },
+            classes: 'ui-button-danger'
         }).click(function(e) {
             self.searchNext('all');
             e.preventDefault();
         });
 
-        var index = $('a[href="#' + m + '_tab"]').parent().index();
-
-        $('#tabs').on('tabsactivate', function(e, ui) {
-            var id = $(ui.newPanel).attr('id');
-            self.switchMode(id.substring(0, id.indexOf('_')));
-        }).tabs('option', 'active', index);
-
-        this.switchMode(m);
-
-        $('#' + m + '_panel_searchstring').val(tinyMCEPopup.getWindowArg("search_string"));
+        $('#searchstring').val(tinyMCEPopup.getWindowArg("search_string"));
 
         // Focus input field
-        $('#' + m + '_panel_searchstring').focus();
-    },
-    switchMode: function(m) {
-        var lm = this.lastMode;
-
-        if (lm != m) {
-            if (lm) {
-                $('#' + m + '_panel_searchstring').val($('#' + lm + '_panel_searchstring').val());
-                $('#' + m + '_panel_backwardsu').prop('checked', $('#' + lm + '_panel_backwardsu').is(':checked'));
-
-                $('#' + m + '_panel_backwardsd').prop('checked', $('#' + lm + '_panel_backwardsd').is(':checked'));
-                $('#' + m + '_panel_casesensitivebox').prop('checked', $('#' + lm + '_panel_casesensitivebox').is(':checked'));
-            }
-
-            $("#replaceBtn, #replaceAllBtn").css('display', function() {
-                if (m == 'replace') {
-                    return 'inline';
-                }
-                return 'none';
-            });
-
-            this.lastMode = m;
-        }
+        $('#searchstring').focus();
     },
     searchNext: function(a) {
         var ed = tinyMCEPopup.editor, se = ed.selection, r = se.getRng(), m = this.lastMode, s, b, fl = 0, w = ed.getWin(), wm = ed.windowManager, fo = 0, ca, rs;
@@ -87,10 +59,10 @@ var SearchReplaceDialog = {
         }
 
         // Get input
-        s = $('#' + m + '_panel_searchstring').val();
-        b = $('#' + m + '_panel_backwardsu').is(':checked');
-        ca = $('#' + m + '_panel_casesensitivebox').is(':checked');
-        rs = $('#replace_panel_replacestring').val();
+        s = $('#searchstring').val();
+        b = $('#backwardsu').is(':checked');
+        ca = $('#casesensitivebox').is(':checked');
+        rs = $('#replacestring').val();
 
         if (tinymce.isIE) {
             r = ed.getDoc().selection.createRange();
@@ -101,7 +73,7 @@ var SearchReplaceDialog = {
 
         function fix() {
             // Correct Firefox graphics glitches
-            // TODO: Verify if this is actually needed any more, maybe it was for very old FF versions? 
+            // TODO: Verify if this is actually needed any more, maybe it was for very old FF versions?
             r = se.getRng().cloneRange();
             ed.getDoc().execCommand('SelectAll', false, null);
             se.setRng(r);
@@ -110,7 +82,7 @@ var SearchReplaceDialog = {
         function replace() {
             ed.selection.setContent(rs); // Needs to be duplicated due to selection bug in IE
         }
-        
+
        // IE flags
         if (ca)
             fl = fl | 4;

@@ -1,6 +1,1 @@
-.ui-tabs-panel {
-	height: 100px;
-}
-#jce label[for$="_backwardsu"], #jce label[for$="_backwardsd"] {
-	min-width: 40px;
-}
+input[type="radio"] + label {margin: 0 10px 0 5px;}
