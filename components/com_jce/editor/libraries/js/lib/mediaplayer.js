@@ -1,6 +1,6 @@
 /**
  * @package   	JCE
- * @copyright 	Copyright (c) 2009-2016 Ryan Demmer. All rights reserved.
+ * @copyright 	Copyright (c) 2009-2015 Ryan Demmer. All rights reserved.
  * @license   	GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  * JCE is free software. This version may have been modified pursuant
  * to the GNU General Public License, and as distributed it includes or
@@ -22,7 +22,7 @@ var WFMediaPlayer = WFExtensions.add('MediaPlayer', {
         path : ''
     },
 
-    type 	: 'flash',
+    type 	: 'video',
 
     init : function(o) {
         tinymce.extend(this, o);
@@ -74,11 +74,10 @@ var WFMediaPlayer = WFExtensions.add('MediaPlayer', {
 
     onSelectFile : function(file) {
     },
-    
-    onInsert : function() {    	
-    },
-    
-    onChangeType : function() {   	
-    }
 
+    onInsert : function() {
+    },
+
+    onChangeType : function() {
+    }
 });

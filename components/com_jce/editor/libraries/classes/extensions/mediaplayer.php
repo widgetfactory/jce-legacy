@@ -2,7 +2,7 @@
 
 /**
  * @package   	JCE
- * @copyright 	Copyright (c) 2009-2016 Ryan Demmer. All rights reserved.
+ * @copyright 	Copyright (c) 2009-2015 Ryan Demmer. All rights reserved.
  * @license   	GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  * JCE is free software. This version may have been modified pursuant
  * to the GNU General Public License, and as distributed it includes or
@@ -42,41 +42,12 @@ class WFMediaPlayerExtension extends WFExtension {
      * @return  MediaManager  The manager object.
      * @since 1.5
      */
-    public static function getInstance($name = 'jceplayer') {
+    public static function getInstance($name = '') {
         if (!isset(self::$instance)) {
-            $classname = '';
-
-            if ($name && $name != 'none') {
-                $player = parent::loadExtensions('mediaplayer', $name);
-                $classname = 'WFMediaPlayerExtension_' . ucfirst($player);
-            }
-
-            if ($classname && class_exists($classname)) {
-                self::$instance = new $classname();
-            } else {
-                self::$instance = new WFMediaPlayerExtension();
-            }
+            self::$instance = new WFMediaPlayerExtension();
         }
 
         return self::$instance;
-    }
-
-    public function display() {
-        parent::display();
-
-        $document = WFDocument::getInstance();
-
-        if ($this->isEnabled() && $this->get('name')) {
-            $document->addScript(array(
-                'mediaplayer/' . $this->get('name') . '/js/' . $this->get('name')
-                    ), 'extensions');
-
-            $document->addStyleSheet(array(
-                'mediaplayer/' . $this->get('name') . '/css/' . $this->get('name')
-                    ), 'extensions');
-
-            $document->addScriptDeclaration('WFExtensions.MediaPlayer.init(' . json_encode($this->getProperties()) . ')');
-        }
     }
 
     public function isEnabled() {
@@ -95,42 +66,12 @@ class WFMediaPlayerExtension extends WFExtension {
         return $this->params;
     }
 
-    public function getParam($param, $default = '') {
-        $params = $this->getParams();
-
-        return isset($params[$param]) ? $params[$param] : $default;
-    }
-
     /**
      * 
      * @param object $player
      * @return 
      */
     public function loadTemplate($tpl = '') {
-        $output = '';
-
-        if ($this->isEnabled()) {
-            $path = WF_EDITOR_EXTENSIONS . '/mediaplayer/' . $this->get('name');
-
-            $file = 'default.php';
-
-            if ($tpl) {
-                $file = 'default_' . $tpl . '.php';
-            }
-
-            if (file_exists($path . '/tmpl/' . $file)) {
-                ob_start();
-
-                include $path . '/tmpl/' . $file;
-
-                $output .= ob_get_contents();
-                ob_end_clean();
-            }
-        }
-
-        return $output;
+        return '';
     }
-
 }
-
-?>
