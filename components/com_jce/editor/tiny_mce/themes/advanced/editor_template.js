@@ -323,18 +323,10 @@
             h = Math.min(s.theme_advanced_resizing_max_height || 0xFFFF, h);
 
             // Resize iframe and container
-            //DOM.setStyle(e, 'height', '');
             DOM.setStyle(ifr, 'height', h);
 
             if (s.theme_advanced_resize_horizontal) {
-                //DOM.setStyle(e, 'width', '');
-
-                // Make sure that the size is never smaller than the over all ui
-                if (w < e.clientWidth) {
-                    //w = e.clientWidth;
-                }
-
-                DOM.setStyle(e, 'max-width', w + 'px');
+                DOM.setStyle(e.parentNode, 'max-width', w + 'px');
                 DOM.setStyle(ifr, 'max-width', w + 'px');
             }
 
