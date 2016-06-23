@@ -35,7 +35,7 @@ class WFViewInstaller extends WFView {
         $plugins = '';
         $extensions = '';
         $languages = '';
-        
+
         JHtml::_('behavior.modal');
 
         if (WFModel::authorize('uninstall')) {
@@ -56,7 +56,6 @@ class WFViewInstaller extends WFView {
             )
         );
         $this->addScript('components/com_jce/media/js/installer.js');
-        $this->addScript('components/com_jce/media/js/uploads.js');
         $this->addScriptDeclaration('jQuery.jce.Installer.options = ' . json_encode($options) . ';');
 
         // load styles
@@ -73,7 +72,6 @@ class WFViewInstaller extends WFView {
         $this->assign('plugins', $plugins);
         $this->assign('extensions', $extensions);
         $this->assign('languages', $languages);
-        $this->assign('related', $related);
 
         $result = $state->get('install.result');
 

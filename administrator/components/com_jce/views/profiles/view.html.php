@@ -196,11 +196,7 @@ class WFViewProfiles extends WFView {
                     )
                 );
 
-                $this->addScript(JURI::root(true) . '/administrator/components/com_jce/media/js/uploads.js');
                 $this->addScriptDeclaration('jQuery(document).ready(function($){$(\'input[type="file"]\').upload(' . json_encode($options) . ')});');
-
-                // load styles
-                $this->addStyleSheet(JURI::root(true) . '/administrator/components/com_jce/media/css/upload.css');
 
                 $this->setLayout('default');
                 break;
@@ -210,10 +206,10 @@ class WFViewProfiles extends WFView {
                 JHtml::_('behavior.modal');
 
                 // Load media
-                $this->addScript(JURI::root(true) . '/administrator/components/com_jce/media/js/profile.js');
+                $this->addScript(JURI::root(true) . '/administrator/components/com_jce/media/js/profile.min.js');
 
                 // load styles
-                $this->addStyleSheet(JURI::root(true) . '/administrator/components/com_jce/media/css/profiles.css');
+                $this->addStyleSheet(JURI::root(true) . '/administrator/components/com_jce/media/css/profiles.min.css');
 
                 $cid = JRequest::getVar('cid', array(0), '', 'array');
                 JArrayHelper::toInteger($cid, array(0));
