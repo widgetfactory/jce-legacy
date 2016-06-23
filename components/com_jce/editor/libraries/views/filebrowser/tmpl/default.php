@@ -16,7 +16,7 @@ defined('_JEXEC') or die('RESTRICTED');
       method="post" enctype="multipart/form-data">
     <div id="browser">
         <nav class="ui-navbar ui-grid ui-grid-collapse ui-width-1-1">
-            <div id="browser-message" class="ui-width-4-10 ui-navbar-content">
+            <div id="browser-message" class="ui-width-5-10 ui-navbar-content">
                   <div id="layout-full-toggle" class="ui-button" role="button">
                     <i class="ui-icon ui-icon-small ui-icon-angle-double-up"></i>
                     <i class="ui-icon ui-icon-small ui-icon-angle-double-down"></i>
@@ -25,7 +25,7 @@ defined('_JEXEC') or die('RESTRICTED');
                   <i class="ui-icon ui-icon-spinner ui-icon-small"></i>
                   <ul class="ui-breadcrumb pathway ui-margin-remove"></ul>
             </div>
-            <div id="browser-actions" class="ui-width-6-10 ui-navbar-content ui-navbar-flip ui-text-right ui-padding-remove"></div>
+            <div id="browser-actions" class="ui-width-5-10 ui-navbar-content ui-navbar-flip ui-text-right ui-padding-remove"></div>
         </nav>
 
         <main class="ui-grid ui-grid-collapse ui-width-1-1 ui-position-cover ui-flex">
