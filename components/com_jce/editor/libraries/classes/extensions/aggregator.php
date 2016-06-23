@@ -2,7 +2,7 @@
 
 /**
  * @package   	JCE
- * @copyright 	Copyright (c) 2009-2016 Ryan Demmer. All rights reserved.
+ * @copyright 	Copyright (c) 2009-2015 Ryan Demmer. All rights reserved.
  * @license   	GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  * JCE is free software. This version may have been modified pursuant
  * to the GNU General Public License, and as distributed it includes or
@@ -14,15 +14,6 @@ defined('_JEXEC') or die('RESTRICTED');
 class WFAggregatorExtension extends WFExtension {
 
     protected static $instance;
-
-    /**
-     * Constructor activating the default information of the class
-     *
-     * @access	protected
-     */
-    public function __construct($config = array()) {
-        parent::__construct($config);
-    }
 
     /**
      * Returns a reference to a plugin object
