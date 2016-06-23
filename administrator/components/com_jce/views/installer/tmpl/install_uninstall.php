@@ -17,7 +17,6 @@ defined('_JEXEC') or die('RESTRICTED');
         <li class="wf-tooltip active" title="<?php echo JText :: _('WF_INSTALLER_PLUGINS') . '::' . WFText::_('WF_INSTALLER_PLUGINS_DESC'); ?>"><a href="#tabs-plugins"><?php echo JText :: _('WF_INSTALLER_PLUGINS'); ?></a></li>
         <li class="wf-tooltip" title="<?php echo JText :: _('WF_INSTALLER_EXTENSIONS') . '::' . WFText::_('WF_INSTALLER_EXTENSIONS_DESC'); ?>"><a href="#tabs-extensions"><?php echo JText :: _('WF_INSTALLER_EXTENSIONS'); ?></a></li>
         <li class="wf-tooltip" title="<?php echo JText :: _('WF_INSTALLER_LANGUAGES') . '::' . WFText::_('WF_INSTALLER_LANGUAGES_DESC'); ?>"><a href="#tabs-languages"><?php echo JText :: _('WF_INSTALLER_LANGUAGES'); ?></a></li>
-        <li class="wf-tooltip" title="<?php echo JText :: _('WF_INSTALLER_RELATED') . '::' . WFText::_('WF_INSTALLER_RELATED_DESC'); ?>"><a href="#tabs-related"><?php echo JText :: _('WF_INSTALLER_RELATED'); ?></a></li>
     </ul>
     <div class="tab-content">
         <div id="tabs-plugins" class="tab-pane active">
@@ -39,13 +38,6 @@ defined('_JEXEC') or die('RESTRICTED');
                 <?php echo $this->loadTemplate('languages'); ?>
             <?php else : ?>
                 <?php echo WFText::_('WF_INSTALLER_NO_LANGUAGES'); ?>
-            <?php endif; ?>
-        </div>
-        <div id="tabs-related" class="tab-pane">
-            <?php if (count($this->related)) : ?>
-                <?php echo $this->loadTemplate('related'); ?>
-            <?php else : ?>
-                <?php echo WFText::_('WF_INSTALLER_NO_RELATED'); ?>
             <?php endif; ?>
         </div>
     </div>
