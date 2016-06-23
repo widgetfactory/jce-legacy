@@ -2,7 +2,7 @@
 
 /**
  * @package   	JCE
- * @copyright 	Copyright (c) 2009-2016 Ryan Demmer. All rights reserved.
+ * @copyright 	Copyright (c) 2009-2015 Ryan Demmer. All rights reserved.
  * @license   	GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  * JCE is free software. This version may have been modified pursuant
  * to the GNU General Public License, and as distributed it includes or
@@ -589,7 +589,7 @@ abstract class WFMimeType {
         'text/css' => 'css',
         'text/csv' => 'csv',
         'text/html' => 'html htm',
-        'text/plain' => 'txt text conf def list log in csv',
+        'text/plain' => 'txt text conf def list log in',
         'text/prs.lines.tag' => 'dsc',
         'text/richtext' => 'rtx',
         'text/sgml' => 'sgml sgm',
@@ -657,11 +657,11 @@ abstract class WFMimeType {
     }
 
     /**
-     *
+     * 
      * Get the mime type from the $mimes array
      * @access	private
      * @param 	string $type
-     * @return	string
+     * @return	string 
      */
     private static function getMime($type) {
         // get mimetype array
