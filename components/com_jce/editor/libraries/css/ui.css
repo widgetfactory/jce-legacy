@@ -1,0 +1,131 @@
+.ui-datalist {
+    position: relative;
+}
+
+.ui-form-horizontal .ui-datalist input[type="text"] {
+    z-index: 1;
+    position: relative;
+    width: 92.5%;
+    width: calc(100% - 16px);
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+}
+.ui-datalist input:focus + select {
+    border-color: #66afe9
+}
+.ui-datalist select:focus ~ input {
+    border-color: #66afe9
+}
+:root .ui-form-horizontal .ui-datalist input[type="text"] {
+    border-right-width: 0;
+}
+.ui-form-horizontal .ui-datalist select {
+    z-index: 0;
+    position: absolute;
+    left: 0;
+}
+.ui-form-horizontal .ui-grid-small .ui-datalist select {
+  left: 8px;
+  width: 95%;
+  width: calc(100% - 8px);
+}
+
+.ui-form-icon input.color {
+    padding-left: 28px !important
+}
+.ui-repeatable .ui-repeatable-create {
+    display: none;
+}
+.ui-repeatable:first-child .ui-repeatable-create {
+    display: block;
+}
+.ui-repeatable:first-child .ui-repeatable-delete {
+    display: none;
+}
+input.color, input.colour {
+    width: 100px;
+}
+.wf-colorpicker {
+    height: 350px;
+    max-height: inherit;
+    max-width: inherit;
+    width: 310px;
+    border: 1px solid #ddd;
+    background-color: #fff;
+    color: #444;
+    font-size: 12px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+    box-sizing: border-box;
+
+    bottom: 100%;
+    right: inherit;
+}
+.wf-colorpicker .ui-tabs {
+  height: 85%;
+  height: calc(100% - 49px);
+  position: relative;
+}
+.wf-colorpicker > div {
+  height: calc(100% - 10px);
+}
+.wf-colorpicker > div > div {
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
+.wf-colorpicker.ui-tooltip-left:after {
+    border-left-color: #fff
+}
+.wf-colorpicker.ui-tooltip-right:after {
+    border-right-color: #fff
+}
+.wf-colorpicker.ui-tooltip-left.ui-tooltip-bottom:after,
+.wf-colorpicker.ui-tooltip-right.ui-tooltip-bottom:after,
+.wf-colorpicker.ui-tooltip-left.ui-tooltip-top:after,
+.wf-colorpicker.ui-tooltip-right.ui-tooltip-top:after {
+  display: none;
+}
+
+.wf-colorpicker .ui-modal-footer {
+  position: relative;
+  margin: 5px -8px 0;
+  height: 49px;
+  box-sizing: border-box;
+}
+.wf-colorpicker #colorpicker_insert {margin: 0;}
+.wf-colorpicker .ui-switcher {
+    padding: 0 1px;
+}
+.wf-colorpicker #colorpicker {
+  position: relative;
+  top: inherit;
+  left: inherit;
+  right: inherit;
+  bottom: inherit;
+}
+.wf-colorpicker #colorpicker_tabs .ui-switcher {
+  padding: 0;
+}
+
+.ui-tooltip {
+    text-shadow: inherit;
+    right: inherit;
+    bottom: inherit;
+}
+.ui-tooltip .ui-icon-close {
+    position: absolute;
+    right: 3px;
+    cursor: pointer;
+    z-index: 10;
+    padding: 5px;
+    top: 0;
+    font-size: 0;
+}
+.ui-tooltip .ui-icon-close:before {
+    font-size: 14px;
+}
+.ui-tooltip h4, .ui-tooltip p {
+    margin: 0;
+    color: #fff;
+}
+.ui-tooltip .tooltip-arrow {display: none;}
