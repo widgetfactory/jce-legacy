@@ -283,10 +283,10 @@
                   classes: 'ui-button-primary',
                   click: function (e) {
                       if ($.isFunction(options.confirm)) {
-                          var args = [], v = $('#' + options.id).val();
+                          var args = [], $inp = $('#' + options.id + '-input'), v = $inp.val();
 
                           if (options.elements) {
-                              $(':input', '#' + options.id).each(function () {
+                              $(':input', '#' + options.id).not($inp).each(function () {
                                   args.push($(this).val());
                               });
                           }
