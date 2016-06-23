@@ -2,7 +2,7 @@
 
 /**
  * @package   	JCE
- * @copyright 	Copyright (c) 2009-2016 Ryan Demmer. All rights reserved.
+ * @copyright 	Copyright (c) 2009-2015 Ryan Demmer. All rights reserved.
  * @license   	GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  * JCE is free software. This version may have been modified pursuant
  * to the GNU General Public License, and as distributed it includes or
@@ -245,6 +245,9 @@ class WFDocument extends JObject {
                 case 'libraries':
                     $pre = $base . 'libraries/' . $type;
                     break;
+                case 'pro':
+                    $pre = $base . 'libraries/pro/' . $type;
+                    break;
                 case 'jquery':
                     $pre = $base . 'libraries/jquery/' . $type;
                     break;
@@ -295,18 +298,18 @@ class WFDocument extends JObject {
      * Convert a url to path
      *
      * @param 	string $url
-     * @return  string 
+     * @return  string
      */
     private function urlToPath($url) {
         jimport('joomla.filesystem.path');
 
         $root = JURI::root(true);
-        
+
         // remove root from url
-        if (!empty($root)) {            
+        if (!empty($root)) {
             $url = substr($url, strlen($root));
         }
-        
+
         return WFUtility::makePath(JPATH_SITE, JPath::clean($url));
     }
 
@@ -467,8 +470,12 @@ class WFDocument extends JObject {
         $layout = JRequest::getWord('layout');
 
         // set layout and item, eg: &layout=plugin&plugin=link
-        $query['layout'] = $layout;
-        $query[$layout] = JRequest::getWord($layout);
+        $query['layout']  = $layout;
+        $query[$layout]   = JRequest::getWord($layout);
+
+        if ($layout === "plugin") {
+            $query['plugin'] = $this->get('name');
+        }
 
         // set dialog
         if (JRequest::getWord('dialog')) {
@@ -505,26 +512,26 @@ class WFDocument extends JObject {
 
         return implode('&', $output);
     }
-    
+
     private function getHash($files) {
         $seed = '';
-        
+
         $hash = '';
-        
+
         // create version / etag hash
         $version = $this->get('version', '000000');
-        
+
         // cast as array
         $files = (array) $files;
-        
+
         foreach($files as $file) {
-            
+
                 // only add stamp to static stylesheets
                 if (strpos($file, '://') === false && strpos($file, 'index.php?option=com_jce') === false) {
                     $seed .= basename($file);
                 }
         }
-        
+
         if ($seed) {
             $hash = md5($version . $seed);
         }
@@ -538,7 +545,7 @@ class WFDocument extends JObject {
     private function getHead() {
         // create version / etag hash
         $version = $this->get('version', '000000');
-        // set title		
+        // set title
         $output = '<title>' . $this->getTitle() . '</title>' . "\n";
 
         // render stylesheets
@@ -550,14 +557,14 @@ class WFDocument extends JObject {
             $output .= "\t\t<link href=\"" . $file . "\" rel=\"stylesheet\" type=\"text/css\" />\n";
         } else {
             foreach ($this->_styles as $src => $type) {
-                
+
                 $hash = $this->getHash($src);
 
                 // only add stamp to static stylesheets
                 if (!empty($hash)) {
                     $hash = strpos($src, '?') === false ? '?' . $hash : '&' . $hash;
                 }
-                
+
                 $output .= "\t\t<link href=\"" . $src . $hash . "\" rel=\"stylesheet\" type=\"" . $type . "\" />\n";
             }
         }
@@ -567,7 +574,7 @@ class WFDocument extends JObject {
             $script  = JURI::base(true) . '/index.php?option=com_jce&view=editor&' . $this->getQueryString(array('task' => 'pack'));
             // add hash
             $script .= '&' . $this->getHash(array_keys($this->_scripts));
-            
+
             $output .= "\t\t<script data-cfasync=\"false\" type=\"text/javascript\" src=\"" . $script . "\"></script>\n";
         } else {
             foreach ($this->_scripts as $src => $type) {
@@ -577,11 +584,11 @@ class WFDocument extends JObject {
                 if (!empty($hash)) {
                     $hash = strpos($src, '?') === false ? '?' . $hash : '&' . $hash;
                 }
-                
+
                 $output .= "\t\t<script data-cfasync=\"false\" type=\"" . $type . "\" src=\"" . $src . $hash . "\"></script>\n";
             }
         }
-        
+
         // Script declarations
         foreach ($this->_script as $type => $content) {
             $output .= "\t\t<script data-cfasync=\"false\" type=\"" . $type . "\">" . $content . "</script>";
@@ -661,10 +668,10 @@ class WFDocument extends JObject {
                 case 'javascript':
                     $data = '';
 
-                    foreach ($this->getScripts() as $src => $type) {                        
+                    foreach ($this->getScripts() as $src => $type) {
                         if (strpos($src, '://') === false && strpos($src, 'index.php') === false) {
                             $src .= preg_match('/\.js$/', $src) ? '' : '.js';
-                            
+
                             $files[] = $this->urlToPath($src);
                         }
                     }
@@ -689,7 +696,7 @@ class WFDocument extends JObject {
                     foreach ($this->getStyleSheets() as $style => $type) {
                         if (strpos($style, '://') === false && strpos($style, 'index.php') === false) {
                             $style .= preg_match('/\.css$/', $style) ? '' : '.css';
-                            
+
                             $files[] = $this->urlToPath($style);
                         }
                     }
