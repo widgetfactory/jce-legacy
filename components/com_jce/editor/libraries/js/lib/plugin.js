@@ -1,6 +1,6 @@
 /**
  * @package   	JCE
- * @copyright 	Copyright (c) 2009-2016 Ryan Demmer. All rights reserved.
+ * @copyright 	Copyright (c) 2009-2015 Ryan Demmer. All rights reserved.
  * @license   	GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  * JCE is free software. This version may have been modified pursuant
  * to the GNU General Public License, and as distributed it includes or
@@ -10,208 +10,25 @@
 
 // String functions
 (function ($) {
-    // set standalone flag
-    var standalone = true;
+    var standalone = (typeof tinyMCEPopup === "undefined");
 
-    // check for tinyMCEPopup
-    if (window.tinyMCEPopup) {
-        var TinyMCE_Utils = {};
+    // uid counter
+    var counter = 0;
 
-        TinyMCE_Utils.fillClassList = function (id) {
-            var ed = tinyMCEPopup.editor, lst = document.getElementById(id), v, cl;
+    /**
+     Generates an unique ID.
+     @method uid
+     @return {String} Virtually unique id.
+     */
+    function uid() {
+        var guid = new Date().getTime().toString(32), i;
 
-            if (ed.getParam('theme_advanced_styles')) {
-                cl = ed.getParam('theme_advanced_styles', '', 'hash');
-            } else {
-                cl = ed.dom.getClasses();
-            }
+        for (i = 0; i < 5; i++) {
+            guid += Math.floor(Math.random() * 65535).toString(32);
+        }
 
-            tinymce.each(['jcepopup', 'jcetooltip'], function (o) {
-                lst.options[lst.options.length] = new Option(o, o);
-            });
-
-            if (cl.length > 0) {
-                tinymce.each(cl, function (o) {
-                    lst.options[lst.options.length] = new Option(o.title || o['class'], o['class']);
-                });
-
-            }
-        };
-
-        TinyMCE_Utils.updateColor = function (parent) {
-            if (typeof parent == 'string') {
-                parent = document.getElementById(parent);
-            }
-            document.getElementById(parent.id + '_pick').style.backgroundColor = parent.value;
-        };
-
-        TinyMCE_Utils.addClassesToList = function (list_id, specific_option) {
-            // Setup class droplist
-            var styleSelectElm = document.getElementById(list_id);
-            var styles = tinyMCEPopup.getParam('theme_advanced_styles', false);
-            styles = tinyMCEPopup.getParam(specific_option, styles);
-
-            if (styles) {
-                var stylesAr = styles.split(';');
-
-                for (var i = 0; i < stylesAr.length; i++) {
-                    if (stylesAr != "") {
-                        var key, value;
-
-                        key = stylesAr[i].split('=')[0];
-                        value = stylesAr[i].split('=')[1];
-
-                        styleSelectElm.options[styleSelectElm.length] = new Option(key, value);
-                    }
-                }
-            } else {
-                tinymce.each(tinyMCEPopup.editor.dom.getClasses(), function (o) {
-                    styleSelectElm.options[styleSelectElm.length] = new Option(o.title || o['class'], o['class']);
-                });
-            }
-        };
-
-        this.TinyMCE_Utils = TinyMCE_Utils;
-
-        standalone = false;
+        return 'wf_' + guid + (counter++).toString(32);
     }
-
-    var $tmp = document.createElement('div');
-
-    // check for canvas
-    $.support.canvas = !!document.createElement('canvas').getContext;
-    // check for background size
-    $.support.backgroundSize = (function () {
-        var s = false;
-        $.each(['backgroundSize', 'MozBackgroundSize', 'WebkitBackgroundSize', 'OBackgroundSize'], function () {
-            if (typeof $tmp.style[this] !== 'undefined') {
-                s = true;
-            }
-        });
-
-        return s;
-    })();
-
-    /* http://downloads.beninzambia.com/blog/acrobat_detection.js.txt
-     * Modified for our purposes
-     */
-    $.support.pdf = (function () {
-        try {
-            // IE
-            if (!$.support.cssFloat) {
-                var control = null;
-
-                //
-                // load the activeX control
-                //
-                try {
-                    // AcroPDF.PDF is used by version 7 and later
-                    control = new ActiveXObject('AcroPDF.PDF');
-                }
-                catch (e) {
-                }
-
-                if (!control) {
-                    try {
-                        // PDF.PdfCtrl is used by version 6 and earlier
-                        control = new ActiveXObject('PDF.PdfCtrl');
-                    }
-                    catch (e) {
-                    }
-                }
-
-                return control ? true : false;
-
-            } else if (navigator.plugins) {
-                for (var n in navigator.plugins) {
-                    if (n == 'Adobe Acrobat') {
-                        return true;
-                    }
-
-                    if (navigator.plugins[n].name && (navigator.plugins[n].name == 'Adobe Acrobat' || navigator.plugins[n].name == 'Chrome PDF Viewer')) {
-                        return true;
-                    }
-                }
-            } else if (navigator.mimeTypes) {
-                // from PDFObject - https://github.com/pipwerks/PDFObject
-                var mime = navigator.mimeTypes["application/pdf"];
-
-                if (mime && mime.enabledPlugin) {
-                    return true;
-                }
-            }
-        }
-        catch (e) {
-        }
-
-        return false;
-    })();
-
-    /*
-     * From Modernizr v2.0.6
-     * http://www.modernizr.com
-     * Copyright (c) 2009-2011 Faruk Ates, Paul Irish, Alex Sexton
-     */
-    $.support.video = (function () {
-        var el = document.createElement('video'), bool = false;
-        // IE9 Running on Windows Server SKU can cause an exception to be thrown, bug #224
-        try {
-            if (bool = !!el.canPlayType) {
-                bool = new Boolean(bool);
-                bool.ogg = el.canPlayType('video/ogg; codecs="theora"');
-
-                // Workaround required for IE9, which doesn't report video support without audio codec specified.
-                //   bug 599718 @ msft connect
-                var h264 = 'video/mp4; codecs="avc1.42E01E';
-                bool.mp4 = el.canPlayType(h264 + '"') || el.canPlayType(h264 + ', mp4a.40.2"');
-
-                bool.webm = el.canPlayType('video/webm; codecs="vp8, vorbis"');
-            }
-
-        } catch (e) {
-        }
-
-        return bool;
-    })();
-
-    /*
-     * From Modernizr v2.0.6
-     * http://www.modernizr.com
-     * Copyright (c) 2009-2011 Faruk Ates, Paul Irish, Alex Sexton
-     */
-    $.support.audio = (function () {
-        var el = document.createElement('audio'), bool = false;
-
-        try {
-            if (bool = !!el.canPlayType) {
-                bool = new Boolean(bool);
-                bool.ogg = el.canPlayType('audio/ogg; codecs="vorbis"');
-                bool.mp3 = el.canPlayType('audio/mpeg;');
-
-                // Mimetypes accepted:
-                //   https://developer.mozilla.org/En/Media_formats_supported_by_the_audio_and_video_elements
-                //   http://bit.ly/iphoneoscodecs
-                bool.wav = el.canPlayType('audio/wav; codecs="1"');
-                bool.m4a = el.canPlayType('audio/x-m4a;') || el.canPlayType('audio/aac;');
-                bool.webm = el.canPlayType('audio/webm; codecs="vp8, vorbis"');
-            }
-        } catch (e) {
-        }
-
-        return bool;
-    })();
-
-    $.fn.datalist = function() {
-      return this.each(function() {
-          var id = $(this).attr('id');
-
-          $(this).attr('id', id + '-select').wrap('<div class="ui-datalist" />');
-
-          $('<input type="text" />').attr('id', id).insertAfter(this);
-
-          $(this).parent().width($(this).outerWidth());
-      });
-    };
 
     $.Plugin = {
         i18n: {},
@@ -225,7 +42,7 @@
         },
         getURI: function (absolute) {
             if (!standalone) {
-                return tinyMCEPopup.editor.documentBaseURI.getURI(absolute);
+              return tinyMCEPopup.editor.documentBaseURI.getURI(absolute);
             }
 
             return (absolute) ? this.options.root : this.options.site;
@@ -235,26 +52,19 @@
 
             $.extend(this.options, options);
 
-            // add browser flags
-            /*if ($.browser.webkit) {
-             $('#jce').addClass('webkit');
-             }
+            // add footer class
+            $('.mceActionPanel, .actionPanel').addClass('ui-modal-footer');
 
-             if ($.browser.opera) {
-             $('#jce').addClass('opera');
-             }
-
-             if ($.browser.msie) {
-             $('#jce').addClass('ie');
-             }
-
-             if ($.browser.gecko) {
-             $('#jce').addClass('gecko');
-             }*/
+            // ie flag
+            if (/MSIE/.test(navigator.userAgent) || navigator.userAgent.indexOf('Edge/') !== -1) {
+              $('#jce').addClass('ie');
+            }
 
             // ie8 flag
             if (!$.support.cssFloat && document.querySelector) {
                 $('#jce').addClass('ie8');
+
+                $('input[type="number"]').addClass("type-number");
             }
 
             // create buttons
@@ -262,7 +72,7 @@
                 icons: {
                     primary: 'ui-icon-check'
                 }
-            });
+            }).addClass('ui-button-primary');
 
             $('button#refresh, input#refresh').button({
                 icons: {
@@ -271,7 +81,7 @@
             });
 
             // add button actions
-            $('button#cancel, input#cancel').button({
+            $('#cancel').button({
                 icons: {
                     primary: 'ui-icon-close'
                 }
@@ -282,85 +92,100 @@
                 return;
             }
 
-            $('button#apply, input#apply').button({
+            TinyMCE_Utils.fillClassList('classlist');
+
+            $('#apply').button({
                 icons: {
                     primary: 'ui-icon-plus'
                 }
             });
 
-            $('button#help, input#help').button({
+            $('#help').button({
                 icons: {
-                    primary: 'ui-icon-help'
+                    primary: 'ui-icon-question'
                 }
             });
 
             // add button actions
-            $('button#cancel, input#cancel').click(function (e) {
+            $('#cancel').click(function (e) {
                 tinyMCEPopup.close();
                 e.preventDefault();
             });
 
             // show body
-            $('#jce').addClass('ui-widget-content');
+            $('#jce').addClass('');
 
-            // activate tabs - add activate function to fix bc issue with new JQuery UI
-            $('#tabs').tabs({
-                activate: function (e, ui) {
-                    $(ui.newPanel).removeClass('ui-tabs-hide').siblings('.ui-tabs-panel').addClass('ui-tabs-hide');
-                }
-            });
+            // activate tabs
+            $('#tabs').tabs();
 
-            // create colout picker widgets
+            // create colour picker widgets
             this.createColourPickers();
             // create browser widgets
             this.createBrowsers();
 
-            // activate editable select lists
-            $('select.editable, select.mceEditableSelect').combobox({
-                label: self.translate('select_label', 'Add Value'),
-                change: this.options.change
-            });
-
-            /*$('select.editable, select.mceEditableSelect').datalist().change(function() {
-              var s, value = this.value;
-
-              if (this.id === "classlist") {
-                var $tmp = $('<span/>').addClass($(this).siblings('input').val()).addClass(value);
-                value = $tmp.attr('class');
-              }
-
-              // multiple values
-              if (s = $(this).data('multiple')) {
-                value = $(this).siblings('input').val() + s + value;
-              }
-
-              $(this).siblings('input').val(value).change();
-            });*/
+            $('select.editable, select.mceEditableSelect, .ui-datalist select').datalist().on('datalist:change', this.options.change);
 
             // activate tooltips
             $('.hastip, .tip, .tooltip').tips();
-            this._formWidgets();
+
+            // add margin events
+            $('#margin_top, #margin_right, #margin_bottom, #margin_left').change(function() {
+                self.setMargins();
+            });
+
+            // add margin equal values event
+            $('#margin_check').click(function() {
+                self.setMargins();
+            });
+
+            // set styles events
+            $('#align, #clear, #border_width, #border_styles, #border_color, #dir').change(function() {
+                self.updateStyles();
+            });
+
+            // set border click event
+            $('#border').click(function() {
+                self.setBorder();
+            });
+
+            $('#style').change(function() {
+                self.setStyles();
+            });
+
+            // create constrainables around constrain checkbox
+            $('.ui-constrain-checkbox').constrain();
+
+            // style checkbox
+            //$('input[type="checkbox"]').checkbox();
+
+            // hide HTML4 only attributes
+            if (tinyMCEPopup.editor.settings.schema === 'html5-strict' && tinyMCEPopup.editor.settings.validate) {
+                $('.html4').hide().find(':input').prop('disabled', true);
+            }
+
+            // flexbox
+            /*$('.ui-flex-item-auto').width(function() {
+                var p = $(this).parent('.ui-flex');
+                var w = 0;
+
+                $(this).siblings().each(function() {
+                    w += $(this).width();
+                });
+
+                return $(p).width() - w;
+            });*/
+
+            $('.ui-repeatable').repeatable();
         },
         /**
-         * HTML5 form widgets
+         * Get the name of the plugin
+         * @returns {String} Plugin name
          */
-        _formWidgets: function () {
-            var self = this;
-
-            $('input[placeholder], textarea[placeholder]').placeholder();
-
-            $(':input[pattern]').pattern();
-
-            $(':input[max]').max();
-
-            $(':input[min]').min();
-        },
         getName: function () {
             return $('body').data('plugin');
         },
         getPath: function (plugin) {
             if (!standalone) {
-                //return tinyMCEPopup.getParam('site_url') + 'components/com_jce/editor/tiny_mce/plugins/' + this.getName();
                 return tinyMCEPopup.editor.plugins[this.getName()].url;
             }
 
@@ -386,92 +211,67 @@
 
                 ed.windowManager.open({
                     url: tinyMCEPopup.getParam('site_url') + 'index.php?option=com_jce&view=help&tmpl=component&lang=' + ed.settings.language + '&section=editor&category=' + this.getName(),
-                    width: 768,
-                    height: 560,
-                    resizable: 1,
-                    inline: 1,
+                    width: 896,
+                    height: 768,
+                    size: 'mce-modal-square-xlarge',
+                    inline: true,
                     close_previous: 0
                 });
             } else {
                 this.options.help.call(this, this.getName());
             }
         },
-        setDimensions: function (wo, ho, prefix) {
-            prefix = prefix || '';
 
-            var w = $('#' + prefix + wo).val();
-            var h = $('#' + prefix + ho).val();
-
-            if (!w || !h)
-                return;
-
-            // Get tmp values
-            var th = $('#' + prefix + 'tmp_' + ho).val();
-            var tw = $('#' + prefix + 'tmp_' + wo).val();
-
-            // tmp values must be set
-            if (th && tw) {
-                if ($('#' + prefix + 'constrain').is(':checked')) {
-                    var temp = (w / $('#' + prefix + 'tmp_' + wo).val()) * $('#' + prefix + 'tmp_' + ho).val();
-                    h = temp.toFixed(0);
-                    $('#' + prefix + ho).val(h);
-                }
-            }
-            // set tmp values
-            $('#' + prefix + 'tmp_' + ho).val(h);
-            $('#' + prefix + 'tmp_' + wo).val(w);
-        },
-        setDefaults: function (s) {
-            var n, v;
-
-            for (n in s) {
-                v = s[n];
-
-                if (v == 'default') {
-                    v = '';
-                }
-
-                if ($('#' + n).is(':checkbox')) {
-                    $('#' + n).prop('checked', parseFloat(v));//.change();
-                } else {
-                    $('#' + n).val(v);//.change();
-                }
-            }
-        },
-        setClasses: function (v, n) {
-            n = n || 'classes';
-
-            var $tmp = $('<span/>').addClass($('#' + n).val()).addClass(v);
-
-            $('#' + n).val($tmp.attr('class'));
-        },
         createColourPickers: function () {
             var self = this, ed = tinyMCEPopup.editor, doc = ed.getDoc();
 
-            $('input.color').each(function () {
+            $('input.color, input.colour').each(function () {
                 var id = $(this).attr('id');
                 var ev = $(this).get(0).onchange;
 
-                $(this).parent().css('position', 'relative');
+                var v = this.value;
 
-                var $picker = $('<span role="button" class="pickcolor_icon" title="' + self.translate('browse') + '" id="' + id + '_pick"></span>').insertAfter(this).toggleClass('disabled', $(this).is(':disabled')).attr('aria-disabled', function () {
+                // remove # from value
+                if (v.charAt(0) === "#") {
+                  $(this).val(v.substr(1));
+                }
+
+                if ($(this).siblings(':input').length) {
+                  $(this).wrap('<span />');
+                }
+
+                $(this).parent('.ui-form-controls, td, span').addClass('ui-form-icon ui-form-icon-both').prepend('<i class="ui-icon-hashtag" />');
+
+                var $picker = $('<span role="button" class="ui-icon-none ui-icon-colorpicker" title="' + self.translate('browse') + '" id="' + id + '_pick"></span>').insertAfter(this).toggleClass('disabled', $(this).is(':disabled')).attr('aria-disabled', function () {
                     return $(this).hasClass('disabled');
                 });
 
-                $(this).bind('pick', function () {
-                    $(this).next('span.pickcolor_icon').css('background-color', $(this).val());
+                $(this).bind('colorpicker:pick', function () {
+                    var v = this.value;
+
+                    if (v.charAt(0) !== "#") {
+                      v = '#' + v;
+                    }
+
+                    $(this).next('.ui-icon-colorpicker').css('background-color', v);
                 });
 
                 $(this).change(function (e) {
                     e.preventDefault();
                     e.stopPropagation();
 
-                    $(this).trigger('pick');
+                    var v = this.value;
+
+                    if (v.charAt(0) === "#") {
+                      $(this).val(v.substr(1));
+                    }
+
+                    $(this).trigger('colorpicker:pick');
 
                     if ($.isFunction(ev)) {
                         ev.call(this);
                     }
-                });
+                }).change();
 
                 // get stylesheets form editor
                 var stylesheets = [];
@@ -508,27 +308,49 @@
                 $(this).colorpicker(settings);
             });
         },
-        createBrowsers: function () {
+        createBrowsers: function (el, callback, filter) {
             var self = this;
-            $('input.browser').each(function () {
-                var input = this, type = $(this).hasClass('image') ? 'image' : 'file';
 
-                $(this).parent().css('position', 'relative');
+            if (el) {
+              $(el).addClass('browser');
+            }
 
-                var ev = $(this).get(0).onchange;
+            $('input.browser').add(el).each(function () {
+                var input = this;
 
-                $('<span role="button" class="browser_icon" title="' + self.translate('browse') + '"></span>').click(function () {
-                    return tinyMCEPopup.openBrowser($(input).attr('id'), type, 'file_browser_callback');
-                }).insertAfter(this);
+                filter = filter || (function(el) {
+                  if ($(el).hasClass('image') || $(el).hasClass('images')) {
+                    return 'images';
+                  }
+                  if ($(el).hasClass('html')) {
+                    return 'html';
+                  }
+                  if ($(el).hasClass('media')) {
+                    return 'media';
+                  }
+                  return 'files';
+                })(this);
 
-                $(this).get(0).onchange = function () {
-                    if ($.isFunction(ev)) {
-                        ev.call(this);
-                    }
+                $(this).parent('td, .ui-form-controls').addClass('ui-form-icon ui-form-icon-flip');
+
+                var map = {
+                  'images'  : 'picture-o',
+                  'html'    : 'file-text-o',
+                  'files'   : 'file-text-o',
+                  'media'   : 'film'
                 };
 
-            });
+                $('<span role="button" class="ui-icon ui-icon-' + map[filter] + '" title="' + self.translate('browse', 'Browse for Files') + '"></span>').click(function (e) {
+                    return tinyMCEPopup.execCommand('mceFileBrowser', true, {
+                      "callback"  : callback || $(input).attr('id'),
+                      "value"     : input.value,
+                      "filter"    : filter,
+                      "caller"    : self.getName(),
+                      "window"    : window
+                    }, window);
 
+                }).insertAfter(this);
+            });
         },
         getLanguage: function () {
             if (!this.language) {
@@ -612,16 +434,8 @@
             }
         },
         translate: function (s, ds) {
-            if (!standalone) {
-                return tinyMCEPopup.getLang('dlg.' + s, ds);
-            }
-
-            if (!$.isPlainObject(this.i18n))
-                this.i18n = {};
-
-            return this.i18n[this.getLanguage() + '.dlg.' + s] || ds;
+            return tinyMCEPopup.getLang('dlg.' + s, ds);
         }
-
     };
 
     /**
@@ -729,7 +543,8 @@
          */
         request: function (func, data, callback, scope) {
             var json = {
-                'fn': func
+                'method': func,
+                'id'    : uid()
             };
 
             callback = callback || $.noop;
@@ -749,7 +564,7 @@
             // if data is a string or array
             if ($.type(data) === 'string' || $.type(data) === 'array') {
                 $.extend(json, {
-                    'args': $.type(data) === 'string' ? $.String.encodeURI(data) : $.map(data, function (s) {
+                    'params': $.type(data) === 'string' ? $.String.encodeURI(data) : $.map(data, function (s) {
                         if (s && $.type(s) === 'string') {
                             return $.String.encodeURI(s);
                         }
@@ -762,7 +577,7 @@
                 // if data is an object
                 if ($.type(data) === 'object' && data.json) {
                     $.extend(json, {
-                        'args': data.json
+                        'params': data.json
                     });
 
                     delete data.json;
@@ -774,12 +589,22 @@
             var url = document.location.href;
 
             // strip token
-            url = url.replace(/&([a-z0-9]+)=1/, '');
+            url = url.replace(/&wf([a-z0-9]+)=1/, '');
 
             function showError(e) {
-                var txt = $.type(e) === 'array' ? e.join('\n') : e;
-                // remove linebreaks
-                txt = txt.replace(/<br([^>]+?)>/, '');
+                var txt = "";
+
+                if ($.isPlainObject(e)) {
+                    txt = e.text || "";
+                } else {
+                    txt = $.type(e) === 'array' ? e.join('\n') : e;
+                }
+
+                if (txt) {
+                    // remove linebreaks
+                    txt = txt.replace(/<br([^>]+?)>/, '');
+                }
+
                 // show error
                 $.Dialog.alert(txt);
             }
@@ -825,7 +650,7 @@
                             r = o.result || null;
 
                             if (r && r.error && r.error.length) {
-                                showError(r.error);
+                                showError(r.error || '');
                             }
                             // show error
                         } else {
@@ -881,519 +706,6 @@
         }
 
     },
-    /**
-     * Dialog Functions
-     */
-    $.Dialog = {
-        counter: 0,
-        _uid: function (p) {
-            return (!p ? 'wf_' : p) + (this.counter++);
-        },
-        /**
-         * Basic Dialog
-         */
-        dialog: function (title, data, options) {
-            var div = document.createElement('div');
-
-            options = $.extend(options, {
-                minWidth: options.minWidth || options.width || 300,
-                minHeight: options.minHeight || options.height || 150,
-                modal: (typeof options.modal === 'undefined') ? true : options.modal,
-                open: function () {
-                    // adjust modal
-                    $(div).dialog('widget').next('div.ui-widget-overlay').css({
-                        width: '100%',
-                        height: '100%'
-                    });
-
-                    // fix buttons
-                    $('div.ui-dialog-buttonset button[icons]', $(div).dialog('widget')).each(function () {
-                        var icon = $(this).attr('icons');
-
-                        $(this).prepend('<span class="ui-button-icon-primary ui-icon ' + icon + '"/>');
-                    }).addClass('ui-button-text-icon-primary').removeClass('ui-button-text-only');
-
-                    if ($.isFunction(options.onOpen)) {
-                        options.onOpen.call();
-                    }
-                },
-                close: function () {
-                    $(this).dialog('destroy').remove();
-                }
-
-            });
-
-            $(div).attr({
-                'title': title,
-                id: options.id || 'dialog' + this._uid()
-            }).append(data).dialog(options);
-
-            return div;
-        },
-        /**
-         * Confirm Dialog
-         */
-        confirm: function (s, cb, options) {
-            var html = '<div class="confirm"><span class="icon"></span>' + s + '</div>';
-
-            options = $.extend({
-                resizable: false,
-                buttons: [{
-                        text: $.Plugin.translate('yes', 'Yes'),
-                        icons: {
-                            primary: 'ui-icon-check'
-                        },
-                        click: function () {
-                            cb.call(this, true);
-                            $(this).dialog("close");
-                        }
-
-                    }, {
-                        text: $.Plugin.translate('no', 'No'),
-                        icons: {
-                            primary: 'ui-icon-close'
-                        },
-                        click: function () {
-                            cb.call(this, false);
-                            $(this).dialog("close");
-                        }
-
-                    }]
-            }, options);
-
-            return $.Dialog.dialog($.Plugin.translate('confirm', 'Confirm'), html, options);
-        },
-        /**
-         * Alert Dialog
-         */
-        alert: function (s) {
-            var html = '<div class="alert"><span class="icon"></span>' + s + '</div>';
-
-            var options = {
-                resizable: false,
-                buttons: [{
-                        text: $.Plugin.translate('ok', 'OK'),
-                        click: function () {
-                            $(this).dialog("close");
-                        }
-                    }]
-            };
-
-            return $.Dialog.dialog($.Plugin.translate('alert', 'Alert'), html, options);
-        },
-        /**
-         * Prompt Dialog
-         */
-        prompt: function (title, options) {
-            var html = '<p>';
-
-            var id = options.id || 'dialog-prompt', name = options.name || 'prompt', v = options.value || '';
-
-            if (options.text) {
-                html += '<label for="' + id + '">' + options.text + '</label>';
-            }
-            if (options.multiline) {
-                html += '<textarea id="' + id + '" style="width:200px;height:75px;">' + v + '</textarea>';
-            } else {
-                html += '<input id="' + id + '" name="' + name + '" type="text" value="' + v + '" style="width:200px;" />';
-            }
-
-            html += '</p>';
-
-            if (options.elements) {
-                html += options.elements;
-            }
-
-            options = $.extend({
-                resizable: false,
-                width: 320,
-                buttons: [{
-                        text: $.Plugin.translate('ok', 'Ok'),
-                        icons: {
-                            primary: 'ui-icon-check'
-                        },
-                        click: function () {
-                            if ($.isFunction(options.confirm)) {
-                                options.confirm.call(this, $('#' + id).val());
-                            } else {
-                                $(this).dialog("close");
-                            }
-                        }
-
-                    }],
-                onOpen: function () {
-                    var n = $('#' + id).get(0);
-
-                    $(n).focus();
-
-                    // fix cursor position in Firefox
-    								if (n.setSelectionRange && n.value) {
-    									n.setSelectionRange(n.value.length, n.value.length);
-    								}
-                }
-
-            }, options);
-
-            return $.Dialog.dialog(title, html, options);
-        },
-        /**
-         * Upload Dialog
-         */
-        upload: function (options) {
-            var div = document.createElement('div');
-
-            $(div).attr('id', 'upload-body').append(
-                    '<div id="upload-queue-block">' +
-                    '		<ul id="upload-queue"><li style="display:none;"></li></ul>' +
-                    '	<input type="hidden" id="upload-dir" name="upload-dir" />' +
-                    '	<input type="file" name="file" size="40" style="position:relative;" />' +
-                    '</div>' +
-                    '<div id="upload-options"></div>'
-                    );
-
-            $(div).find('#upload-options').append(options.elements);
-
-            options = $.extend({
-                minWidth: 460,
-                minHeight: 350,
-                resizable: false,
-                buttons: [{
-                        text: $.Plugin.translate('browse', 'Browse'),
-                        id: 'upload-browse',
-                        icons: {
-                            primary: 'ui-icon-search'
-                        }
-                    }, {
-                        text: $.Plugin.translate('upload', 'Upload'),
-                        click: function () {
-                            if ($.isFunction(options.upload)) {
-                                options.upload.call();
-                            }
-                        },
-                        icons: {
-                            primary: 'ui-icon-arrowthick-1-n'
-                        }
-
-                    }, {
-                        text: $.Plugin.translate('close', 'Close'),
-                        click: function () {
-                            $(this).dialog("close");
-                        },
-                        icons: {
-                            primary: 'ui-icon-close'
-                        }
-
-                    }]
-            }, options);
-
-            return $.Dialog.dialog($.Plugin.translate('upload', 'Upload'), div, options);
-        },
-        /**
-         * IFrame Dialog
-         */
-        iframe: function (name, url, options) {
-            var div = document.createElement('div');
-
-            options = $.extend({
-                width: $(window).width() - 100,
-                height: $(window).height() - 50,
-                onOpen: function () {
-                    var iframe = document.createElement('iframe');
-
-                    $(div).addClass('loading');
-
-                    $(iframe).attr({
-                        'src': url,
-                        'scrolling': 'auto',
-                        'frameborder': 0
-                    }).css({
-                        width: '100%',
-                        height: '99%'
-                    }).load(function () {
-                        var win = this.contentWindow, d = win.document, b = d.body;
-                        var w = win.innerWidth || b.clientWidth;
-                        var h = win.innerHeight || b.clientHeight;
-
-                        $(this).css({
-                            width: w,
-                            height: h
-                        });
-
-                        if ($.isFunction(options.onFrameLoad)) {
-                            options.onFrameLoad.call(this);
-                        }
-
-                        $(div).removeClass('loading');
-                    });
-
-                    $(div).addClass('iframe-preview').append(iframe);
-
-                    $(div.parentNode).dialog("option", "position", 'center');
-                }
-
-            }, options);
-
-            var name = name || $.Plugin.translate('preview', 'Preview');
-
-            return $.Dialog.dialog(name, div, options);
-        },
-        /**
-         * Media Dialog
-         */
-        media: function (name, url, options) {
-            var self = this;
-            options = options || {};
-
-            var div = document.createElement('div');
-
-            var ww = $(window).width(), wh = $(window).height();
-
-            $.extend(options, {
-                width: ww - Math.round(ww / 100 * 10),
-                height: wh - Math.round(wh / 100 * 10),
-                resizable: false,
-                close: function () {
-                    $(div).empty();
-                    $(this).dialog('destroy').remove();
-                },
-                dialogClass: 'ui-preview',
-                onOpen: function () {
-                    var parent = div.parentNode;
-                    // image
-                    if (/\.(jpg|jpeg|gif|png)/i.test(url)) {
-                        $(div).addClass('image-preview big-loader');
-                        var img = new Image(), loaded = false;
-
-                        var dw = $(parent).width(), dh = $(parent).height();
-
-                        img.onload = function () {
-                            if (loaded)
-                                return false;
-
-                            if ($.support.backgroundSize) {
-                                $('div.image-preview').removeClass('loader').addClass('background').css({
-                                    'background-image': 'url("' + img.src + '")'
-                                });
-
-                                if (img.width > dw || img.height > dh) {
-                                    $('div.image-preview').addClass('resize');
-                                }
-
-                            } else {
-                                if (img.width > dw || img.height > dh) {
-                                    var dim = $.Plugin.sizeToFit(img, {
-                                        width: Math.round($(window).width()) - 160,
-                                        height: Math.round($(window).height()) - 190
-                                    });
-
-                                    $('div.image-preview').removeClass('loader').append('<img src="' + url + '" width="' + dim.width + '" height="' + dim.height + '" alt="' + $.Plugin.translate('preview', 'Preview') + '" />');
-                                    $('div.image-preview').css('margin-top', ($(parent).height() - dim.height) / 2);
-                                } else {
-                                    $('div.image-preview').removeClass('loader').addClass('background').css({
-                                        'background-image': 'url(' + url + ')'
-                                    });
-                                }
-                            }
-
-                            $(parent).click(function () {
-                                $(div.parentNode).dialog('close');
-                            });
-
-                            $(parent).dialog("option", "position", 'center');
-
-                            loaded = true;
-
-                            $(div).removeClass('big-loader');
-                        };
-
-                        img.src = url + (/\?/.test(url) ? '&' : '?') + new Date().getTime();
-                        // pdf (only for Firefox really)
-                    } else if (/\.pdf$/i.test(url)) {
-                        $(div).addClass('media-preview big-loader').height($(parent).height() - 20);
-
-                        if ($.support.pdf) {
-                            $(div).html('<object data="' + url + '" type="application/pdf" width="' + $(div).innerWidth() + '" height="' + $(div).innerHeight() + '"></object>').removeClass('big-loader');
-                        } else {
-                            $(div).html('<iframe src="' + url + '" width="' + $(div).innerWidth() + '" height="' + $(div).innerHeight() + '" frameborder="0"></iframe>').removeClass('big-loader');
-                        }
-                    } else {
-                        $(div).addClass('media-preview big-loader').height($(parent).height() - 20);
-
-                        var mediaTypes = {
-                            // Type, clsid, mime types,
-                            // codebase
-                            "flash": {
-                                classid: "clsid:d27cdb6e-ae6d-11cf-96b8-444553540000",
-                                type: "application/x-shockwave-flash",
-                                codebase: "http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=6,0,40,0"
-                            },
-                            "shockwave": {
-                                classid: "clsid:166b1bca-3f9c-11cf-8075-444553540000",
-                                type: "application/x-director",
-                                codebase: "http://download.macromedia.com/pub/shockwave/cabs/director/sw.cab#version=8,5,1,0"
-                            },
-                            "windowsmedia": {
-                                classid: "clsid:6bf52a52-394a-11d3-b153-00c04f79faa6",
-                                type: "application/x-mplayer2",
-                                codebase: "http://activex.microsoft.com/activex/controls/mplayer/en/nsmp2inf.cab#Version=5,1,52,701"
-                            },
-                            "quicktime": {
-                                classid: "clsid:02bf25d5-8c17-4b23-bc80-d3488abddc6b",
-                                type: "video/quicktime",
-                                codebase: "http://www.apple.com/qtactivex/qtplugin.cab#version=6,0,2,0"
-                            },
-                            "divx": {
-                                classid: "clsid:67dabfbf-d0ab-41fa-9c46-cc0f21721616",
-                                type: "video/divx",
-                                codebase: "http://go.divx.com/plugin/DivXBrowserPlugin.cab"
-                            },
-                            "realmedia": {
-                                classid: "clsid:cfcdaa03-8be4-11cf-b84b-0020afbbccfa",
-                                type: "audio/x-pn-realaudio-plugin"
-                            },
-                            "java": {
-                                classid: "clsid:8ad9c840-044e-11d1-b3e9-00805f499d93",
-                                type: "application/x-java-applet",
-                                codebase: "http://java.sun.com/products/plugin/autodl/jinstall-1_5_0-windows-i586.cab#Version=1,5,0,0"
-                            },
-                            "silverlight": {
-                                classid: "clsid:dfeaf541-f3e1-4c24-acac-99c30715084a",
-                                type: "application/x-silverlight-2"
-                            },
-                            "video": {
-                                type: 'video/mp4'
-                            },
-                            "audio": {
-                                type: 'audio/mp3'
-                            }
-                        };
-
-                        var mimes = {};
-
-                        // Parses the default mime types
-                        // string into a mimes lookup
-                        // map
-                        (function (data) {
-                            var items = data.split(/,/),
-                                    i, y, ext;
-
-                            for (i = 0; i < items.length; i += 2) {
-                                ext = items[i + 1].split(/ /);
-
-                                for (y = 0; y < ext.length; y++)
-                                    mimes[ext[y]] = items[i];
-                            }
-                        })("application/x-director,dcr," + "application/x-mplayer2,wmv wma avi," + "video/divx,divx," + "application/x-shockwave-flash,swf swfl," + "audio/mpeg,mpga mpega mp2 mp3," + "audio/ogg,ogg spx oga," + "audio/x-wav,wav," + "video/mpeg,mpeg mpg mpe," + "video/mp4,mp4 m4v," + "video/ogg,ogg ogv," + "video/webm,webm," + "video/quicktime,qt mov," + "video/x-flv,flv," + "video/vnd.rn-realvideo,rv," + "video/3gpp,3gp," + "video/x-matroska,mkv");
-
-                        var ext = $.String.getExt(url);
-                        var mt = mimes[ext];
-                        var type, props;
-
-                        $.each(
-                                mediaTypes, function (k, v) {
-                                    if (v.type && v.type == mt) {
-                                        type = k;
-                                        props = v;
-                                    }
-                                });
-
-                        // video types
-                        if (/^(mp4|m4v|og(g|v)|webm)$/i.test(ext)) {
-                            type = 'video';
-                            props = {
-                                type: mt
-                            };
-                        }
-
-                        // audio types
-                        if (/^(mp3|og(g|a)|webm)$/i.test(ext)) {
-                            type = 'audio';
-                            props = {
-                                type: mt
-                            };
-                        }
-
-                        // flv
-                        if (/^(flv|f4v)$/i.test(ext)) {
-                            type = 'flv';
-                            props = {};
-                        }
-
-                        var swf = $.Plugin.getURI(true) + 'components/com_jce/editor/libraries/mediaplayer/mediaplayer.swf';
-
-                        if (type && props) {
-                            switch (type) {
-                                case 'audio':
-                                case 'video':
-                                    var fb, ns = '<p style="margin-left:auto;">' + $.Plugin.translate('media_not_supported', 'Media type not supported by this browser') + '</p>';
-
-                                    var support = {
-                                        video: {
-                                            'mp4': ['mp4', 'm4v'],
-                                            'webm': ['webm'],
-                                            'ogg': ['ogv', 'ogg']
-                                        },
-                                        audio: {
-                                            'mp3': ['mp3'],
-                                            'ogg': ['oga', 'ogg']
-                                        }
-                                    }
-
-                                    var hasSupport = false;
-
-                                    for (var n in support[type]) {
-                                        if (support[type][n].indexOf(ext) != -1) {
-                                            hasSupport = $.support[type][n];
-                                        }
-
-                                        if (hasSupport === true) {
-                                            break;
-                                        }
-                                    }
-
-                                    // HTML5 video
-                                    if (hasSupport) {
-                                        if (type == 'video') {
-                                            $(div).append('<video autoplay="autoplay" controls="controls" preload="none" type="' + props.type + '" style="width:100%;height:100%;" src="' + url + '"></video>');
-                                        } else {
-                                            $(div).append('<audio autoplay="autoplay" controls="controls" preload="none" type="' + props.type + '" src="' + url + '"></audio>');
-                                        }
-                                    } else if (/^m(p3|p4|4v)$/i.test(ext)) {
-                                        url = $.URL.toAbsolute(url);
-
-                                        $(div).html('<object type="application/x-shockwave-flash" data="' + swf + '"><param name="movie" value="' + swf + '" /><param name="flashvars" value="src=' + url + '&autoPlay=true&controlBarAutoHide=false&playButtonOverlay=false" /></object>');
-
-                                        if (ext == 'mp3') {
-                                            $('object', div).addClass('audio');
-                                        }
-                                    } else {
-                                        $(div).html(ns).removeClass('loader');
-                                    }
-
-                                    break;
-                                case 'flv':
-                                    url = $.URL.toAbsolute(url);
-
-                                    $(div).append('<object type="application/x-shockwave-flash" data="' + swf + '"><param name="movie" value="' + swf + '" /><param name="flashvars" value="src=' + url + '&autoPlay=true&controlBarAutoHide=false" /></object>');
-                                    break;
-                                case 'flash':
-                                    $(div).append('<object type="' + props.type + '" data="' + url + '" style="width:100%;height:100%;"><param name="movie" value="' + url + '" /></object>');
-                                    break;
-                                default:
-                                    $(div).append('<object classid="' + props.classid + '" style="width:100%;height:100%;"><param name="src" value="' + url + '" /><embed src="' + url + '" style="width:100%;height:100%;" type="' + props.type + '"></embed></object>');
-                                    break;
-                            }
-                            $(div).removeClass('big-loader');
-                        }
-                    }
-                }
-
-            });
-
-            return $.Dialog.dialog($.Plugin.translate('preview', 'Preview') + ' - ' + name, div, options);
-        }
-
-    };
 
     /**
      * String functions
@@ -1423,7 +735,7 @@
             return this.stripExt(this.basename(s));
         },
         getExt: function (s) {
-            return s.substring(s.length, s.lastIndexOf('.') + 1).toLowerCase();
+            return s.substring(s.length, s.lastIndexOf('.') + 1);
         },
         stripExt: function (s) {
             return s.replace(/\.[^.]+$/i, '');
@@ -1685,17 +997,31 @@
         ucfirst: function (s) {
             return s.charAt(0).toUpperCase() + s.substring(1);
         },
-        formatSize: function (s) {
+        formatSize: function (s, int) {
             // MB
             if (s > 1048576) {
-                return Math.round((s / 1048576) * 100) /
-                        100 + " " + $.Plugin.translate('size_mb', 'MB');
+                var n = Math.round((s / 1048576) * 100) / 100;
+
+                if (int) {
+                    return n;
+                }
+
+                return n + " " + $.Plugin.translate('size_mb', 'MB');
             }
 
             // KB
             if (s > 1024) {
-                return Math.round((s / 1024) * 100) /
-                        100 + " " + $.Plugin.translate('size_kb', 'KB');
+                var n = Math.round((s / 1024) * 100) / 100;
+
+                if (int) {
+                    return n;
+                }
+
+                return n + " " + $.Plugin.translate('size_kb', 'KB');
+            }
+
+            if (int) {
+                return s;
             }
 
             return s + " " + $.Plugin.translate('size_bytes', 'Bytes');
@@ -1751,67 +1077,5 @@ if (typeof ColorPicker === 'undefined') {
         settings: {}
     };
 }
-
-// UI Tabs backwards compat
-(function ($, prototype) {
-    var _trigger = prototype._trigger;
-    prototype._trigger = function (type, event, data) {
-        var ret = _trigger.apply(this, arguments);
-        if (!ret) {
-            return false;
-        }
-
-        if (type === "beforeActivate") {
-            ret = _trigger.call(this, "select", event, data);
-        } else if (type === "activate") {
-            ret = _trigger.call(this, "selected", event, data);
-        }
-        return ret;
-    }
-}(jQuery, jQuery.ui.tabs.prototype));
-
-// UI Accordian backwards compat
-(function ($, prototype) {
-    prototype.activate = prototype._activate;
-}(jQuery, jQuery.ui.accordion.prototype));
-
-// change events
-(function ($, prototype) {
-    var _trigger = prototype._trigger;
-    prototype._trigger = function (type, event, data) {
-        var ret = _trigger.apply(this, arguments);
-        if (!ret) {
-            return false;
-        }
-
-        if (type === "beforeActivate") {
-            ret = _trigger.call(this, "changestart", event, data);
-        } else if (type === "activate") {
-            ret = _trigger.call(this, "change", event, data);
-        }
-        return ret;
-    }
-}(jQuery, jQuery.ui.accordion.prototype));
-
-// height options
-(function ($, prototype) {
-    prototype.options.heightStyle = "content";
-}(jQuery, jQuery.ui.accordion.prototype));
-
-// namespace backwards compat
-(function ($, ui) {
-    $(document).ready(function () {
-        $.each(['resize', 'crop', 'rotate', 'sortable'], function (i, k) {
-            if (ui[k]) {
-                var proto = ui[k].prototype;
-                var _init = proto._init;
-
-                proto._init = function () {
-                    _init.apply(this, arguments);
-                    // store name
-                    $(this.element).data(k, true);
-                };
-            }
-        });
-    });
-}(jQuery, jQuery.ui));
+/* Compat */
+AutoValidator = {validate: function() {return true;}};
