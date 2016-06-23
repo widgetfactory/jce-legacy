@@ -14,13 +14,13 @@ class WFSourcePluginConfig {
     public static function getConfig(&$settings) {
         $wf = WFEditor::getInstance();
 
-        $settings['source_higlight'] = $wf->getParam('source.highlight', 1, 1, 'boolean');
+        $settings['source_highlight'] = $wf->getParam('source.highlight', 1, 1, 'boolean');
         $settings['source_numbers'] = $wf->getParam('source.numbers', 1, 1, 'boolean');
         $settings['source_wrap'] = $wf->getParam('source.wrap', 1, 1, 'boolean');
         $settings['source_format'] = $wf->getParam('source.format', 1, 1, 'boolean');
         $settings['source_tag_closing'] = $wf->getParam('source.tag_closing', 1, 1, 'boolean');
         //$settings['source_selection_match'] = $wf->getParam('source.selection_match', 1, 1, 'boolean');
-        
+
         $settings['source_font_size']   = $wf->getParam('source.font_size', '', '');
         $settings['source_theme']       = $wf->getParam('source.theme', 'codemirror');
     }
@@ -34,7 +34,7 @@ class WFSourcePluginConfig {
                 return array(dirname(dirname(__FILE__)) . '/css/editor.css');
             }
 
-            // use document instance	
+            // use document instance
             $document = JFactory::getDocument();
             $document->addStyleSheet(JURI::root(true) . '/components/com_jce/editor/tiny_mce/plugins/source/css/editor.css?version=' . $wf->getVersion());
         }
