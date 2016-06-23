@@ -2,7 +2,7 @@
 
 /**
  * @package   	JCE
- * @copyright 	Copyright (c) 2009-2016 Ryan Demmer. All rights reserved.
+ * @copyright 	Copyright (c) 2009-2015 Ryan Demmer. All rights reserved.
  * @license   	GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  * JCE is free software. This version may have been modified pursuant
  * to the GNU General Public License, and as distributed it includes or
@@ -14,66 +14,78 @@ defined('_JEXEC') or die('RESTRICTED');
 wfimport('editor.libraries.classes.extensions.filesystem');
 
 class WFFileBrowser extends JObject {
-    /*
-     *  @var array
-     */
 
+    /* @var array */
     private $_buttons = array();
-    /*
-     *  @var array
-     */
+
+    /* @var array */
     private $_actions = array();
-    /*
-     *  @var array
-     */
+
+    /* @var array */
     private $_events = array();
-    /*
-     *  @var array
-     */
+
+    /* @var array */
     private $_result = array('error' => array(), 'files' => array(), 'folders' => array());
 
-    /**
-     * @access  protected
-     */
+    /* @var string */
+    public $dir = '';
+
+    /* @var string */
+    public $filesystem = 'joomla';
+
+    /* @var string */
+    public $filetypes = 'images=jpg,jpeg,png,gif';
+
+    /* @var array */
+    public $upload = array(
+      'max_size' => 1024,
+      'validate_mimetype' => 1,
+      'add_random' => 0,
+      'total_files' => 0,
+      'total_size' => 0,
+      'remove_exif' => 0
+    );
+    /* @var int */
+    public $folder_tree = 1;
+
+    /* @var string */
+    public $list_limit = 'all';
+
+    /* @var array */
+    public $features =  array(
+        'upload' => 1,
+        'folder' => array(
+            'create' => 1,
+            'delete' => 1,
+            'rename' => 1,
+            'move' => 1
+        ),
+        'file' => array(
+            'rename' => 1,
+            'delete' => 1,
+            'move' => 1
+        )
+    );
+    /* @var string */
+    public $date_format = '%d/%m/%Y, %H:%M';
+
+    /* @var string */
+    public $websafe_mode = 'utf-8';
+
+    /* @var int */
+    public $websafe_spaces = 0;
+
+    /* @var string */
+    public $websafe_textcase = '';
+
     public function __construct($config = array()) {
+        // add actions
+        $this->addDefaultActions();
+        // add buttons
+        $this->addDefaultButtons();
 
-        $default = array(
-            'dir' => '',
-            'filesystem' => 'joomla',
-            'filetypes' => 'images=jpg,jpeg,png,gif',
-            'upload' => array(
-                'max_size' => 1024,
-                'validate_mimetype' => 1,
-                'add_random' => 0,
-                'total_files' => 0,
-                'total_size' => 0,
-                'remove_exif' => 0
-            ),
-            'folder_tree' => 1,
-            'list_limit' => 'all',
-            'features' => array(
-                'upload' => 1,
-                'folder' => array(
-                    'create' => 1,
-                    'delete' => 1,
-                    'rename' => 1,
-                    'move' => 1
-                ),
-                'file' => array(
-                    'rename' => 1,
-                    'delete' => 1,
-                    'move' => 1
-                )
-            ),
-            'date_format' => '%d/%m/%Y, %H:%M',
-            'websafe_mode' => 'utf-8',
-            'websafe_spaces' => 0,
-            'websafe_textcase' => ''
-        );
-
-        $config = array_merge($default, $config);
-
-        $this->setProperties($config);
+        // set file browser config
+        $this->setConfig($config);
 
         // Setup XHR callback funtions
         $this->setRequest(array($this, 'getItems'));
@@ -82,10 +94,7 @@ class WFFileBrowser extends JObject {
         $this->setRequest(array($this, 'getTree'));
         $this->setRequest(array($this, 'getTreeItem'));
 
-        // Get actions
-        $this->getStdActions();
-        // Get buttons
-        $this->getStdButtons();
+        $this->setRequest(array($this, 'upload'));
     }
 
     /**
@@ -93,15 +102,16 @@ class WFFileBrowser extends JObject {
      * @access public
      */
     public function display() {
-        //parent::display();
+        $this->setProperties(array(
+          'actions' => $this->getActions(),
+          'buttons' => $this->getButtons()
+        ));
+
         // Get the Document instance
         $document = WFDocument::getInstance();
 
-        $document->addScript(array('manager.full'), 'libraries');
-
-        $document->addStyleSheet(array('manager'), 'libraries');
-        // file browser options
-        $document->addScriptDeclaration('WFFileBrowser.settings=' . json_encode($this->getSettings()) . ';');
+        $document->addScript(array('filebrowser.min'), 'libraries');
+        $document->addStyleSheet(array('filebrowser.min'), 'libraries');
     }
 
     /**
@@ -112,8 +122,8 @@ class WFFileBrowser extends JObject {
         $session = JFactory::getSession();
 
         $view = new WFView(array(
-            'name' => 'browser',
-            'layout' => 'file'
+            'name'    => 'filebrowser',
+            'layout'  => 'default'
         ));
 
         // assign session data
@@ -524,7 +534,7 @@ class WFFileBrowser extends JObject {
         if ($init) {
             $treedir = $dir;
             if ($root) {
-                $result = '<ul><li id="/" class="open"><div class="tree-row"><div class="tree-image"></div><span class="root"><a href="javascript:;">' . WFText::_('WF_LABEL_ROOT') . '</a></span></div>';
+                $result = '<ul><li id="/" class="open"><div class="tree-row"><div class="tree-image"></div><span class="root"><a href="javascript:;">' . WFText::_('WF_LABEL_HOME', 'Home') . '</a></span></div>';
                 $dir = '/';
             }
         }
@@ -582,10 +592,10 @@ class WFFileBrowser extends JObject {
     }
 
     /**
-     * Create standard actions based on access
+     * Create default actions based on access
      */
-    private function getStdActions() {
-        $this->addAction('help', '', '', WFText::_('WF_BUTTON_HELP'));
+    private function addDefaultActions() {
+        $this->addAction('help', array('title' => WFText::_('WF_BUTTON_HELP')));
 
         if ($this->checkFeature('upload')) {
             $this->addAction('upload');
@@ -605,14 +615,9 @@ class WFFileBrowser extends JObject {
      * @param array  $options Array of options
      */
     public function addAction($name, $options = array()) {
-        /* TODO */
-        // backwards compatability (remove in stable)
-        $args = func_get_args();
 
-        if (count($args) == 4) {
-            $options['icon'] = $args[1];
-            $options['action'] = $args[2];
-            $options['title'] = $args[3];
+        if (!is_array($options)) {
+            list($name, $options['icon'], $options['action'], $options['title']) = func_get_args();
         }
 
         $options = array_merge(array('name' => $name), $options);
@@ -646,7 +651,7 @@ class WFFileBrowser extends JObject {
      * @param string $name Action name to remove
      */
     public function removeAction($name) {
-        if (array_key_exists($this->_actions[$name])) {
+        if (isset($this->_actions[$name])) {
             unset($this->_actions[$name]);
         }
     }
@@ -654,7 +659,7 @@ class WFFileBrowser extends JObject {
     /**
      * Create all standard buttons based on access
      */
-    private function getStdButtons() {
+    private function addDefaultButtons() {
         if ($this->checkFeature('delete', 'folder')) {
             $this->addButton('folder', 'delete', array('multiple' => true));
 
@@ -694,7 +699,6 @@ class WFFileBrowser extends JObject {
             $this->setRequest(array($this, 'moveItem'));
         }
         $this->addButton('file', 'view', array('restrict' => $this->getViewable()));
-        $this->addButton('file', 'insert');
     }
 
     /**
@@ -881,6 +885,8 @@ class WFFileBrowser extends JObject {
                 throw new InvalidArgumentException(WFText::_('WF_MANAGER_UPLOAD_MIME_ERROR'));
             }
         }
+
+        return true;
     }
 
     /**
@@ -899,17 +905,13 @@ class WFFileBrowser extends JObject {
         $filesystem = $this->getFileSystem();
         jimport('joomla.filesystem.file');
 
-        header('Content-Type: text/json;charset=UTF-8');
-        header("Expires: Wed, 4 Apr 1984 13:00:00 GMT");
-        header("Last-Modified: " . gmdate("D, d M_Y H:i:s") . " GMT");
-        header("Cache-Control: no-store, no-cache, must-revalidate");
-        header("Cache-Control: post-check=0, pre-check=0", false);
-        header("Pragma: no-cache");
+        // create a filesystem result object
+        $result = new WFFileSystemResult();
 
         // get uploaded file
         $file = JRequest::getVar('file', '', 'files', 'array');
 
-        // validate file data
+        // validate file
         $this->validateUploadedFile($file);
 
         // get file name
@@ -949,7 +951,7 @@ class WFFileBrowser extends JObject {
 
         // target directory
         $dir = (string) JRequest::getVar('upload-dir');
-        // decode
+        // decode and cast as string
         $dir = rawurldecode($dir);
         // check destination path
         WFUtility::checkPath($dir);
@@ -980,10 +982,6 @@ class WFFileBrowser extends JObject {
         // rebuild file name - name + extension
         $name = $name . '.' . $ext;
 
-        // create a filesystem result object
-        $result = new WFFileSystemResult();
-
-        $complete = false;
         $contentType = JRequest::getVar('CONTENT_TYPE', '', 'SERVER');
 
         // Only multipart uploading is supported for now
@@ -1000,35 +998,34 @@ class WFFileBrowser extends JObject {
             }
 
             @unlink($file['tmp_name']);
-
-            $complete = true;
         } else {
             $result->state = false;
             $result->code = 103;
             $result->message = WFText::_('WF_MANAGER_UPLOAD_ERROR');
-
-            $complete = true;
         }
+
         // upload finished
-        if ($complete) {
+        if ($result instanceof WFFileSystemResult) {
+            if ($result->state === true) {
+                $name = basename($result->path);
 
-            if ($result instanceof WFFileSystemResult) {
-                if ($result->state === true) {
-                    $name = basename($result->path);
-
-                    if (empty($result->url)) {
-                        $result->url = WFUtility::makePath($filesystem->getRootDir(), WFUtility::makePath($dir, $name));
-                    }
-
-                    $this->setResult($this->fireEvent('onUpload', array($result->path, $result->url)));
-                    $this->setResult($name, 'files');
-                } else {
-                    $this->setResult($result->message, 'error');
+                if (empty($result->url)) {
+                    $result->url = WFUtility::makePath($filesystem->getRootDir(), WFUtility::makePath($dir, $name));
                 }
-            }
 
-            die(json_encode($this->getResult()));
+                $event = $this->fireEvent('onUpload', array($result->path, $result->url));
+
+                if (!empty($result)) {
+                  $this->setResult($event);
+                }
+
+                $this->setResult($name, 'files');
+            } else {
+                $this->setResult($result->message, 'error');
+            }
         }
+
+        return $result;
     }
 
     /**
@@ -1043,7 +1040,6 @@ class WFFileBrowser extends JObject {
         }
 
         $filesystem = $this->getFileSystem();
-
         $items = explode(",", rawurldecode((string) $items));
 
         foreach ($items as $item) {
@@ -1096,11 +1092,13 @@ class WFFileBrowser extends JObject {
 
         $args = func_get_args();
 
-        $source       = (string) array_shift($args);
-        $destination  = (string) array_shift($args);
+        $source = array_shift($args);
+        $destination = array_shift($args);
 
-        $source       = rawurldecode($source);
-        $destination  = rawurldecode($destination);
+        // decode and cast as string
+        $source = (string) rawurldecode($source);
+        // decode and cast as string
+        $destination = (string) rawurldecode($destination);
 
         WFUtility::checkPath($source);
         WFUtility::checkPath($destination);
@@ -1155,8 +1153,8 @@ class WFFileBrowser extends JObject {
 
         $items = explode(",", rawurldecode((string) $items));
 
-        // decode
-        $destination = rawurldecode(strval($destination));
+        // decode and cast as string
+        $destination = (string) rawurldecode($destination);
 
         // check destination path
         WFUtility::checkPath($destination);
@@ -1167,7 +1165,7 @@ class WFFileBrowser extends JObject {
         }
 
         foreach ($items as $item) {
-            // decode
+            // decode and cast as string
             $item = (string) rawurldecode($item);
 
             // check source path
@@ -1218,7 +1216,7 @@ class WFFileBrowser extends JObject {
         $items = explode(",", rawurldecode((string) $items));
 
         // decode and cast as string
-        $destination = rawurldecode(strval($destination));
+        $destination = (string) rawurldecode($destination);
 
         // check destination path
         WFUtility::checkPath($destination);
@@ -1229,7 +1227,7 @@ class WFFileBrowser extends JObject {
         }
 
         foreach ($items as $item) {
-            // decode
+            // decode and cast as string
             $item = (string) rawurldecode($item);
             // check source path
             WFUtility::checkPath($item);
@@ -1275,12 +1273,12 @@ class WFFileBrowser extends JObject {
 
         $args = func_get_args();
 
-        $dir = (string) array_shift($args);
-        $new = (string) array_shift($args);
+        $dir = array_shift($args);
+        $new = array_shift($args);
 
         // decode and cast as string
-        $dir = rawurldecode($dir);
-        $new = rawurldecode($new);
+        $dir = (string) rawurldecode($dir);
+        $new = (string) rawurldecode($new);
 
         $filesystem = $this->getFileSystem();
 
@@ -1331,22 +1329,23 @@ class WFFileBrowser extends JObject {
 
         $upload = $this->get('upload');
 
+        // get max size as kilobytes
         if (empty($upload['max_size'])) {
             $upload['max_size'] = 1024;
         }
 
-        // get upload size
-        $size = intval(preg_replace('/[^0-9]/', '', $upload['max_size'])) . 'kb';
+        // get upload size as integer
+        $size = intval(preg_replace('/[^0-9]/', '', $upload['max_size']));
 
         // must not exceed server maximum
         if ((int) $size * 1024 > (int) $upload_max) {
-            $size = $upload_max / 1024 . 'kb';
+            $size = $upload_max / 1024;
         }
 
         $defaults = array(
-            'size' => $size,
-            'filter' => $this->mapUploadFileTypes(true),
-            'elements' => $elements
+            'max_size'  => $size,
+            'filetypes' => $this->getFileTypes('list'),
+            'elements'  => $elements
         );
 
         if (isset($features['dialog'])) {
@@ -1357,24 +1356,15 @@ class WFFileBrowser extends JObject {
     }
 
     public function getDimensions($file) {
-        $filesystem = $this->getFileSystem();
-        return $filesystem->getDimensions($file);
+        return $this->getFileSystem()->getDimensions($file);
     }
 
-    protected function getSettings($settings = array()) {
+    // Set File Browser config
+    private function setConfig($config = array()) {
         $filesystem = $this->getFileSystem();
 
         $default = array(
-            'dir' => $filesystem->getRootDir(),
-            'actions' => $this->getActions(),
-            'buttons' => $this->getButtons(),
-            'upload' => $this->getUploadDefaults(),
-            'folder_tree' => $this->get('folder_tree'),
-            'listlimit' => $this->get('list_limit'),
-            'websafe_mode' => $this->get('websafe_mode'),
-            'websafe_spaces' => $this->get('websafe_spaces'),
-            'websafe_textcase' => $this->get('websafe_textcase'),
-            'date_format' => $this->get('date_format')
+            'upload' => $this->getUploadDefaults()
         );
 
         $properties = array('base', 'delete', 'rename', 'folder_new', 'copy', 'move');
@@ -1385,11 +1375,12 @@ class WFFileBrowser extends JObject {
             }
         }
 
-        $settings = array_merge_recursive($default, $settings);
+        // apply default properties
+        $this->setProperties($default);
 
-        return $settings;
+        // apply passed in properties
+        if (!empty($config)) {
+          $this->setProperties($config);
+        }
     }
-
 }
-
-?>

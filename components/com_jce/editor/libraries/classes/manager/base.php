@@ -1,7 +1,7 @@
 <?php
+
 /**
  * @package   	JCE
- * @copyright 	Copyright (c) 2009-2016 Ryan Demmer. All rights reserved.
  * @copyright 	Copyright (c) 2009-2015 Ryan Demmer. All rights reserved.
  * @license   	GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  * JCE is free software. This version may have been modified pursuant
@@ -17,19 +17,15 @@ wfimport('editor.libraries.classes.browser');
 
 class WFMediaManagerBase extends WFEditorPlugin {
 
+    protected $_filetypes = 'images=jpg,jpeg,png,gif';
+
     private static $browser = array();
 
     /**
      * @access  public
      */
     public function __construct($config = array()) {
-        // Call parent
-        //parent::__construct();
-
-        if (!array_key_exists('type', $config)) {
-            $config['type'] = 'manager';
-        }
-
+        // use the full "manager" layout by default
         if (!array_key_exists('layout', $config)) {
             $config['layout'] = 'manager';
         }
@@ -45,22 +41,15 @@ class WFMediaManagerBase extends WFEditorPlugin {
         // Call parent
         parent::__construct($config);
 
-        // update properties
-        $this->setProperties($this->getConfig());
-
         // initialize the browser
-        $browser = $this->getBrowser();
+        $browser = $this->getFileBrowser();
+        $request = WFRequest::getInstance();
+
+        // Setup plugin XHR callback functions
+        $request->setRequest(array($this, 'getDimensions'));
+        $request->setRequest(array($this, 'getFileDetails'));
     }
 
-    /**
-     * Get the File Browser instance
-     * @access public
-     * @return object WFBrowserExtension
-     */
-    public function getBrowser() {
-        return $this->getFileBrowser();
-    }
-    
     /**
      * Get the File Browser instance
      * @access public
@@ -88,33 +77,35 @@ class WFMediaManagerBase extends WFEditorPlugin {
       $this->getFileBrowser()->addEvent($name, $function);
     }
 
+	public function getBrowser() {
+        return $this->getFileBrowser();
+    }
+
     /**
      * Display the plugin
      * @access public
      */
     public function display() {
-        $view = $this->getView();
-        $browser = $this->getBrowser();
-
         parent::display();
 
         $document = WFDocument::getInstance();
 
-        if ($document->get('standalone') == 1 && !JRequest::getWord('element', '')) {
-            $browser = $this->getBrowser();
-            $browser->removeButton('file', 'insert');
-        }
+        $view = $this->getView();
+        $browser = $this->getFileBrowser();
 
         $browser->display();
+        $view->assign('filebrowser', $browser);
 
-        $browser->set('position', $this->getParam('editor.browser_position', 'bottom'));
-        $view->assign('browser', $browser);
+        // set global options
+        $document->addScriptDeclaration('FileBrowser.options=' . json_encode($this->getFileBrowser()->getProperties()) . ';');
     }
 
     public function getFileTypes($format = 'array') {
-        $browser = $this->getBrowser();
+        return $this->getFileBrowser()->getFileTypes($format);
+    }
 
-        return $browser->getFileTypes($format);
+    protected function setFileTypes($filetypes) {
+        return $this->getFileBrowser()->setFileTypes($filetypes);
     }
 
     private function getFileSystem() {
@@ -133,15 +124,91 @@ class WFMediaManagerBase extends WFEditorPlugin {
         return $filesystem;
     }
 
-    /**
-     * Get the configuration
-     * @access private
-     * @return array
-     */
-    private function getConfig() {
-        return $this->getFileBrowserConfig();
+    protected function getID3Instance() {
+        static $id3;
+        if (!is_object($id3)) {
+            if (!class_exists('getID3')) {
+                $app = JFactory::getApplication();
+                // set tmp directory
+                define('GETID3_TEMP_DIR', $app->getCfg('tmp_path'));
+
+                require_once(WF_EDITOR_LIBRARIES. '/classes/vendor/getid3/getid3/getid3.php' );
+            }
+
+            $id3 = new getID3();
+        }
+        return $id3;
     }
-    
+
+    protected function id3Data($path) {
+        jimport('joomla.filesystem.file');
+        clearstatcache();
+
+        $meta = array('width' => '', 'height' => '', 'time' => '');
+
+        $ext = JFile::getExt($path);
+
+        // Initialize getID3 engine
+        $id3 = $this->getID3Instance();
+        // Get information from the file
+        $fileinfo = @$id3->analyze($path);
+        getid3_lib::CopyTagsToComments($fileinfo);
+
+        // Output results
+        if (isset($fileinfo['video'])) {
+            $meta['width']  = isset($fileinfo['video']['resolution_x']) ? round($fileinfo['video']['resolution_x']) : 100;
+            $meta['height'] = isset($fileinfo['video']['resolution_y']) ? round($fileinfo['video']['resolution_y']) : 100;
+        }
+
+        if (isset($fileinfo['playtime_string'])) {
+            $meta['time'] = $fileinfo['playtime_string'];
+        }
+
+        if ($ext == 'swf' && $meta['x'] == '') {
+            $size = @getimagesize($path);
+            $meta['width'] = round($size[0]);
+            $meta['height'] = round($size[1]);
+        }
+        if ($ext == 'wmv' && $meta['x'] == '') {
+            $meta['width'] = round($fileinfo['asf']['video_media']['2']['image_width']);
+            $meta['height'] = round(( $fileinfo['asf']['video_media']['2']['image_height'] ) + 60);
+        }
+
+        return $meta;
+    }
+
+    public function getDimensions($file) {
+        $browser    = $this->getFileBrowser();
+        $filesystem = $browser->getFileSystem();
+
+        $path = WFUtility::makePath($filesystem->getBaseDir(), rawurldecode($file));
+
+        $data = array();
+
+        // images
+        if (preg_match('#\.(jpg|jpeg|png|gif|bmp|wbmp|tif|tiff|psd|ico)$#i', $file)) {
+            list($data['width'], $data['height']) = getimagesize($path);
+
+            return $data;
+        }
+
+        // video and audio
+        if (preg_match('#\.(avi|wmv|wm|asf|asx|wmx|wvx|mov|qt|mpg|mpeg|m4a|swf|dcr|rm|ra|ram|divx|mp4|ogv|ogg|webm|flv|f4v|mp3|ogg|wav|xap)$#i', $file)) {
+
+          // only process local files
+          if ($filesystem->get('local')) {
+            $data = $this->id3Data($path);
+            $data['duration'] = preg_match('/([0-9]+):([0-9]+)/', $data['time']) ? $data['time'] : '--:--';
+
+            unset($data['time']);
+
+            return $data;
+          }
+        }
+
+        return $data;
+    }
+
     /**
      * Get the Media Manager configuration
      * @access private
@@ -156,7 +223,7 @@ class WFMediaManagerBase extends WFEditorPlugin {
         }
 
         $base = array(
-            'dir' => $this->getParam('dir', '', '', 'string', false),
+            'dir' => $this->getParam('dir', 'images', '', 'string', false),
             'filesystem'  => $this->getFileSystem(),
             'filetypes'   => $filetypes,
             'upload' => array(
@@ -187,16 +254,10 @@ class WFMediaManagerBase extends WFEditorPlugin {
             'websafe_mode' => $this->getParam('editor.websafe_mode', 'utf-8'),
             'websafe_spaces' => $this->getParam('editor.websafe_allow_spaces', 0),
             'websafe_textcase' => $textcase,
-            'date_format' => $this->getParam('editor.date_format', '%d/%m/%Y, %H:%M')
+            'date_format' => $this->getParam('editor.date_format', '%d/%m/%Y, %H:%M'),
+            'position' => $this->getParam('editor.filebrowser_position', $this->getParam('editor.browser_position', 'bottom'))
         );
 
         return WFUtility::array_merge_recursive_distinct($base, $config);
-    }
-
-    /**
-     * @see WFEditorPlugin::getSettings()
-     */
-    function getSettings($settings = array()) {
-        return parent::getSettings($settings);
     }
 }
