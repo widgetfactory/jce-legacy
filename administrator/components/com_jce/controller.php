@@ -52,8 +52,8 @@ class WFController extends WFControllerBase {
     }
 
     /**
-     * Create the View. 
-     * This is an overloaded function of JController::getView 
+     * Create the View.
+     * This is an overloaded function of JController::getView
      * and includes addition of the JDocument Object with required scripts and styles
      * @return object
      */
@@ -104,10 +104,14 @@ class WFController extends WFControllerBase {
 
         switch ($name) {
             case 'help':
-                $view->addScript(JURI::root(true) . '/components/com_jce/editor/libraries/js/help.js');
+                $view->addScript(JURI::root(true) . '/components/com_jce/editor/libraries/js/help.min.js');
                 break;
             default:
-                $view->addStyleSheet(JURI::root(true) . '/administrator/components/com_jce/media/css/global.css');
+                $view->addStyleSheet(JURI::root(true) . '/administrator/components/com_jce/media/css/global.min.css');
+
+                if (!$version->isCompatible('3.0')) {
+                  $view->addStyleSheet(JURI::root(true) . '/administrator/components/com_jce/media/css/legacy.min.css');
+                }
 
                 // load Joomla! core javascript
                 if (method_exists('JHtml', 'core')) {
@@ -121,7 +125,7 @@ class WFController extends WFControllerBase {
                 $params = WFParameterHelper::getComponentParams();
                 $theme = $params->get('preferences.theme', 'jce');
 
-                $view->addScript(JURI::root(true) . '/administrator/components/com_jce/media/js/core.js');
+                $view->addScript(JURI::root(true) . '/administrator/components/com_jce/media/js/core.min.js');
 
                 $options = array(
                     'labels' => array(
@@ -188,12 +192,12 @@ class WFController extends WFControllerBase {
     }
 
     public function pack() {
-        
+
     }
 
     /**
      * Display View
-     * @return 
+     * @return
      */
     public function display($cachable = false, $params = false) {
         $view = $this->getView();
@@ -202,7 +206,7 @@ class WFController extends WFControllerBase {
 
     /**
      * Generic cancel method
-     * @return 
+     * @return
      */
     public function cancel() {
         // Check for request forgeries
