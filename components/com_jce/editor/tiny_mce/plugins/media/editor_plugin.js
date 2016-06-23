@@ -587,9 +587,6 @@
                     placeholder.attr(at, n.attr(at));
                 });
 
-                style.width   = w + 'px';
-                style.height  = h + 'px'; 
-
                 // add styles
                 if (styles = ed.dom.serializeStyle(style)) {
                     placeholder.attr('style', styles);
