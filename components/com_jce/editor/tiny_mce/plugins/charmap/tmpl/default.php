@@ -2,7 +2,7 @@
 
 /**
  * @package   	JCE
- * @copyright 	Copyright (c) 2009-2016 Ryan Demmer. All rights reserved.
+ * @copyright 	Copyright (c) 2009-2015 Ryan Demmer. All rights reserved.
  * @license   	GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  * JCE is free software. This version may have been modified pursuant
  * to the GNU General Public License, and as distributed it includes or
@@ -12,10 +12,9 @@
 
 defined( '_JEXEC' ) or die('RESTRICTED');
 ?>
-<div id="charmap" role="presentation">
-	<h3><?php echo WFText::_('WF_ADVANCED_CHARMAP_TITLE');?></h3>
-	<div id="charmapView"><!-- Chars will be rendered here --></div>
-	<div id="charmapDescription">
+<div id="charmap" role="presentation" class="ui-grid ui-grid-small">
+	<div id="charmapView" class="ui-width-5-6"><!-- Chars will be rendered here --></div>
+	<div id="charmapDescription" class="ui-width-1-6">
 		<div id="codeV"></div>
 		<div id="codeN"></div>
 		<div class="box">
