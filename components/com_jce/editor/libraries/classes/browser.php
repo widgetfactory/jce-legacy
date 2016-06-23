@@ -1104,7 +1104,7 @@ class WFFileBrowser extends JObject {
         WFUtility::checkPath($destination);
 
         // check for extension in destination name
-        if ($destination !== "" && WFUtility::validateFileName($destination) === false) {
+        if (WFUtility::validateFileName($destination) === false) {
             JError::raiseError(403, 'INVALID FILE NAME');
         }
 
@@ -1120,7 +1120,9 @@ class WFFileBrowser extends JObject {
             }
         }
 
-        $result = $filesystem->rename($source, WFUtility::makeSafe($destination, $this->get('websafe_mode'), $this->get('websafe_spaces'), $this->get('websafe_textcase')), $args);
+        // apply filesystem options
+        $destination  = WFUtility::makeSafe($destination, $this->get('websafe_mode'), $this->get('websafe_spaces'), $this->get('websafe_textcase'));
+        $result       = $filesystem->rename($source, $destination, $args);
 
         if ($result instanceof WFFileSystemResult) {
             if (!$result->state) {
@@ -1130,7 +1132,7 @@ class WFFileBrowser extends JObject {
                 }
             } else {
                 $this->setResult($this->fireEvent('on' . ucfirst($result->type) . 'Rename', array($destination)));
-                $this->setResult($destination, $result->type);
+                $this->setResult(basename($result->path), $result->type);
             }
         }
 
@@ -1156,11 +1158,15 @@ class WFFileBrowser extends JObject {
         // decode and cast as string
         $destination = (string) rawurldecode($destination);
 
+        if (empty($destination)) {
+            $destination = "/";
+        }
+
         // check destination path
         WFUtility::checkPath($destination);
 
         // check for extension in destination name
-        if ($destination !== "" && WFUtility::validateFileName($destination) === false) {
+        if (WFUtility::validateFileName($destination) === false) {
             JError::raiseError(403, 'INVALID PATH NAME');
         }
 
@@ -1192,7 +1198,7 @@ class WFFileBrowser extends JObject {
                     }
                 } else {
                     $this->setResult($this->fireEvent('on' . ucfirst($result->type) . 'Copy', array($item)));
-                    $this->setResult($destination, $result->type);
+                    $this->setResult(basename($result->path), $result->type);
                 }
             }
         }
@@ -1218,11 +1224,15 @@ class WFFileBrowser extends JObject {
         // decode and cast as string
         $destination = (string) rawurldecode($destination);
 
+        if (empty($destination)) {
+            $destination = "/";
+        }
+
         // check destination path
         WFUtility::checkPath($destination);
 
         // check for extension in destination name
-        if ($destination !== "" && WFUtility::validateFileName($destination) === false) {
+        if (WFUtility::validateFileName($destination) === false) {
             JError::raiseError(403, 'INVALID PATH NAME');
         }
 
@@ -1236,6 +1246,7 @@ class WFFileBrowser extends JObject {
                 if ($this->checkFeature('move', 'file') === false) {
                     JError::raiseError(403, 'Access to this resource is restricted');
                 }
+
             } elseif ($filesystem->is_dir($item)) {
                 if ($this->checkFeature('move', 'folder') === false) {
                     JError::raiseError(403, 'Access to this resource is restricted');
@@ -1253,7 +1264,7 @@ class WFFileBrowser extends JObject {
                     }
                 } else {
                     $this->setResult($this->fireEvent('on' . ucfirst($result->type) . 'Move', array($item)));
-                    $this->setResult($destination, $result->type);
+                    $this->setResult(basename($result->path), $result->type);
                 }
             }
         }
