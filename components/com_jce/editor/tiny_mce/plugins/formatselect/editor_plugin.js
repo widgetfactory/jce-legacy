@@ -34,9 +34,7 @@
             switch (n) {
                 case "formatselect":
 
-                    if (ed.getParam('formatselect_blockformats')) {
-                        return this._createBlockFormats();
-                    }
+                    return this._createBlockFormats();
 
                     break;
             }
@@ -77,11 +75,11 @@
             });
 
             if (c) {
-                each(ed.getParam('formatselect_blockformats', '', 'hash'), function(v, k) {
-                    c.add(ed.translate(k != v ? k : fmts[v]), v, {
-                        'class': 'mce_formatPreview mce_' + v,
+                each(ed.getParam('formatselect_blockformats', fmts, 'hash'), function(v, k) {
+                    c.add(ed.translate(v, k), v, {
+                        'class': 'mce_formatPreview mce_' + k,
                         style: function() {
-                            return PreviewCss(ed, {'block': v});
+                            return PreviewCss(ed, {'block': k});
                         }
                     });
                 });
