@@ -470,9 +470,9 @@ div#info-comment {
 .item-list .load .ui-icon {
   background: url('../img/load.gif') no-repeat left center;
 }
-.item-list .folder-up {
+.item-list li .ui-icon.ui-icon-folder-up {
   background: url('../img/icons.png') no-repeat 0 -200px;
-  margin-left: 10px;
+  margin-left: 30px;
 }
 .item-list li .folder {
   background: url('../img/icons.png') no-repeat 0 -220px;

@@ -645,7 +645,7 @@
 			$('#item-list').empty();
 
 			if (!this._isRoot()) {
-				h += '<li class="folder folder-up" title="Up"><a href="javascript:;">...</a></li>';
+				h += '<li class="folder folder-up" title="Up"><i class="ui-width-1-10 ui-icon ui-icon-undo ui-icon-folder-up"></i><a class="ui-width-9-10" href="javascript:;">...</a></li>';
 			}
 
 			if (o.folders.length) {
@@ -1365,7 +1365,6 @@
 								self._setLoader();
 
 								v = $.String.safe(v, self.options.websafe_mode, self.options.websafe_spaces, self.options.websafe_textcase);
-
 								args = [dir, v].concat(args || []);
 
 								$.JSON.request('folderNew', args, function(o) {
@@ -1511,7 +1510,7 @@
 									});
 
 									// close modal
-									$(self._modal['confirm']).trigger('modal.close');
+									$(self._modal.rename).trigger('modal.close');
 								}
 							});
 
