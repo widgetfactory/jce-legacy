@@ -71,7 +71,7 @@ defined('_JEXEC') or die('RESTRICTED');
                 $k = 0;
                 for ($i = 0, $n = count($rows); $i < $n; $i++) {
                     $row = $rows[$i];
-                    
+
                     $profile = JTable::getInstance('profiles', 'WFTable');
                     $profile->bind($row);
                     $profile->editor = null;
@@ -99,7 +99,7 @@ defined('_JEXEC') or die('RESTRICTED');
                                 echo $row->name;
                             } else {
                                 ?>
-                                <span class="editlinktip wf-tooltip" title="<?php echo WFText::_('WF_PROFILES_EDIT'); ?>::<?php echo $row->name; ?>">
+                                <span class="editlinktip" title="<?php echo WFText::_('WF_PROFILES_EDIT'); ?>::<?php echo $row->name; ?>">
                                     <a href="<?php echo $link; ?>">
                                         <?php echo $row->name; ?></a></span>
                             <?php } ?>
