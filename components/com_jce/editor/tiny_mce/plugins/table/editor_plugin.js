@@ -33,7 +33,7 @@
      * Table Grid class.
      */
     function TableGrid(table, dom, selection, settings) {
-        var grid, startPos, endPos, selectedCell;
+        var grid, startPos, endPos, selectedCell, gridWidth;
 
         buildGrid();
         selectedCell = dom.getParent(selection.getStart(), 'th,td');
@@ -54,6 +54,7 @@
             var startY = 0;
 
             grid = [];
+            gridWidth = 0;
 
             each(['thead', 'tbody', 'tfoot'], function (part) {
                 var rows = dom.select('> ' + part + ' tr', table);
@@ -89,6 +90,8 @@
                                 };
                             }
                         }
+
+                        gridWidth = Math.max(gridWidth, x + 1);
                     });
                 });
 
@@ -762,6 +765,34 @@
             }
         }
 
+        function moveRelIdx(cellElm, delta) {
+    			var pos, index, cell;
+
+    			pos = getPos(cellElm);
+    			index = pos.y * gridWidth + pos.x;
+
+    			do {
+    				index += delta;
+    				cell = getCell(index % gridWidth, Math.floor(index / gridWidth));
+
+    				if (!cell) {
+    					break;
+    				}
+
+    				if (cell.elm != cellElm) {
+    					selection.select(cell.elm, true);
+
+    					if (dom.isEmpty(cell.elm)) {
+    						selection.collapse(true);
+    					}
+
+    					return true;
+    				}
+    			} while (cell.elm == cellElm);
+
+    			return false;
+    		}
+
         // Expose to public
         tinymce.extend(this, {
             deleteTable: deleteTable,
@@ -776,7 +807,9 @@
             pasteRows: pasteRows,
             getPos: getPos,
             setStartCell: setStartCell,
-            setEndCell: setEndCell
+            setEndCell: setEndCell,
+            moveRelIdx: moveRelIdx,
+            refresh: buildGrid
         });
     }
 
@@ -1416,9 +1449,8 @@
                     winMan.open({
                         url: ed.getParam('site_url') + 'index.php?option=com_jce&view=editor&layout=plugin&plugin=table',
                         width: 440 + parseInt(ed.getLang('table.table_delta_width', 0)),
-                        height: 460 + parseInt(ed.getLang('table.table_delta_height', 0)),
-                        inline: 1,
-                        popup_css: false
+                        height: 470 + parseInt(ed.getLang('table.table_delta_height', 0)),
+                        inline: 1
                     }, {
                         plugin_url: url,
                         action: val ? val.action : 0,
@@ -1429,9 +1461,8 @@
                     winMan.open({
                         url: ed.getParam('site_url') + 'index.php?option=com_jce&view=editor&layout=plugin&plugin=table&context=row',
                         width: 440 + parseInt(ed.getLang('table.rowprops_delta_width', 0)),
-                        height: 460 + parseInt(ed.getLang('table.rowprops_delta_height', 0)),
-                        inline: 1,
-                        popup_css: false
+                        height: 470 + parseInt(ed.getLang('table.rowprops_delta_height', 0)),
+                        inline: 1
                     }, {
                         plugin_url: url,
                         context: "row"
@@ -1441,9 +1472,8 @@
                     winMan.open({
                         url: ed.getParam('site_url') + 'index.php?option=com_jce&view=editor&layout=plugin&plugin=table&context=cell',
                         width: 440 + parseInt(ed.getLang('table.cellprops_delta_width', 0)),
-                        height: 460 + parseInt(ed.getLang('table.cellprops_delta_height', 0)),
-                        inline: 1,
-                        popup_css: false
+                        height: 470 + parseInt(ed.getLang('table.cellprops_delta_height', 0)),
+                        inline: 1
                     }, {
                         plugin_url: url,
                         context: "cell"
@@ -1456,6 +1486,32 @@
                 });
 
             });
+
+            // Enable tab key cell navigation
+        		if (ed.settings.table_tab_navigation !== false) {
+        			ed.onKeyDown.add(function(ed, e) {
+        				var cellElm, grid, delta;
+
+        				if (e.keyCode == 9) {
+        					cellElm = ed.dom.getParent(ed.selection.getStart(), 'th,td');
+
+        					if (cellElm) {
+        						e.preventDefault();
+
+        						grid = createTableGrid();
+        						delta = e.shiftKey ? -1 : 1;
+
+        						ed.undoManager.add();
+
+        							if (!grid.moveRelIdx(cellElm, delta) && delta > 0) {
+        								grid.insertRow();
+        								grid.refresh();
+        								grid.moveRelIdx(cellElm, delta);
+        							}
+        					}
+        				}
+        			});
+        		}
         },
         createControl: function (n, cm) {
             var t = this, ed = t.editor;
@@ -1485,6 +1541,7 @@
                         width: ed.getParam('table_default_width'),
                         height: ed.getParam('table_default_height'),
                         border: border,
+                        align: ed.getParam('table_default_align', ''),
                         classes: ed.getParam('table_classes', '')
                     }, ed);
 
@@ -1541,11 +1598,12 @@
              * @type Object
              */
             t.settings = s = tinymce.extend({
-                cols: 4,
-                rows: 4,
+                cols: 10,
+                rows: 10,
                 width: '',
                 height: '',
-                border: 0
+                border: 0,
+                align: ''
             }, t.settings);
 
             /**
@@ -1681,7 +1739,7 @@
                 tr = DOM.add(tb, 'tr');
 
                 for (x = 0; x < s.cols; x++) {
-                    td = DOM.create('td', {}, '&nbsp;');
+                    td = DOM.create('td', {}, '<a href="#"></a>');
                     DOM.add(tr, td);
                 }
             }
@@ -1740,7 +1798,7 @@
             Event.add(t.id + '_menu', 'click', function (e) {
                 var c, el = e.target;
 
-                if (el.nodeName.toLowerCase() == 'td') {
+                if (el.nodeName == 'A') {
                     var table = DOM.getParent(el, 'table');
 
                     var styles = [];
@@ -1769,6 +1827,19 @@
 
                     if (t.settings.border != '') {
                         html += ' border="' + t.settings.border + '"';
+                    }
+
+                    if (t.settings.align != '' && ed.settings.schema === "html4") {
+                        html += ' align="' + t.settings.align + '"';
+                    }
+
+                    if (t.settings.align != '' && ed.settings.schema !== "html4") {
+                        if (t.settings.align === "center") {
+                            styles.push('margin-left: auto');
+                            styles.push('margin-right: auto');
+                        } else {
+                            styles.push('float: ' + t.settings.align);
+                        }
                     }
 
                     if (t.settings.classes) {
