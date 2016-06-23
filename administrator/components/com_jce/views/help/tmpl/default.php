@@ -13,13 +13,14 @@
 defined('_JEXEC') or die('RESTRICTED');
 ?>
 <div id="jce">
-    <div class="row-fluid">
+    <div class="row-fluid ui-grid">
 	<div class="lhs">
-            <div id="help-menu"><?php echo $this->model->renderTopics();?></div>
+		<div id="help-menu"><?php echo $this->model->renderTopics();?></div>
 	</div>
-        <div id="help-menu-toggle"><div class="toggle-handle"></div><div class="resize-handle"></div></div>
-        <div class="rhs span8">
+    <div id="help-menu-toggle">
+    	<div class="toggle-handle"></div><div class="resize-handle"></div></div>
+        <div class="rhs">
             <div id="help-frame"><iframe id="help-iframe" src="javascript:;" scrolling="auto" frameborder="0"></iframe></div>
-	</div>
+		</div>
     </div>
 </div>
