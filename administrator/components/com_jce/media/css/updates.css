@@ -51,7 +51,7 @@ body {
     display: block;
     text-align: center;
     font-weight: bold;
-    color : #000000;  
+    color : #000000;
     margin : 5px 10px;*/
     padding: 4px 0;
     position: relative;
@@ -83,29 +83,32 @@ body {
     vertical-align: middle;
 }
 
-#jce span.checkbox {
-    border : 0 none;
-    border-radius: none;
-    padding : 0;
-    text-shadow: none;
-    min-height : 20px;
+#jce .span1 input[type="checkbox"] {
+  margin: 0 0 4px -2px;
 }
 
-#jce span.checkbox.loader, #jce span.checkbox.checked.loader, #jce span.checkbox.checked.disabled.loader {
+#jce .item.alert {padding: 0;}
+
+#jce .item.loading .span1 input[type="checkbox"], #jce .item.error .span1 input[type="checkbox"], #jce .item.alert .span1 input[type="checkbox"] {
+    display: none;
+}
+
+#jce .item.loading .span1:after, #jce .item.alert .span1:after {
+  content: "";
+  display: block;
+  width: 20px;
+  height: 20px;
+  margin: 5px auto;
+}
+
+#jce .item.loading .span1:after {
     background: url("../../../../../components/com_jce/editor/libraries/img/load.gif") no-repeat center center;
-    cursor: default;
 }
-#jce span.checkbox.tick, #jce span.checkbox.checked.tick, #jce span.checkbox.checked.disabled.tick {
-    background: url("../../../../../components/com_jce/editor/libraries/img/icons.png") no-repeat 0 -760px;
-    cursor: default;
-}
-#jce span.checkbox.error, #jce span.checkbox.checked.error, #jce span.checkbox.checked.disabled.error {
-    background: url("../../../../../components/com_jce/editor/libraries/img/icons.png") no-repeat 0 -1060px;
-    cursor: default;
-}
-#jce span.checkbox.alert, #jce span.checkbox.checked.alert, #jce span.checkbox.checked.disabled.alert {
+#jce .item.alert .span1:after {
     background: url("../../../../../components/com_jce/editor/libraries/img/icons.png") no-repeat 0 -20px;
-    cursor: default;
+}
+#jce .item.alert-error .span1:after {
+    background: url("../../../../../components/com_jce/editor/libraries/img/icons.png") no-repeat 0 -1060px;
 }
 
 #jce div#updates-list {
@@ -154,7 +157,7 @@ body {
     margin: 5px 0 0 0;
     position: relative;
     border : 1px solid #eee;
-    height : 30px;
+    min-height : 30px;
     overflow : hidden;
 }
 

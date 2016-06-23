@@ -83,6 +83,7 @@ div#plugin_params h2 {
     cursor: pointer;
     display: inline-block;
     vertical-align:middle;
+    margin: 0 0 0 -25px;
 }
 
 html[dir="rtl"] .ui-jce .ui-tabs-vertical .ui-tabs-nav {
@@ -255,7 +256,7 @@ html[dir="rtl"] .ui-jce .ui-tabs-vertical .ui-tabs-panel {
 }
 
 #jce div.tabs-plugin-parameters input[type="checkbox"], #jce div.tabs-plugin-parameters .ui-checkbox {
-    margin : 0 5px;
+    margin : 10px;
     background-color: #fff;
 }
 

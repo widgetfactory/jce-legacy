@@ -24,6 +24,12 @@
 
 #jce div.blockformats ul li {
     cursor: move;
+    line-height: 30px;
+}
+
+#jce div.blockformats ul li span {
+  display: inline-block;
+  vertical-align: middle;
 }
 
 #jce div.blockformats ul li.blockformat-highlight {
