@@ -238,9 +238,9 @@
         <name>preview</name>
         <title>WF_PREVIEW_TITLE</title>
         <description>WF_PREVIEW_DESC</description>
-        <icon>preview</icon>
+        <icon></icon>
         <editable>1</editable>
-        <row>3</row>
+        <row>4</row>
         <core>1</core>
     </plugin>
     <plugin name="print">
@@ -265,7 +265,7 @@
         <name>source</name>
         <title>WF_SOURCE_TITLE</title>
         <description>WF_SOURCE_DESC</description>
-        <icon>source</icon>
+        <icon></icon>
         <editable>1</editable>
         <row>4</row>
         <core>1</core>
