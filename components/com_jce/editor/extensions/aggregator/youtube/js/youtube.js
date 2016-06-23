@@ -1,6 +1,6 @@
 /**
  * @package   	JCE
- * @copyright 	Copyright (c) 2009-2016 Ryan Demmer. All rights reserved.
+ * @copyright 	Copyright (c) 2009-2015 Ryan Demmer. All rights reserved.
  * @license   	GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  * JCE is free software. This version may have been modified pursuant
  * to the GNU General Public License, and as distributed it includes or
@@ -160,9 +160,12 @@ WFAggregator.add('youtube', {
     },
     setValues: function(data) {
         var self = this, id = '', src = data.src || data.data || '', query = {};
+
         if (!src) {
             return data;
         }
+
+        //$.JSON.request('oEmbedWrapper', ['youtube', encodeURIComponent(src)], function(o) {});
 
         // parse URI
         var u = this.parseURL(src);
@@ -253,6 +256,7 @@ WFAggregator.add('youtube', {
         }).replace(/\/\/youtube/i, '//www.youtube');
 
         data.src = src;
+
         return data;
     },
     getAttributes: function(src) {

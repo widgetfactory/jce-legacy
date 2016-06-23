@@ -1,6 +1,6 @@
 /**
  * @package   	JCE
- * @copyright 	Copyright (c) 2009-2016 Ryan Demmer. All rights reserved.
+ * @copyright 	Copyright (c) 2009-2015 Ryan Demmer. All rights reserved.
  * @license   	GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  * JCE is free software. This version may have been modified pursuant
  * to the GNU General Public License, and as distributed it includes or
@@ -21,7 +21,27 @@ WFAggregator.add('dailymotion', {
         start: 0
     },
     setup: function () {
-        $('#dailymotion_autoPlay').toggle(this.params.autoPlay);
+        $('#dailymotion_autoPlay').prop('checked', this.params.autoPlay);
+
+        $('#dailymotion_player_size').change(function() {
+            var v = parseInt(this.value);
+            $('#dailymotion_player_size_custom').toggleClass('ui-hidden', !!this.value);
+
+            if (v) {
+              $('#width').val(v);
+              $('#height').val(Math.round(v * 9/16));
+            }
+
+        }).change();
+
+        $('#dailymotion_player_size_custom').change(function() {
+            var v = parseInt(this.value);
+
+            if (v) {
+              $('#width').val(v);
+              $('#height').val(Math.round(v * 16/9));
+            }
+        });
     },
     getTitle: function () {
         return this.title || this.name;
@@ -61,6 +81,10 @@ WFAggregator.add('dailymotion', {
 
             if ($(this).is(':checkbox')) {
                 v = $(this).is(':checked') ? 1 : 0;
+            }
+
+            if (k.indexOf('player_size') !== -1) {
+                return;
             }
 
             if (self.props[k] === v || v === '') {
