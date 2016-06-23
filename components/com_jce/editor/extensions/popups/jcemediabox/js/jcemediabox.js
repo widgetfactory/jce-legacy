@@ -1,6 +1,6 @@
 /**
  * @package   	JCE
- * @copyright 	Copyright (c) 2009-2016 Ryan Demmer. All rights reserved.
+ * @copyright 	Copyright (c) 2009-2015 Ryan Demmer. All rights reserved.
  * @license   	GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  * JCE is free software. This version may have been modified pursuant
  * to the GNU General Public License, and as distributed it includes or
@@ -71,14 +71,6 @@ JCEMediaBox = {
      */
     trim: function (s) {
         return $.trim(s);
-    },
-    /**
-     * Set proportianl dimension calculations
-     * @param {String} w Width
-     * @param {String} h Height
-     */
-    setDimensions: function (w, h) {
-        $.Plugin.setDimensions(w, h, 'jcemediabox_popup_');
     }
 
 };
@@ -96,19 +88,6 @@ WFPopups.addPopup('jcemediabox', {
         var self = this;
         $('#jcemediabox_popup_icon').change(function () {
             self.setIcon();
-        });
-
-        $('span.add', '#jcemediabox_popup_params').click(function () {
-            // clone item
-            var $item = $('li:first', '#jcemediabox_popup_params').clone().appendTo('#jcemediabox_popup_params');
-            // empty input values
-            $('input', $item).val('');
-            // add remove button action
-            $('span.add', $item).hide();
-
-            $('span.remove', $item).css('display', 'inline-block').click(function () {
-                $item.remove();
-            });
         });
 
         $.each(this.params, function (k, v) {
@@ -185,7 +164,7 @@ WFPopups.addPopup('jcemediabox', {
                     pdfjs: 0
                 }
             };
-            
+
             var o = JCEMediaBox.Popup.getAddon(n.href);
 
             if (o && o.type) {
@@ -247,17 +226,17 @@ WFPopups.addPopup('jcemediabox', {
         }
 
         // parameter format eg: title[title]
-        if (/\w+\[[^\]]+\]/.test(s)) { 
+        if (/\w+\[[^\]]+\]/.test(s)) {
             var data = {};
-            
+
             tinymce.each(tinymce.explode(s, ';'), function(p) {
                 var args = p.match(/([\w-]+)\[(.*)\]$/);
-                
+
                 if (args && args.length === 3) {
                     data[args[1]] = args[2];
                 }
             });
-            
+
             return data;
 
             /*s = s.replace(/([\w-]+)\[([^\]]+)\](;)?/g, function (a, b, c, d) {
@@ -287,7 +266,7 @@ WFPopups.addPopup('jcemediabox', {
         var icon = /noicon/g.test(n.className);
         var hide = /noshow/g.test(n.className);
 
-        // Auto popup        
+        // Auto popup
         if (/(autopopup(.?|-single|-multiple))/.test(n.className)) {
             v = /autopopup-multiple/.test(n.className) ? 'autopopup-multiple' : 'autopopup-single';
 
@@ -321,7 +300,7 @@ WFPopups.addPopup('jcemediabox', {
             if (rv = relRX.exec(rel)) {
                 // pass on rel value
                 ra = rv[1];
-                // remove rel values	
+                // remove rel values
                 rel = rel.replace(relRX, '');
             }
 
@@ -339,11 +318,11 @@ WFPopups.addPopup('jcemediabox', {
         }
 
         var params = [];
-        
+
         if ($.isEmptyObject(data)) {
             $.each(ed.dom.getAttribs(n), function(i, at) {
                 var name = at.name;
-                
+
                 if (name && name.indexOf('data-mediabox-') !== -1) {
                     var k = name.replace('data-mediabox-', '');
                     data[k] = ed.dom.getAttrib(n, name);
@@ -361,9 +340,11 @@ WFPopups.addPopup('jcemediabox', {
 
         $.each(data, function (k, v) {
             if ($('#jcemediabox_popup_' + k).get(0) && v !== "") {
-                
+
                 if (k == 'title' || k == 'caption' || k == 'group') {
-                    v = decodeURIComponent(v);
+                    try {
+                      v = decodeURIComponent(v);
+                    } catch(e) {}
                 }
 
                 v = tinymce.DOM.decode(v);
@@ -382,25 +363,21 @@ WFPopups.addPopup('jcemediabox', {
         // process remaining data values as params
         $.each(data, function (k, v) {
             if (v !== '') {
-                
+
                 try {
                     v = decodeURIComponent(v);
                 } catch(e) {}
-                
-                if (x == 0) {
-                    $('li:first input.name', '#jcemediabox_popup_params').val(k);
-                    $('li:first input.value', '#jcemediabox_popup_params').val(v);
-                } else {
-                    // clone item
-                    var $item = $('li:first', '#jcemediabox_popup_params').clone().appendTo('#jcemediabox_popup_params');
-                    // set name value
-                    $('input.name', $item).val(k);
-                    // set value value
-                    $('input.value', $item).val(v);
-                    // add remove button action
-                    $('span.add', $item).hide();
-                    $('span.remove').css('display', 'inline-block');
+
+                var n = $('.ui-repeatable').eq(0);
+
+                if (x > 0) {
+                    $(n).clone(true).appendTo($(n).parent());
                 }
+
+                var elements = $('.ui-repeatable').eq(x).find('input, select');
+
+                $(elements).eq(0).val(k);
+                $(elements).eq(1).val(v);
             }
             x++;
         });
@@ -464,7 +441,7 @@ WFPopups.addPopup('jcemediabox', {
                     return;
                 }
             }
-            
+
             /*if (k == 'title' || k == 'caption' || k == 'group') {
                 v = encodeURIComponent(v);
             }*/
@@ -507,25 +484,28 @@ WFPopups.addPopup('jcemediabox', {
             rel = rel.replace(/([a-z0-9]+)(\[([^\]]+)\]);?/gi, '');
         }
 
-        // sett data to data-mediabox attributes
+        $('.ui-repeatable').each(function() {
+          var elements = $('input, select', this);
+          var key = $(elements).eq(0).val(), value = $(elements).eq(1).val();
+
+          data[key] = value;
+        });
+
+        // remove all data-mediabox- attributes
+  			var i, attrs = n.attributes;
+
+  			for (i = attrs.length - 1; i >= 0; i--) {
+  				var attrName = attrs[i].name;
+
+  				if (attrName && attrName.indexOf('data-mediabox-') !== -1) {
+            n.removeAttribute(attrName);
+  				}
+  			}
+
+        // set data to data-mediabox attributes
         $.each(data, function(k, v) {
             ed.dom.setAttrib(n, 'data-mediabox-' + k, ed.dom.encode(v));
         });
-
-        // map object properties to options array
-        /*var props = $.map(data, function (v, k) {
-            return k + '[' + v + ']';
-        });*/
-
-        /*if (this.params.attribute == 'data-mediabox') {
-            ed.dom.setAttrib(n, 'data-mediabox', props.join(';'));
-        } else {
-            rel = ' ' + props.join(';');
-
-            // remove HTML5 data attributes if any
-            ed.dom.setAttrib(n, 'data-json', '');
-            ed.dom.setAttrib(n, 'data-mediabox', '');
-        }*/
 
         // set data to rel attribute
         ed.dom.setAttrib(n, 'rel', $.trim(rel));

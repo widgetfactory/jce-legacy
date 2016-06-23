@@ -2,7 +2,7 @@
 
 /**
  * @package   	JCE
- * @copyright 	Copyright (c) 2009-2016 Ryan Demmer. All rights reserved.
+ * @copyright 	Copyright (c) 2009-2015 Ryan Demmer. All rights reserved.
  * @license   	GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  * JCE is free software. This version may have been modified pursuant
  * to the GNU General Public License, and as distributed it includes or
@@ -107,7 +107,7 @@ class WFLinkSearchExtension extends WFSearchExtension {
         $lists['searchphrase'] = JHtml::_('select.radiolist', $searchphrases, 'searchphrase', '', 'value', 'text', 'all');
 
 
-        $view = $this->getView(array('layout' => 'search'));
+        $view = $this->getView(array('name' => 'search', 'layout' => 'search'));
 
         $view->assign('searchareas', self::getAreas());
         $view->assign('lists', $lists);
@@ -220,11 +220,16 @@ class WFLinkSearchExtension extends WFSearchExtension {
             }
             $searchRegex .= ')#iu';
 
-            $row->text = preg_replace($searchRegex, '<span class="highlight">\0</span>', $row->text);
+            $row->text = preg_replace($searchRegex, '<mark>\0</mark>', $row->text);
 
             // remove base url
             if (strpos($row->href, JURI::base(true)) !== false) {
                 $row->href = substr_replace($row->href, '', 0, strlen(JURI::base(true)) + 1);
+            }
+
+            // remove the alias from a link
+            if ((int) $wf->getParam('search.link.remove_alias', 0) && strpos($row->href, ':') !== false) {
+              $row->href = preg_replace('#\:[\w-]+#ui', '', $row->href);
             }
 
             // convert to SEF
@@ -264,5 +269,4 @@ class WFLinkSearchExtension extends WFSearchExtension {
 
         return $anchors;
     }
-
 }
