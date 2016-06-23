@@ -2,7 +2,7 @@
 
 /**
  * @package   	JCE
- * @copyright 	Copyright (c) 2009-2016 Ryan Demmer. All rights reserved.
+ * @copyright 	Copyright (c) 2009-2015 Ryan Demmer. All rights reserved.
  * @license   	GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  * JCE is free software. This version may have been modified pursuant
  * to the GNU General Public License, and as distributed it includes or
@@ -20,7 +20,7 @@ defined('WF_EDITOR') or die('RESTRICTED');
 		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
 		<!-- [head] -->
 	</head>
-	<body lang="<?php echo $this->language;?>" id="jce" class="ui-jce" data-plugin="<?php echo $this->getName();?>">
+	<body lang="<?php echo $this->language;?>" id="jce" class="ui-jce ui-form ui-form-horizontal" data-plugin="<?php echo $this->getName();?>">
 		<!-- [body] -->
 	</body>
 </html>

@@ -2,7 +2,7 @@
 
 /**
  * @package   	JCE
- * @copyright 	Copyright (c) 2009-2016 Ryan Demmer. All rights reserved.
+ * @copyright 	Copyright (c) 2009-2015 Ryan Demmer. All rights reserved.
  * @license   	GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  * JCE is free software. This version may have been modified pursuant
  * to the GNU General Public License, and as distributed it includes or
@@ -11,23 +11,19 @@
  */
 
 defined( 'WF_EDITOR' ) or die('RESTRICTED');
+?>
+<div class="ui-position-cover ui-browser ui-browser-<?php echo $this->filebrowser->get('position');?>">
+<?php
+	// render tabs and panels
+	WFTabs::getInstance()->render();
 
-$tabs = WFTabs::getInstance();
-
-if ($this->browser->get('position') == 'top') {
-	$this->browser->render();
-}
-// render tabs and panels
-$tabs->render();
-
-if ($this->browser->get('position') == 'bottom') {
-	$this->browser->render();
-}
-
-?>	
-
-<div class="actionPanel">
-	<button class="button" id="refresh"><?php echo WFText::_('WF_LABEL_REFRESH')?></button>
-	<button class="button confirm" id="insert"><?php echo WFText::_('WF_LABEL_INSERT')?></button>
-	<button class="button cancel" id="cancel"><?php echo WFText::_('WF_LABEL_CANCEL')?></button>
+	if ($this->filebrowser->get('position') !== 'external') {
+		$this->filebrowser->render();
+	}
+?>
+</div>
+<div class="actionPanel ui-modal-footer">
+	<button class="ui-button ui-button-refresh" id="refresh"><?php echo WFText::_('WF_LABEL_REFRESH')?></button>
+	<button class="ui-button ui-button-confirm" id="insert"><?php echo WFText::_('WF_LABEL_INSERT')?></button>
+	<button class="ui-button ui-button-cancel" id="cancel"><?php echo WFText::_('WF_LABEL_CANCEL')?></button>
 </div>
