@@ -214,7 +214,7 @@
 
                     var input = DOM.add(content, 'input', {
                         type: 'text',
-                        id: ed.id + '_anchor'
+                        id: ed.id + '_input_anchor'
                     });
 
                     var c = new tinymce.ui.ButtonDialog(cm.prefix + 'anchor', {
@@ -226,6 +226,7 @@
                             title: ed.getLang('insert', 'Insert'),
                             id: 'insert',
                             click: function(e) {
+                                input = DOM.get(ed.id + '_input_anchor');
                                 return self._insertAnchor(input.value);
                             },
                             classes: 'mceDialogButtonPrimary',
@@ -245,6 +246,8 @@
                     }, ed);
 
                     c.onShowDialog.add(function() {
+                        input = DOM.get(ed.id + '_input_anchor');
+
                         input.value = '';
 
                         var label = ed.getLang('insert', 'Insert');
