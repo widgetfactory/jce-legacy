@@ -146,9 +146,16 @@ class WFModelEditor extends WFModelBase {
             $settings['width'] = $wf->getParam('editor.width');
             $settings['height'] = $wf->getParam('editor.height');
 
-            // 'Look & Feel'
-            list($settings['skin'], $settings['skin_variant']) = explode('.', $wf->getParam('editor.toolbar_theme', 'default', 'default'));
-            
+            // assign skin
+            $settings['skin'] = $wf->getParam('editor.toolbar_theme', 'default', 'default');
+
+            if ($settings['skin'] && strpos($settings['skin'], '.') !== false) {
+                $parts = explode('.', $settings['skin']);
+
+                $settings['skin'] = $parts[0];
+                $settings['skin_variant'] = $parts[1];
+            }
+
             // classic has been removed
             if ($settings['skin'] === "classic") {
               $settings['skin'] = "default";
@@ -186,7 +193,7 @@ class WFModelEditor extends WFModelBase {
 
         // set compression states
         if ((int) $debug === 0) {
-            $compress = array('javascript' => (int) $wf->getParam('editor.compress_javascript', 1), 'css' => (int) $wf->getParam('editor.compress_css', 1));
+            $compress = array('javascript' => (int) $wf->getParam('editor.compress_javascript', 0), 'css' => (int) $wf->getParam('editor.compress_css', 0));
         }
 
         // set compression
@@ -194,7 +201,7 @@ class WFModelEditor extends WFModelBase {
             $this->addStyleSheet(JURI::base(true) . '/index.php?option=com_jce&view=editor&layout=editor&task=pack&type=css&component_id=' . $component_id . '&' . $token . '=1');
         } else {
             // CSS
-            $this->addStyleSheet($this->getURL(true) . '/libraries/css/editor.css');
+            $this->addStyleSheet($this->getURL(true) . '/libraries/css/editor.min.css');
             // get plugin styles
             $this->getPluginStyles($settings);
         }
@@ -205,7 +212,7 @@ class WFModelEditor extends WFModelBase {
         } else {
             $this->addScript($this->getURL(true) . '/tiny_mce/tiny_mce.js');
             // Editor
-            $this->addScript($this->getURL(true) . '/libraries/js/editor.js');
+            $this->addScript($this->getURL(true) . '/libraries/js/editor.min.js');
 
             if (array_key_exists('language_load', $settings)) {
                 // language
@@ -224,75 +231,40 @@ class WFModelEditor extends WFModelBase {
 
         //Other - user specified
         $userParams = $wf->getParam('editor.custom_config', '');
-        $baseParams = array('mode', 'cleanup_callback', 'save_callback', 'file_browser_callback', 'urlconverter_callback', 'onpageload', 'oninit', 'editor_selector');
 
         if ($userParams) {
             $userParams = explode(';', $userParams);
             foreach ($userParams as $userParam) {
                 $keys = explode(':', $userParam);
-                if (!in_array(trim($keys[0]), $baseParams)) {
-                    $settings[trim($keys[0])] = count($keys) > 1 ? trim($keys[1]) : '';
-                }
+                $settings[trim($keys[0])] = count($keys) > 1 ? trim($keys[1]) : '';
             }
         }
 
         // check for language files
         $this->checkLanguages($settings);
 
-        $output = "";
-        $i = 1;
+        $settings['invalid_elements'] = array_values($settings['invalid_elements']);
 
-        foreach ($settings as $k => $v) {
-            // If the value is an array, implode!
-            if (is_array($v)) {
-                $v = ltrim(implode(',', $v), ',');
+        // process settings
+        array_walk($settings, function (&$value) {
+            if (is_array($value) && $value === array_values($value)) {
+                $value = implode(',', $value);
             }
-            // Value must be set
-            if ($v !== '') {
-                // objects or arrays or functions or regular expression
-                if (preg_match('/(\[[^\]*]\]|\{[^\}]*\}|function\([^\}]*\}|^#(.*)#$)/', $v)) {
-                    // replace hash delimiters with / for javascript regular expression
-                    $v = preg_replace('@^#(.*)#$@', '/$1/', $v);
-                }
-                // boolean
-                else if (is_bool($v) === true) {
-                    $v = $v ? 'true' : 'false';
-                }
-                // stringified booleans
-                else if ($v === "true" || $v === "false") {
-                    $v = $v === "true" ? 'true' : 'false';
-                }
-                // anything that is not solely an integer
-                else if (!is_numeric($v)) {
-                    if (strpos($v, '"') === 0) {
-                        $v = '"' . trim($v, '"') . '"';
-                    } else {
-                        $v = '"' . str_replace('"', '\"', $v) . '"';
-                    }
-                }
-
-                $output .= "\t\t\t" . $k . ": " . $v . "";
-                if ($i < count($settings)) {
-                    $output .= ",\n";
-                }
+            // convert json strings to objects to prevent encoding
+            if (is_string($value) && strpos($value, "{") === 0) {
+                $value = json_decode($value);
             }
-            // Must have 3 rows, even if 2 are blank!
-            if (preg_match('/theme_advanced_buttons([1-3])/', $k) && $v == '') {
-                $output .= "\t\t\t" . $k . ": \"\"";
-                if ($i < count($settings)) {
-                    $output .= ",\n";
-                }
-            }
-            $i++;
-        }
+            // convert stringified booleans to booleans
+            if ($value === "true") {$value = true;}
+            if ($value === "false") {$value = false;}
+        });
 
-        $tinymce = "{\n";
-        $tinymce .= preg_replace('/,?\n?$/', '', $output) . "
-        }";
+        // Remove empty values
+        $settings = array_filter($settings, function ($value) {return $value !== "";});
+        // encode as json string
+        $tinymce = json_encode($settings, JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES);
 
-        $init[] = $tinymce;
-
-        $this->addScriptDeclaration("\n\t\ttry{WFEditor.init(" . implode(',', $init) . ");}catch(e){console.debug(e);}\n");
+        $this->addScriptDeclaration("try{WFEditor.init(" . $tinymce . ");}catch(e){console.debug(e);}");
 
         if (is_object($this->profile)) {
             if ($wf->getParam('editor.callback_file')) {
@@ -632,6 +604,8 @@ class WFModelEditor extends WFModelBase {
                 $plugins = array_filter($plugins);
             }
         }
+
+        $plugins = array_values($plugins);
 
         return $plugins;
     }
