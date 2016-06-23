@@ -1,31 +1,14 @@
 /* CSS file for table dialog in the table plugin */
+/*[data-context="row"] .ui-switcher, [data-context="cell"] .ui-switcher {height: 74%;}
 
-.ui-tabs-panel {
-	height: 360px;
-	overflow-y: auto;
-}
+:root [data-context="row"] .ui-switcher, :root [data-context="cell"] .ui-switcher {
+	height: calc(100% - 125px);
+}*/
 
-.advfield {
-	width: 200px;
-}
+#merge_tab {}
+#merge_tab .ui-width-3-10 {width: 30% !important;}
+#merge_tab .ui-width-7-10 {width: 70% !important;}
 
-#action {
-	margin-bottom: 3px;
-}
+.ui-grid > * {margin-bottom: 5px;}
 
-#advanced_tab input[type="text"], #advanced_tab select {
-	width: 250px;
-}
-
-body.row .ui-tabs-panel, body.cell .ui-tabs-panel {
-	height: 330px;
-}
-#merge_tab.ui-tabs-panel {
-	height: 80px;
-}
-
-#width, #height {
-	width: 40px;
-}
-
-.table_context_update {float: left;}
+#numcols, #numrows {width: 50px;}

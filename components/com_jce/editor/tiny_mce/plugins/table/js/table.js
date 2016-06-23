@@ -38,7 +38,7 @@
     }
 
     function getStyle(elm, attrib, style) {
-        var val = tinyMCEPopup.dom.getAttrib(elm, attrib);
+        var val = tinyMCEPopup.editor.dom.getAttrib(elm, attrib);
 
         if (val != '')
             return '' + val;
@@ -46,7 +46,7 @@
         if (typeof (style) == 'undefined')
             style = attrib;
 
-        return tinyMCEPopup.dom.getStyle(elm, style);
+        return tinyMCEPopup.editor.dom.getStyle(elm, style);
     }
 
     function getCSSSize(size) {
@@ -70,6 +70,8 @@
         init: function () {
             var self = this, ed = tinyMCEPopup.editor, context = tinyMCEPopup.getWindowArg('context', 'table');
 
+            this.html5 = ed.settings.schema === "html5-strict";
+
             if (!this.settings.file_browser) {
                 $('input.browser').removeClass('browser');
             }
@@ -82,14 +84,12 @@
 
             TinyMCE_Utils.addClassesToList('classlist', "table_styles");
 
-            if(ed.settings.schema === "html5-strict") {
-              // hide HTML4 only attributes (tframe = frame)
-              $('#axis, #abbr, #scope, #summary, #char, #charoff, #tframe, #nowrap, #rules, #cellpadding, #cellspacing').each(function () {
-                  $(this).add('label[for="' + this.id + '"]').parent().hide();
-              });
-            }
+            if (this.html5) {
+                // hide HTML4 only attributes (tframe = frame)
+                $('#axis, #abbr, #scope, #summary, #char, #charoff, #tframe, #nowrap, #rules, #cellpadding, #cellspacing').each(function () {
+                    $(this).add('label[for="' + this.id + '"]').parent().hide();
+                });
 
-            if (ed.settings.schema !== "html4") {
                 function styles(v) {
                     if (typeof v === "undefined") {
                         return tinyMCEPopup.dom.parseStyle($('#style').val());
@@ -97,6 +97,37 @@
 
                     $('#style').val(tinyMCEPopup.dom.serializeStyle(v));
                 }
+
+                /*$('#cellspacing').change(function() {
+                 var st = styles();
+
+                 var v = this.value;
+
+                 if (v !== '') {
+                 if (v == 0) {
+                 st['border-collapse'] = 'collapse';
+                 } else {
+                 st['border-collapse'] = 'separate';
+                 st['border-spacing'] = self.cssSize(v);
+                 }
+                 }
+
+                 styles(st);
+                 });*/
+
+                /*$('#cellpadding').change(function() {
+                 var st = styles();
+
+                 var v = this.value;
+
+                 console.log(v);
+
+                 if (v !== '') {
+                 st['padding'] = self.cssSize(v);
+                 }
+
+                 styles(st);
+                 });*/
 
                 $('#valign').change(function () {
                     var st = styles();
@@ -109,16 +140,12 @@
                 $('#align').change(function () {
                     var st = styles(), v = $(this).val();
 
-                    if (context === "table") {
-                      if (v === "center") {
-                          st.float = "";
-                          st['margin-left'] = st['margin-right'] = "auto";
-                      } else {
-                          st['float'] = v;
-                          st['margin-left'] = st['margin-right'] = "";
-                      }
+                    if (v === "center") {
+                        st.float = "";
+                        st['margin-left'] = st['margin-right'] = "auto";
                     } else {
-                      st['text-align'] = v;
+                        st['float'] = v;
+                        st['margin-left'] = st['margin-right'] = "";
                     }
 
                     styles(st);
@@ -139,10 +166,6 @@
                     this.initRow();
                     break;
             }
-
-            $('body').addClass(this.settings.context);
-
-            tinyMCEPopup.resizeToInnerSize();
         },
         insert: function () {
             var context = tinyMCEPopup.getWindowArg('context', 'table');
@@ -292,7 +315,7 @@
 
             // Get table row data
             var rowtype = trElm.parentNode.nodeName.toLowerCase();
-            var align = dom.getAttrib(trElm, 'align') || getStyle(trElm, 'text-align');
+            var align = dom.getAttrib(trElm, 'align');
             var valign = dom.getAttrib(trElm, 'valign') || getStyle(trElm, 'vertical-align');
             var height = trimSize(getStyle(trElm, 'height', 'height'));
             var className = dom.getAttrib(trElm, 'class');
@@ -316,8 +339,8 @@
                 $('#lang').val(lang);
                 $('#style').val(dom.serializeStyle(st));
 
-                $('#align').val(align).change();
-                $('#valign').val(valign).change();
+                $('#align').val(align);
+                $('#valign').val(valign);
 
                 className = className.replace(/(?:^|\s)mceItem(\w+)(?!\S)/g, '');
 
@@ -344,7 +367,7 @@
 
             // Get table cell data
             var celltype = tdElm.nodeName.toLowerCase();
-            var align = dom.getAttrib(tdElm, 'align') || getStyle(tdElm, 'text-align');
+            var align = dom.getAttrib(tdElm, 'align');
             var valign = dom.getAttrib(tdElm, 'valign') || getStyle(tdElm, 'vertical-align');
             var width = trimSize(getStyle(tdElm, 'width', 'width'));
             var height = trimSize(getStyle(tdElm, 'height', 'height'));
@@ -367,8 +390,8 @@
                 $('#lang').val(lang);
                 $('#style').val(dom.serializeStyle(st));
 
-                $('#align').val(align).change();
-                $('#valign').val(valign).change();
+                $('#align').val(align);
+                $('#valign').val(valign);
 
                 className = className.replace(/(?:^|\s)mceItem(\w+)(?!\S)/g, '');
 
@@ -469,7 +492,7 @@
             if (action == "update") {
                 ed.execCommand('mceBeginUndoLevel');
 
-                if (ed.settings.schema === "html5-strict") {
+                if (!this.html5) {
                     dom.setAttrib(elm, 'cellPadding', cellpadding, true);
                     dom.setAttrib(elm, 'cellSpacing', cellspacing, true);
                 }
@@ -809,10 +832,6 @@
                 if (k == 'style') {
                     v = dom.serializeStyle(dom.parseStyle(v));
                 }
-                // only in HTML4 Doctype
-                if ((k == 'align' || k == 'valign') && ed.settings.schema !== "html4") {
-                  return;
-                }
 
                 if (k == 'classes') {
                     k = 'class';
@@ -977,9 +996,8 @@
                     k = 'class';
                 }
 
-                // only in HTML4 Doctype
-                if ((k == 'align' || k == 'valign') && ed.settings.schema !== "html4") {
-                  return;
+                if (self.html5 && k == 'valign') {
+                    return;
                 }
 
                 if (v === '') {
@@ -1090,7 +1108,7 @@
             $('#style').val(tinyMCEPopup.dom.serializeStyle(st));
         },
         changedColor: function () {
-            var dom = tinyMCEPopup.dom;
+            var dom = tinyMCEPopup.editor.dom;
 
             var st = dom.parseStyle($('#style').val());
 
@@ -1142,13 +1160,9 @@
             if (st['vertical-align']) {
                 $('#valign').val(st['vertical-align']);
             }
-
-            if (st['text-align']) {
-                $('#align').val(st['text-align']);
-            }
         },
         setClasses: function (v) {
-            $.Plugin.setClasses(v);
+            //$.Plugin.setClasses(v);
         },
         setActionforRowType: function () {
             var rowtype = $('#rowtype').val();
@@ -1161,7 +1175,8 @@
         }
 
     };
-    tinyMCEPopup.onInit.add(TableDialog.init, TableDialog);
-    window.TableDialog = TableDialog;
 
+    tinyMCEPopup.onInit.add(TableDialog.init, TableDialog);
+
+    window.TableDialog = TableDialog;
 })(tinymce, tinyMCEPopup, jQuery);
