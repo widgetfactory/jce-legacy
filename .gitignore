@@ -95,5 +95,7 @@ components/com_jce/editor/extensions/popups/widgetkit2_build.xml
 
 components/com_jce/editor/libraries/pro
 components/com_jce/editor/libraries/pro/
+components/com_jce/editor/libraries/_pro
+components/com_jce/editor/libraries/_pro/
 
 administrator/components/com_jce/build-branch.xml
