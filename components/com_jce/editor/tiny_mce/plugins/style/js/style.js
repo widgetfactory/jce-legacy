@@ -1,17 +1,18 @@
-
-
 (function (tinymce, tinyMCEPopup, $) {
 
-    function selectByValue(form_obj, field_name, value, add_custom, ignore_case) {
-        if (!form_obj || !form_obj.elements[field_name])
-            return;
-
-        if (!value)
+    function selectByValue(field_name, value, add_custom, ignore_case) {
+        if (!value) {
             value = "";
+        }
 
-        var sel = form_obj.elements[field_name];
+        var sel = document.getElementById(field_name);
+
+        if (!sel) {
+          return;
+        }
 
         var found = false;
+
         for (var i = 0; i < sel.options.length; i++) {
             var option = sel.options[i];
 
@@ -32,17 +33,8 @@
         return found;
     }
 
-    function getSelectValue(form_obj, field_name) {
-        var elm = form_obj.elements[field_name];
-
-        if (elm == null || elm.options == null || elm.selectedIndex === -1)
-            return "";
-
-        return elm.options[elm.selectedIndex].value;
-    }
-
-    function addSelectValue(form_obj, field_name, name, value) {
-        var s = form_obj.elements[field_name];
+    function addSelectValue(field_name, name, value) {
+        var s = document.getElementById(field_name);
         var o = new Option(name, value);
         s.options[s.options.length] = o;
     }
@@ -103,7 +95,7 @@
             var ed = tinyMCEPopup.editor, ce = document.getElementById('container'), h;
 
             if (!this.settings.file_browser) {
-                $('input.browser').removeClass('browser');
+                $('.browser').removeClass('browser');
             }
 
             this.existingStyles = this.aggregateStyles(tinyMCEPopup.getWindowArg('styles'));
@@ -114,82 +106,82 @@
 
             $('#toggle_insert_span').prop('checked', this.applyActionIsInsert);
 
-            this.fillSelect(0, 'text_font', 'style_font', ed.getParam('theme_advanced_fonts', this.defaults.Fonts), ';', true);
-            this.fillSelect(0, 'text_size', 'style_font_size', this.defaults.Sizes, ';', true);
-            this.fillSelect(0, 'text_size_measurement', 'style_font_size_measurement', this.defaults.Measurement, ';', true);
-            this.fillSelect(0, 'text_case', 'style_text_case', "capitalize;uppercase;lowercase", ';', true);
-            this.fillSelect(0, 'text_weight', 'style_font_weight', this.defaults.Weight, ';', true);
-            this.fillSelect(0, 'text_style', 'style_font_style', this.defaults.TextStyle, ';', true);
-            this.fillSelect(0, 'text_variant', 'style_font_variant', this.defaults.Variant, ';', true);
-            this.fillSelect(0, 'text_lineheight', 'style_font_line_height', this.defaults.LineHeight, ';', true);
-            this.fillSelect(0, 'text_lineheight_measurement', 'style_font_line_height_measurement', this.defaults.Measurement, ';', true);
+            this.fillSelect('text_font_list', 'style_font', ed.getParam('theme_advanced_fonts', this.defaults.Fonts), ';', true);
+            this.fillSelect('text_size_list', 'style_font_size', this.defaults.Sizes, ';', true);
+            this.fillSelect('text_size_measurement', 'style_font_size_measurement', this.defaults.Measurement, ';', true);
+            this.fillSelect('text_case', 'style_text_case', "capitalize;uppercase;lowercase", ';', true);
+            this.fillSelect('text_weight', 'style_font_weight', this.defaults.Weight, ';', true);
+            this.fillSelect('text_style', 'style_font_style', this.defaults.TextStyle, ';', true);
+            this.fillSelect('text_variant', 'style_font_variant', this.defaults.Variant, ';', true);
+            this.fillSelect('text_lineheight', 'style_font_line_height', this.defaults.LineHeight, ';', true);
+            this.fillSelect('text_lineheight_measurement', 'style_font_line_height_measurement', this.defaults.Measurement, ';', true);
 
-            this.fillSelect(0, 'background_attachment', 'style_background_attachment', this.defaults.Attachment, ';', true);
-            this.fillSelect(0, 'background_repeat', 'style_background_repeat', this.defaults.Repeat, ';', true);
+            this.fillSelect('background_attachment', 'style_background_attachment', this.defaults.Attachment, ';', true);
+            this.fillSelect('background_repeat', 'style_background_repeat', this.defaults.Repeat, ';', true);
 
-            this.fillSelect(0, 'background_hpos_measurement', 'style_background_hpos_measurement', this.defaults.Measurement, ';', true);
-            this.fillSelect(0, 'background_vpos_measurement', 'style_background_vpos_measurement', this.defaults.Measurement, ';', true);
+            this.fillSelect('background_hpos_measurement', 'style_background_hpos_measurement', this.defaults.Measurement, ';', true);
+            this.fillSelect('background_vpos_measurement', 'style_background_vpos_measurement', this.defaults.Measurement, ';', true);
 
-            this.fillSelect(0, 'background_hpos', 'style_background_hpos', this.defaults.PosH, ';', true);
-            this.fillSelect(0, 'background_vpos', 'style_background_vpos', this.defaults.PosV, ';', true);
+            this.fillSelect('background_hpos', 'style_background_hpos', this.defaults.PosH, ';', true);
+            this.fillSelect('background_vpos', 'style_background_vpos', this.defaults.PosV, ';', true);
 
-            this.fillSelect(0, 'block_wordspacing', 'style_wordspacing', 'normal', ';', true);
-            this.fillSelect(0, 'block_wordspacing_measurement', 'style_wordspacing_measurement', this.defaults.SpacingMeasurement, ';', true);
-            this.fillSelect(0, 'block_letterspacing', 'style_letterspacing', 'normal', ';', true);
-            this.fillSelect(0, 'block_letterspacing_measurement', 'style_letterspacing_measurement', this.defaults.SpacingMeasurement, ';', true);
-            this.fillSelect(0, 'block_vertical_alignment', 'style_vertical_alignment', this.defaults.VAlign, ';', true);
-            this.fillSelect(0, 'block_text_align', 'style_text_align', "left;right;center;justify", ';', true);
-            this.fillSelect(0, 'block_whitespace', 'style_whitespace', "normal;pre;nowrap", ';', true);
-            this.fillSelect(0, 'block_display', 'style_display', this.defaults.Display, ';', true);
-            this.fillSelect(0, 'block_text_indent_measurement', 'style_text_indent_measurement', this.defaults.IndentMeasurement, ';', true);
+            this.fillSelect('block_wordspacing', 'style_wordspacing', 'normal', ';', true);
+            this.fillSelect('block_wordspacing_measurement', 'style_wordspacing_measurement', this.defaults.SpacingMeasurement, ';', true);
+            this.fillSelect('block_letterspacing', 'style_letterspacing', 'normal', ';', true);
+            this.fillSelect('block_letterspacing_measurement', 'style_letterspacing_measurement', this.defaults.SpacingMeasurement, ';', true);
+            this.fillSelect('block_vertical_alignment', 'style_vertical_alignment', this.defaults.VAlign, ';', true);
+            this.fillSelect('block_text_align', 'style_text_align', "left;right;center;justify", ';', true);
+            this.fillSelect('block_whitespace', 'style_whitespace', "normal;pre;nowrap", ';', true);
+            this.fillSelect('block_display', 'style_display', this.defaults.Display, ';', true);
+            this.fillSelect('block_text_indent_measurement', 'style_text_indent_measurement', this.defaults.IndentMeasurement, ';', true);
 
-            this.fillSelect(0, 'box_width_measurement', 'style_box_width_measurement', this.defaults.Measurement, ';', true);
-            this.fillSelect(0, 'box_height_measurement', 'style_box_height_measurement', this.defaults.Measurement, ';', true);
-            this.fillSelect(0, 'box_float', 'style_float', 'left;right;none', ';', true);
-            this.fillSelect(0, 'box_clear', 'style_clear', 'left;right;both;none', ';', true);
-            this.fillSelect(0, 'box_padding_left_measurement', 'style_padding_left_measurement', this.defaults.Measurement, ';', true);
-            this.fillSelect(0, 'box_padding_top_measurement', 'style_padding_top_measurement', this.defaults.Measurement, ';', true);
-            this.fillSelect(0, 'box_padding_bottom_measurement', 'style_padding_bottom_measurement', this.defaults.Measurement, ';', true);
-            this.fillSelect(0, 'box_padding_right_measurement', 'style_padding_right_measurement', this.defaults.Measurement, ';', true);
-            this.fillSelect(0, 'box_margin_left_measurement', 'style_margin_left_measurement', this.defaults.Measurement, ';', true);
-            this.fillSelect(0, 'box_margin_top_measurement', 'style_margin_top_measurement', this.defaults.Measurement, ';', true);
-            this.fillSelect(0, 'box_margin_bottom_measurement', 'style_margin_bottom_measurement', this.defaults.Measurement, ';', true);
-            this.fillSelect(0, 'box_margin_right_measurement', 'style_margin_right_measurement', this.defaults.Measurement, ';', true);
+            this.fillSelect('box_width_measurement', 'style_box_width_measurement', this.defaults.Measurement, ';', true);
+            this.fillSelect('box_height_measurement', 'style_box_height_measurement', this.defaults.Measurement, ';', true);
+            this.fillSelect('box_float', 'style_float', 'left;right;none', ';', true);
+            this.fillSelect('box_clear', 'style_clear', 'left;right;both;none', ';', true);
+            this.fillSelect('box_padding_left_measurement', 'style_padding_left_measurement', this.defaults.Measurement, ';', true);
+            this.fillSelect('box_padding_top_measurement', 'style_padding_top_measurement', this.defaults.Measurement, ';', true);
+            this.fillSelect('box_padding_bottom_measurement', 'style_padding_bottom_measurement', this.defaults.Measurement, ';', true);
+            this.fillSelect('box_padding_right_measurement', 'style_padding_right_measurement', this.defaults.Measurement, ';', true);
+            this.fillSelect('box_margin_left_measurement', 'style_margin_left_measurement', this.defaults.Measurement, ';', true);
+            this.fillSelect('box_margin_top_measurement', 'style_margin_top_measurement', this.defaults.Measurement, ';', true);
+            this.fillSelect('box_margin_bottom_measurement', 'style_margin_bottom_measurement', this.defaults.Measurement, ';', true);
+            this.fillSelect('box_margin_right_measurement', 'style_margin_right_measurement', this.defaults.Measurement, ';', true);
 
-            this.fillSelect(0, 'border_style_top', 'style_border_style_top', this.defaults.BorderStyle, ';', true);
-            this.fillSelect(0, 'border_style_right', 'style_border_style_right', this.defaults.BorderStyle, ';', true);
-            this.fillSelect(0, 'border_style_bottom', 'style_border_style_bottom', this.defaults.BorderStyle, ';', true);
-            this.fillSelect(0, 'border_style_left', 'style_border_style_left', this.defaults.BorderStyle, ';', true);
+            this.fillSelect('border_style_top', 'style_border_style_top', this.defaults.BorderStyle, ';', true);
+            this.fillSelect('border_style_right', 'style_border_style_right', this.defaults.BorderStyle, ';', true);
+            this.fillSelect('border_style_bottom', 'style_border_style_bottom', this.defaults.BorderStyle, ';', true);
+            this.fillSelect('border_style_left', 'style_border_style_left', this.defaults.BorderStyle, ';', true);
 
-            this.fillSelect(0, 'border_width_top', 'style_border_width_top', this.defaults.BorderWidth, ';', true);
-            this.fillSelect(0, 'border_width_right', 'style_border_width_right', this.defaults.BorderWidth, ';', true);
-            this.fillSelect(0, 'border_width_bottom', 'style_border_width_bottom', this.defaults.BorderWidth, ';', true);
-            this.fillSelect(0, 'border_width_left', 'style_border_width_left', this.defaults.BorderWidth, ';', true);
+            this.fillSelect('border_width_top', 'style_border_width_top', this.defaults.BorderWidth, ';', true);
+            this.fillSelect('border_width_right', 'style_border_width_right', this.defaults.BorderWidth, ';', true);
+            this.fillSelect('border_width_bottom', 'style_border_width_bottom', this.defaults.BorderWidth, ';', true);
+            this.fillSelect('border_width_left', 'style_border_width_left', this.defaults.BorderWidth, ';', true);
 
-            this.fillSelect(0, 'border_width_top_measurement', 'style_border_width_top_measurement', this.defaults.Measurement, ';', true);
-            this.fillSelect(0, 'border_width_right_measurement', 'style_border_width_right_measurement', this.defaults.Measurement, ';', true);
-            this.fillSelect(0, 'border_width_bottom_measurement', 'style_border_width_bottom_measurement', this.defaults.Measurement, ';', true);
-            this.fillSelect(0, 'border_width_left_measurement', 'style_border_width_left_measurement', this.defaults.Measurement, ';', true);
+            this.fillSelect('border_width_top_measurement', 'style_border_width_top_measurement', this.defaults.Measurement, ';', true);
+            this.fillSelect('border_width_right_measurement', 'style_border_width_right_measurement', this.defaults.Measurement, ';', true);
+            this.fillSelect('border_width_bottom_measurement', 'style_border_width_bottom_measurement', this.defaults.Measurement, ';', true);
+            this.fillSelect('border_width_left_measurement', 'style_border_width_left_measurement', this.defaults.Measurement, ';', true);
 
-            this.fillSelect(0, 'list_type', 'style_list_type', this.defaults.ListType, ';', true);
-            this.fillSelect(0, 'list_position', 'style_list_position', "inside;outside", ';', true);
+            this.fillSelect('list_type', 'style_list_type', this.defaults.ListType, ';', true);
+            this.fillSelect('list_position', 'style_list_position', "inside;outside", ';', true);
 
-            this.fillSelect(0, 'positioning_type', 'style_positioning_type', "absolute;relative;static", ';', true);
-            this.fillSelect(0, 'positioning_visibility', 'style_positioning_visibility', "inherit;visible;hidden", ';', true);
+            this.fillSelect('positioning_type', 'style_positioning_type', "absolute;relative;static", ';', true);
+            this.fillSelect('positioning_visibility', 'style_positioning_visibility', "inherit;visible;hidden", ';', true);
 
-            this.fillSelect(0, 'positioning_width_measurement', 'style_positioning_width_measurement', this.defaults.Measurement, ';', true);
-            this.fillSelect(0, 'positioning_height_measurement', 'style_positioning_height_measurement', this.defaults.Measurement, ';', true);
-            this.fillSelect(0, 'positioning_overflow', 'style_positioning_overflow', "visible;hidden;scroll;auto", ';', true);
+            this.fillSelect('positioning_width_measurement', 'style_positioning_width_measurement', this.defaults.Measurement, ';', true);
+            this.fillSelect('positioning_height_measurement', 'style_positioning_height_measurement', this.defaults.Measurement, ';', true);
+            this.fillSelect('positioning_overflow', 'style_positioning_overflow', "visible;hidden;scroll;auto", ';', true);
 
-            this.fillSelect(0, 'positioning_placement_top_measurement', 'style_positioning_placement_top_measurement', this.defaults.Measurement, ';', true);
-            this.fillSelect(0, 'positioning_placement_right_measurement', 'style_positioning_placement_right_measurement', this.defaults.Measurement, ';', true);
-            this.fillSelect(0, 'positioning_placement_bottom_measurement', 'style_positioning_placement_bottom_measurement', this.defaults.Measurement, ';', true);
-            this.fillSelect(0, 'positioning_placement_left_measurement', 'style_positioning_placement_left_measurement', this.defaults.Measurement, ';', true);
+            this.fillSelect('positioning_placement_top_measurement', 'style_positioning_placement_top_measurement', this.defaults.Measurement, ';', true);
+            this.fillSelect('positioning_placement_right_measurement', 'style_positioning_placement_right_measurement', this.defaults.Measurement, ';', true);
+            this.fillSelect('positioning_placement_bottom_measurement', 'style_positioning_placement_bottom_measurement', this.defaults.Measurement, ';', true);
+            this.fillSelect('positioning_placement_left_measurement', 'style_positioning_placement_left_measurement', this.defaults.Measurement, ';', true);
 
-            this.fillSelect(0, 'positioning_clip_top_measurement', 'style_positioning_clip_top_measurement', this.defaults.Measurement, ';', true);
-            this.fillSelect(0, 'positioning_clip_right_measurement', 'style_positioning_clip_right_measurement', this.defaults.Measurement, ';', true);
-            this.fillSelect(0, 'positioning_clip_bottom_measurement', 'style_positioning_clip_bottom_measurement', this.defaults.Measurement, ';', true);
-            this.fillSelect(0, 'positioning_clip_left_measurement', 'style_positioning_clip_left_measurement', this.defaults.Measurement, ';', true);
+            this.fillSelect('positioning_clip_top_measurement', 'style_positioning_clip_top_measurement', this.defaults.Measurement, ';', true);
+            this.fillSelect('positioning_clip_right_measurement', 'style_positioning_clip_right_measurement', this.defaults.Measurement, ';', true);
+            this.fillSelect('positioning_clip_bottom_measurement', 'style_positioning_clip_bottom_measurement', this.defaults.Measurement, ';', true);
+            this.fillSelect('positioning_clip_left_measurement', 'style_positioning_clip_left_measurement', this.defaults.Measurement, ';', true);
 
             this.setupFormData();
             this.showDisabledControls();
@@ -197,122 +189,124 @@
             $.Plugin.init();
         },
         setupFormData: function () {
-            var ed = tinyMCEPopup.editor, ce = document.getElementById('container'), f = document.forms[0], s, b, i;
+            var ed = tinyMCEPopup.editor, ce = document.getElementById('container'), s, b, i;
 
             // Setup text fields
 
-            selectByValue(f, 'text_font', ce.style.fontFamily, true, true);
-            selectByValue(f, 'text_size', this.getNum(ce.style.fontSize), true, true);
-            selectByValue(f, 'text_size_measurement', this.getMeasurement(ce.style.fontSize));
-            selectByValue(f, 'text_weight', ce.style.fontWeight, true, true);
-            selectByValue(f, 'text_style', ce.style.fontStyle, true, true);
-            selectByValue(f, 'text_lineheight', this.getNum(ce.style.lineHeight), true, true);
-            selectByValue(f, 'text_lineheight_measurement', this.getMeasurement(ce.style.lineHeight));
-            selectByValue(f, 'text_case', ce.style.textTransform, true, true);
-            selectByValue(f, 'text_variant', ce.style.fontVariant, true, true);
-            f.text_color.value = tinyMCEPopup.editor.dom.toHex(ce.style.color);
+            selectByValue('text_font_list', ce.style.fontFamily, true, true);
+            selectByValue('text_size_list', this.getNum(ce.style.fontSize), true, true);
+            selectByValue('text_size_measurement', this.getMeasurement(ce.style.fontSize));
+            selectByValue('text_weight', ce.style.fontWeight, true, true);
+            selectByValue('text_style', ce.style.fontStyle, true, true);
+            selectByValue('text_lineheight', this.getNum(ce.style.lineHeight), true, true);
+            selectByValue('text_lineheight_measurement', this.getMeasurement(ce.style.lineHeight));
+            selectByValue('text_case', ce.style.textTransform, true, true);
+            selectByValue('text_variant', ce.style.fontVariant, true, true);
+            $('#text_color').val(ed.dom.toHex(ce.style.color));
 
-            f.text_underline.checked = this.inStr(ce.style.textDecoration, 'underline');
-            f.text_overline.checked = this.inStr(ce.style.textDecoration, 'overline');
-            f.text_linethrough.checked = this.inStr(ce.style.textDecoration, 'line-through');
-            f.text_blink.checked = this.inStr(ce.style.textDecoration, 'blink');
+            $('#text_underline').prop('checked', this.inStr(ce.style.textDecoration, 'underline'));
+            $('#text_overline').prop('checked', this.inStr(ce.style.textDecoration, 'overline'));
+            $('#text_linethrough').prop('checked', this.inStr(ce.style.textDecoration, 'line-through'));
+            $('#text_blink').prop('checked', this.inStr(ce.style.textDecoration, 'blink'));
 
-            f.text_none.checked = this.inStr(ce.style.textDecoration, 'none');
+            $('#text_none').prop('checked', this.inStr(ce.style.textDecoration, 'none'));
 
             this.updateTextDecorations();
 
             // Setup background fields
 
-            f.background_color.value = tinyMCEPopup.editor.dom.toHex(ce.style.backgroundColor);
-            f.background_image.value = ce.style.backgroundImage.replace(new RegExp("url\\('?([^']*)'?\\)", 'gi'), function (a, b) {
+            $('#background_color').val(ed.dom.toHex(ce.style.backgroundColor));
+            $('#background_image').val(ce.style.backgroundImage.replace(new RegExp("url\\('?([^']*)'?\\)", 'gi'), function (a, b) {
                 return ed.convertURL(b);
-            });
-            selectByValue(f, 'background_repeat', ce.style.backgroundRepeat, true, true);
-            selectByValue(f, 'background_attachment', ce.style.backgroundAttachment, true, true);
-            selectByValue(f, 'background_hpos', this.getNum(this.getVal(ce.style.backgroundPosition, 0)), true, true);
-            selectByValue(f, 'background_hpos_measurement', this.getMeasurement(this.getVal(ce.style.backgroundPosition, 0)));
-            selectByValue(f, 'background_vpos', this.getNum(this.getVal(ce.style.backgroundPosition, 1)), true, true);
-            selectByValue(f, 'background_vpos_measurement', this.getMeasurement(this.getVal(ce.style.backgroundPosition, 1)));
+            }));
+            selectByValue('background_repeat', ce.style.backgroundRepeat, true, true);
+            selectByValue('background_attachment', ce.style.backgroundAttachment, true, true);
+            selectByValue('background_hpos', this.getNum(this.getVal(ce.style.backgroundPosition, 0)), true, true);
+            selectByValue('background_hpos_measurement', this.getMeasurement(this.getVal(ce.style.backgroundPosition, 0)));
+            selectByValue('background_vpos', this.getNum(this.getVal(ce.style.backgroundPosition, 1)), true, true);
+            selectByValue('background_vpos_measurement', this.getMeasurement(this.getVal(ce.style.backgroundPosition, 1)));
 
             // Setup block fields
 
-            selectByValue(f, 'block_wordspacing', this.getNum(ce.style.wordSpacing), true, true);
-            selectByValue(f, 'block_wordspacing_measurement', this.getMeasurement(ce.style.wordSpacing));
-            selectByValue(f, 'block_letterspacing', this.getNum(ce.style.letterSpacing), true, true);
-            selectByValue(f, 'block_letterspacing_measurement', this.getMeasurement(ce.style.letterSpacing));
-            selectByValue(f, 'block_vertical_alignment', ce.style.verticalAlign, true, true);
-            selectByValue(f, 'block_text_align', ce.style.textAlign, true, true);
-            f.block_text_indent.value = this.getNum(ce.style.textIndent);
-            selectByValue(f, 'block_text_indent_measurement', this.getMeasurement(ce.style.textIndent));
-            selectByValue(f, 'block_whitespace', ce.style.whiteSpace, true, true);
-            selectByValue(f, 'block_display', ce.style.display, true, true);
+            selectByValue('block_wordspacing', this.getNum(ce.style.wordSpacing), true, true);
+            selectByValue('block_wordspacing_measurement', this.getMeasurement(ce.style.wordSpacing));
+            selectByValue('block_letterspacing', this.getNum(ce.style.letterSpacing), true, true);
+            selectByValue('block_letterspacing_measurement', this.getMeasurement(ce.style.letterSpacing));
+            selectByValue('block_vertical_alignment', ce.style.verticalAlign, true, true);
+            selectByValue('block_text_align', ce.style.textAlign, true, true);
+            $('#block_text_indent').val(this.getNum(ce.style.textIndent));
+            selectByValue('block_text_indent_measurement', this.getMeasurement(ce.style.textIndent));
+            selectByValue('block_whitespace', ce.style.whiteSpace, true, true);
+            selectByValue('block_display', ce.style.display, true, true);
 
             // Setup box fields
 
-            f.box_width.value = this.getNum(ce.style.width);
-            selectByValue(f, 'box_width_measurement', this.getMeasurement(ce.style.width));
+            $('#box_width').val(this.getNum(ce.style.width));
+            selectByValue('box_width_measurement', this.getMeasurement(ce.style.width));
 
-            f.box_height.value = this.getNum(ce.style.height);
-            selectByValue(f, 'box_height_measurement', this.getMeasurement(ce.style.height));
+            $('#box_height').val(this.getNum(ce.style.height));
+            selectByValue('box_height_measurement', this.getMeasurement(ce.style.height));
 
-            if (tinymce.isGecko)
-                selectByValue(f, 'box_float', ce.style.cssFloat, true, true);
-            else
-                selectByValue(f, 'box_float', ce.style.styleFloat, true, true);
+            selectByValue('box_float', ce.style.cssFloat || ce.style.styleFloat, true, true);
 
-            selectByValue(f, 'box_clear', ce.style.clear, true, true);
+            selectByValue('box_clear', ce.style.clear, true, true);
 
-            this.setupBox(f, ce, 'box_padding', 'padding', '');
-            this.setupBox(f, ce, 'box_margin', 'margin', '');
+            this.setupBox(ce, 'box_padding', 'padding', '');
+            this.setupBox(ce, 'box_margin', 'margin', '');
 
             // Setup border fields
 
-            this.setupBox(f, ce, 'border_style', 'border', 'Style');
-            this.setupBox(f, ce, 'border_width', 'border', 'Width');
-            this.setupBox(f, ce, 'border_color', 'border', 'Color');
+            this.setupBox(ce, 'border_style', 'border', 'Style');
+            this.setupBox(ce, 'border_width', 'border', 'Width');
+            this.setupBox(ce, 'border_color', 'border', 'Color');
 
-            f.elements.border_color_top.value = tinyMCEPopup.editor.dom.toHex(f.elements.border_color_top.value);
-            f.elements.border_color_right.value = tinyMCEPopup.editor.dom.toHex(f.elements.border_color_right.value);
-            f.elements.border_color_bottom.value = tinyMCEPopup.editor.dom.toHex(f.elements.border_color_bottom.value);
-            f.elements.border_color_left.value = tinyMCEPopup.editor.dom.toHex(f.elements.border_color_left.value);
+            $.each(['top', 'right', 'bottom', 'left'], function(i, k) {
+              $('#border_color_' + k).val(function() {
+                return ed.dom.toHex(this.value);
+              });
+            });
 
             // Setup list fields
 
-            selectByValue(f, 'list_type', ce.style.listStyleType, true, true);
-            selectByValue(f, 'list_position', ce.style.listStylePosition, true, true);
-            f.list_bullet_image.value = ce.style.listStyleImage.replace(new RegExp("url\\('?([^']*)'?\\)", 'gi'), "$1");
+            selectByValue('list_type', ce.style.listStyleType, true, true);
+            selectByValue('list_position', ce.style.listStylePosition, true, true);
+            $('#list_bullet_image').val(ce.style.listStyleImage.replace(new RegExp("url\\('?([^']*)'?\\)", 'gi'), "$1"));
 
             // Setup box fields
 
-            selectByValue(f, 'positioning_type', ce.style.position, true, true);
-            selectByValue(f, 'positioning_visibility', ce.style.visibility, true, true);
-            selectByValue(f, 'positioning_overflow', ce.style.overflow, true, true);
-            f.positioning_zindex.value = ce.style.zIndex ? ce.style.zIndex : "";
+            selectByValue('positioning_type', ce.style.position, true, true);
+            selectByValue('positioning_visibility', ce.style.visibility, true, true);
+            selectByValue('positioning_overflow', ce.style.overflow, true, true);
+            $('#positioning_zindex').val(ce.style.zIndex ? ce.style.zIndex : "");
 
-            f.positioning_width.value = this.getNum(ce.style.width);
-            selectByValue(f, 'positioning_width_measurement', this.getMeasurement(ce.style.width));
+            $('#positioning_width').val(this.getNum(ce.style.width));
+            selectByValue('positioning_width_measurement', this.getMeasurement(ce.style.width));
 
-            f.positioning_height.value = this.getNum(ce.style.height);
-            selectByValue(f, 'positioning_height_measurement', this.getMeasurement(ce.style.height));
+            $('#positioning_height').val(this.getNum(ce.style.height));
+            selectByValue('positioning_height_measurement', this.getMeasurement(ce.style.height));
 
-            this.setupBox(f, ce, 'positioning_placement', '', '', ['top', 'right', 'bottom', 'left']);
+            this.setupBox(ce, 'positioning_placement', '', '', ['top', 'right', 'bottom', 'left']);
 
             s = ce.style.clip.replace(new RegExp("rect\\('?([^']*)'?\\)", 'gi'), "$1");
             s = s.replace(/,/g, ' ');
 
             if (!this.hasEqualValues([this.getVal(s, 0), this.getVal(s, 1), this.getVal(s, 2), this.getVal(s, 3)])) {
-                f.positioning_clip_top.value = this.getNum(this.getVal(s, 0));
-                selectByValue(f, 'positioning_clip_top_measurement', this.getMeasurement(this.getVal(s, 0)));
-                f.positioning_clip_right.value = this.getNum(this.getVal(s, 1));
-                selectByValue(f, 'positioning_clip_right_measurement', this.getMeasurement(this.getVal(s, 1)));
-                f.positioning_clip_bottom.value = this.getNum(this.getVal(s, 2));
-                selectByValue(f, 'positioning_clip_bottom_measurement', this.getMeasurement(this.getVal(s, 2)));
-                f.positioning_clip_left.value = this.getNum(this.getVal(s, 3));
-                selectByValue(f, 'positioning_clip_left_measurement', this.getMeasurement(this.getVal(s, 3)));
+                $('#positioning_clip_top').val(this.getNum(this.getVal(s, 0)));
+                selectByValue('positioning_clip_top_measurement', this.getMeasurement(this.getVal(s, 0)));
+                $('#positioning_clip_right').val(this.getNum(this.getVal(s, 1)));
+                selectByValue('positioning_clip_right_measurement', this.getMeasurement(this.getVal(s, 1)));
+                $('#positioning_clip_bottom').val(this.getNum(this.getVal(s, 2)));
+                selectByValue('positioning_clip_bottom_measurement', this.getMeasurement(this.getVal(s, 2)));
+                $('#positioning_clip_left').val(this.getNum(this.getVal(s, 3)));
+                selectByValue('positioning_clip_left_measurement', this.getMeasurement(this.getVal(s, 3)));
             } else {
-                f.positioning_clip_top.value = this.getNum(this.getVal(s, 0));
-                selectByValue(f, 'positioning_clip_top_measurement', this.getMeasurement(this.getVal(s, 0)));
-                f.positioning_clip_right.value = f.positioning_clip_bottom.value = f.positioning_clip_left.value;
+                $('#positioning_clip_top').val(this.getNum(this.getVal(s, 0)));
+                selectByValue('positioning_clip_top_measurement', this.getMeasurement(this.getVal(s, 0)));
+
+                var v = $('#positioning_clip_left').val();
+
+                $('#positioning_clip_right').val(v);
+                $('#positioning_clip_bottom').val(v);
             }
 
             //	this.setupBox(f, ce, '', 'border', 'Color');
@@ -337,58 +331,66 @@
 
             return "";
         },
-        setValue: function (f, n, v) {
-            if (f.elements[n].type == "text")
-                f.elements[n].value = v;
-            else
-                selectByValue(f, n, v, true, true);
+        setValue: function (n, v) {
+            var el = document.getElementById(n);
+
+            if (el.type == "select") {
+                selectByValue(n, v, true, true);
+            } else {
+                el.value = v;
+            }
         },
-        setupBox: function (f, ce, fp, pr, sf, b) {
+        setProp: function(n, p, v) {
+            var el = document.getElementById(n);
+            $(el).prop(p, v);
+        },
+        setupBox: function (ce, fp, pr, sf, b) {
             if (typeof (b) == "undefined")
                 b = ['Top', 'Right', 'Bottom', 'Left'];
 
             if (this.isSame(ce, pr, sf, b)) {
-                f.elements[fp + "_same"].checked = true;
+                this.setProp(fp + "_same", "checked", true);
 
-                this.setValue(f, fp + "_top", this.getNum(ce.style[pr + b[0] + sf]));
-                f.elements[fp + "_top"].disabled = false;
+                this.setValue(fp + "_top", this.getNum(ce.style[pr + b[0] + sf]));
+                this.setProp(fp + "_top", "disabled", false);
 
-                f.elements[fp + "_right"].value = "";
-                f.elements[fp + "_right"].disabled = true;
-                f.elements[fp + "_bottom"].value = "";
-                f.elements[fp + "_bottom"].disabled = true;
-                f.elements[fp + "_left"].value = "";
-                f.elements[fp + "_left"].disabled = true;
+                this.setValue(fp + "_right", "");
 
-                if (f.elements[fp + "_top_measurement"]) {
-                    selectByValue(f, fp + '_top_measurement', this.getMeasurement(ce.style[pr + b[0] + sf]));
-                    f.elements[fp + "_left_measurement"].disabled = true;
-                    f.elements[fp + "_bottom_measurement"].disabled = true;
-                    f.elements[fp + "_right_measurement"].disabled = true;
+                this.setProp(fp + "_right", "disabled", true);
+                this.setValue(fp + "_bottom", "");
+                this.setProp(fp + "_bottom", "disabled", true);
+                this.setValue(fp + "_left", "");
+                this.setProp(fp + "_left", "disabled", true);
+
+                if ($('#' + fp + "_top_measurement").get(0)) {
+                    selectByValue(fp + '_top_measurement', this.getMeasurement(ce.style[pr + b[0] + sf]));
+                    this.setProp(fp + "_left_measurement", "disabled", true);
+                    this.setProp(fp + "_bottom_measurement", "disabled", true);
+                    this.setProp(fp + "_right_measurement", "disabled", true);
                 }
             } else {
-                f.elements[fp + "_same"].checked = false;
+                this.setProp(fp + "_same", "checked", false);
 
-                this.setValue(f, fp + "_top", this.getNum(ce.style[pr + b[0] + sf]));
-                f.elements[fp + "_top"].disabled = false;
+                this.setValue(fp + "_top", this.getNum(ce.style[pr + b[0] + sf]));
+                this.setProp(fp + "_top", "disabled", false);
 
-                this.setValue(f, fp + "_right", this.getNum(ce.style[pr + b[1] + sf]));
-                f.elements[fp + "_right"].disabled = false;
+                this.setValue(fp + "_right", this.getNum(ce.style[pr + b[1] + sf]));
+                this.setProp(fp + "_right", "disabled", false);
 
-                this.setValue(f, fp + "_bottom", this.getNum(ce.style[pr + b[2] + sf]));
-                f.elements[fp + "_bottom"].disabled = false;
+                this.setValue(fp + "_bottom", this.getNum(ce.style[pr + b[2] + sf]));
+                this.setProp(fp + "_bottom", "disabled", false);
 
-                this.setValue(f, fp + "_left", this.getNum(ce.style[pr + b[3] + sf]));
-                f.elements[fp + "_left"].disabled = false;
+                this.setValue(fp + "_left", this.getNum(ce.style[pr + b[3] + sf]));
+                this.setProp(fp + "_left", "disabled", false);
 
                 if (f.elements[fp + "_top_measurement"]) {
-                    selectByValue(f, fp + '_top_measurement', this.getMeasurement(ce.style[pr + b[0] + sf]));
-                    selectByValue(f, fp + '_right_measurement', this.getMeasurement(ce.style[pr + b[1] + sf]));
-                    selectByValue(f, fp + '_bottom_measurement', this.getMeasurement(ce.style[pr + b[2] + sf]));
-                    selectByValue(f, fp + '_left_measurement', this.getMeasurement(ce.style[pr + b[3] + sf]));
-                    f.elements[fp + "_left_measurement"].disabled = false;
-                    f.elements[fp + "_bottom_measurement"].disabled = false;
-                    f.elements[fp + "_right_measurement"].disabled = false;
+                    selectByValue(fp + '_top_measurement', this.getMeasurement(ce.style[pr + b[0] + sf]));
+                    selectByValue(fp + '_right_measurement', this.getMeasurement(ce.style[pr + b[1] + sf]));
+                    selectByValue(fp + '_bottom_measurement', this.getMeasurement(ce.style[pr + b[2] + sf]));
+                    selectByValue(fp + '_left_measurement', this.getMeasurement(ce.style[pr + b[3] + sf]));
+                    this.setProp(fp + "_left_measurement", "disabled", false);
+                    this.setProp(fp + "_bottom_measurement", "disabled", false);
+                    this.setProp(fp + "_right_measurement", "disabled", false);
                 }
             }
         },
@@ -476,139 +478,140 @@
             tinyMCEPopup.close();
         },
         generateCSS: function () {
-            var ce = document.getElementById('container'), f = document.forms[0], num = new RegExp('[0-9]+', 'g'), s, t;
+            var ce = document.getElementById('container'), num = new RegExp('[0-9]+', 'g'), s, t;
 
             ce.style.cssText = "";
 
             // Build text styles
-            ce.style.fontFamily = f.text_font.value;
-            ce.style.fontSize = f.text_size.value + (this.isNum(f.text_size.value) ? (f.text_size_measurement.value || 'px') : "");
-            ce.style.fontStyle = f.text_style.value;
-            ce.style.lineHeight = f.text_lineheight.value + (this.isNum(f.text_lineheight.value) ? f.text_lineheight_measurement.value : "");
-            ce.style.textTransform = f.text_case.value;
-            ce.style.fontWeight = f.text_weight.value;
-            ce.style.fontVariant = f.text_variant.value;
-            ce.style.color = f.text_color.value;
+            ce.style.fontFamily = $('#text_font').val();
+            ce.style.fontSize = $('#text_size').val() + (this.isNum($('#text_size').val()) ? ($('#text_size_measurement').val() || 'px') : "");
+            ce.style.fontStyle = $('#text_style').val();
+            ce.style.lineHeight = $('#text_lineheight').val() + (this.isNum($('#text_lineheight').val()) ? $('#text_lineheight_measurement').val() : "");
+            ce.style.textTransform = $('#text_case').val();
+            ce.style.fontWeight = $('#text_weight').val();
+            ce.style.fontVariant = $('#text_variant').val();
+            ce.style.color = $('#text_color').val();
 
             s = "";
-            s += f.text_underline.checked ? " underline" : "";
-            s += f.text_overline.checked ? " overline" : "";
-            s += f.text_linethrough.checked ? " line-through" : "";
-            s += f.text_blink.checked ? " blink" : "";
+            s += $('#text_underline').prop('checked') ? " underline" : "";
+            s += $('#text_overline').prop('checked') ? " overline" : "";
+            s += $('#text_linethrough').prop('checked') ? " line-through" : "";
+            s += $('#text_blink').prop('checked') ? " blink" : "";
             s = s.length > 0 ? s.substring(1) : s;
 
-            if (f.text_none.checked)
+            if ($('#text_none').prop('checked')) {
                 s = "none";
+            }
 
             ce.style.textDecoration = s;
 
             // Build background styles
 
-            ce.style.backgroundColor = f.background_color.value;
-            ce.style.backgroundImage = f.background_image.value != "" ? "url(" + f.background_image.value + ")" : "";
-            ce.style.backgroundRepeat = f.background_repeat.value;
-            ce.style.backgroundAttachment = f.background_attachment.value;
+            ce.style.backgroundColor = $('#background_color').val();
+            ce.style.backgroundImage = $('#background_image').val() != "" ? "url(" + $('#background_image').val() + ")" : "";
+            ce.style.backgroundRepeat = $('#background_repeat').val();
+            ce.style.backgroundAttachment = $('#background_attachment').val();
 
-            if (f.background_hpos.value != "") {
+            if ($('#background_hpos').val() != "") {
                 s = "";
-                s += f.background_hpos.value + (this.isNum(f.background_hpos.value) ? f.background_hpos_measurement.value : "") + " ";
-                s += f.background_vpos.value + (this.isNum(f.background_vpos.value) ? f.background_vpos_measurement.value : "");
+                s += $('#background_hpos').val() + (this.isNum($('#background_hpos').val()) ? $('#background_hpos_measurement').val() : "") + " ";
+                s += $('#background_vpos').val() + (this.isNum($('#background_vpos').val()) ? $('#background_vpos_measurement').val() : "");
                 ce.style.backgroundPosition = s;
             }
 
             // Build block styles
 
-            ce.style.wordSpacing = f.block_wordspacing.value + (this.isNum(f.block_wordspacing.value) ? f.block_wordspacing_measurement.value : "");
-            ce.style.letterSpacing = f.block_letterspacing.value + (this.isNum(f.block_letterspacing.value) ? f.block_letterspacing_measurement.value : "");
-            ce.style.verticalAlign = f.block_vertical_alignment.value;
-            ce.style.textAlign = f.block_text_align.value;
-            ce.style.textIndent = f.block_text_indent.value + (this.isNum(f.block_text_indent.value) ? f.block_text_indent_measurement.value : "");
-            ce.style.whiteSpace = f.block_whitespace.value;
-            ce.style.display = f.block_display.value;
+            ce.style.wordSpacing = $('#block_wordspacing').val() + (this.isNum($('#block_wordspacing').val()) ? $('#block_wordspacing_measurement').val() : "");
+            ce.style.letterSpacing = $('#block_letterspacing').val() + (this.isNum($('#block_letterspacing').val()) ? $('#block_letterspacing_measurement').val() : "");
+            ce.style.verticalAlign = $('#block_vertical_alignment').val();
+            ce.style.textAlign = $('#block_text_align').val();
+            ce.style.textIndent = $('#block_text_indent').val() + (this.isNum($('#block_text_indent').val()) ? $('#block_text_indent_measurement').val() : "");
+            ce.style.whiteSpace = $('#block_whitespace').val();
+            ce.style.display = $('#block_display').val();
 
             // Build box styles
 
-            ce.style.width = f.box_width.value + (this.isNum(f.box_width.value) ? f.box_width_measurement.value : "");
-            ce.style.height = f.box_height.value + (this.isNum(f.box_height.value) ? f.box_height_measurement.value : "");
+            ce.style.width = $('#box_width').val() + (this.isNum($('#box_width').val()) ? $('#box_width_measurement').val() : "");
+            ce.style.height = $('#box_height').val() + (this.isNum($('#box_height').val()) ? $('#box_height_measurement').val() : "");
 
 
             if (tinymce.isIE) {
-                ce.style.styleFloat = f.box_float.value;
+                ce.style.styleFloat = $('#box_float').val();
             } else {
-                ce.style.cssFloat = f.box_float.value;
+                ce.style.cssFloat = $('#box_float').val();
             }
 
-            ce.style.clear = f.box_clear.value;
+            ce.style.clear = $('#box_clear').val();
 
             if (!f.box_padding_same.checked) {
-                ce.style.paddingTop = f.box_padding_top.value + (this.isNum(f.box_padding_top.value) ? f.box_padding_top_measurement.value : "");
-                ce.style.paddingRight = f.box_padding_right.value + (this.isNum(f.box_padding_right.value) ? f.box_padding_right_measurement.value : "");
-                ce.style.paddingBottom = f.box_padding_bottom.value + (this.isNum(f.box_padding_bottom.value) ? f.box_padding_bottom_measurement.value : "");
-                ce.style.paddingLeft = f.box_padding_left.value + (this.isNum(f.box_padding_left.value) ? f.box_padding_left_measurement.value : "");
+                ce.style.paddingTop = $('#box_padding_top').val() + (this.isNum($('#box_padding_top').val()) ? $('#box_padding_top_measurement').val() : "");
+                ce.style.paddingRight = $('#box_padding_right').val() + (this.isNum($('#box_padding_right').val()) ? $('#box_padding_right_measurement').val() : "");
+                ce.style.paddingBottom = $('#box_padding_bottom').val() + (this.isNum($('#box_padding_bottom').val()) ? $('#box_padding_bottom_measurement').val() : "");
+                ce.style.paddingLeft = $('#box_padding_left').val() + (this.isNum($('#box_padding_left').val()) ? $('#box_padding_left_measurement').val() : "");
             } else
-                ce.style.padding = f.box_padding_top.value + (this.isNum(f.box_padding_top.value) ? f.box_padding_top_measurement.value : "");
+                ce.style.padding = $('#box_padding_top').val() + (this.isNum($('#box_padding_top').val()) ? $('#box_padding_top_measurement').val() : "");
 
             if (!f.box_margin_same.checked) {
-                ce.style.marginTop = f.box_margin_top.value + (this.isNum(f.box_margin_top.value) ? f.box_margin_top_measurement.value : "");
-                ce.style.marginRight = f.box_margin_right.value + (this.isNum(f.box_margin_right.value) ? f.box_margin_right_measurement.value : "");
-                ce.style.marginBottom = f.box_margin_bottom.value + (this.isNum(f.box_margin_bottom.value) ? f.box_margin_bottom_measurement.value : "");
-                ce.style.marginLeft = f.box_margin_left.value + (this.isNum(f.box_margin_left.value) ? f.box_margin_left_measurement.value : "");
+                ce.style.marginTop = $('#box_margin_top').val() + (this.isNum($('#box_margin_top').val()) ? $('#box_margin_top_measurement').val() : "");
+                ce.style.marginRight = $('#box_margin_right').val() + (this.isNum($('#box_margin_right').val()) ? $('#box_margin_right_measurement').val() : "");
+                ce.style.marginBottom = $('#box_margin_bottom').val() + (this.isNum($('#box_margin_bottom').val()) ? $('#box_margin_bottom_measurement').val() : "");
+                ce.style.marginLeft = $('#box_margin_left').val() + (this.isNum($('#box_margin_left').val()) ? $('#box_margin_left_measurement').val() : "");
             } else
-                ce.style.margin = f.box_margin_top.value + (this.isNum(f.box_margin_top.value) ? f.box_margin_top_measurement.value : "");
+                ce.style.margin = $('#box_margin_top').val() + (this.isNum($('#box_margin_top').val()) ? $('#box_margin_top_measurement').val() : "");
 
             // Build border styles
 
             if (!f.border_style_same.checked) {
-                ce.style.borderTopStyle = f.border_style_top.value;
-                ce.style.borderRightStyle = f.border_style_right.value;
-                ce.style.borderBottomStyle = f.border_style_bottom.value;
-                ce.style.borderLeftStyle = f.border_style_left.value;
+                ce.style.borderTopStyle = $('#border_style_top').val();
+                ce.style.borderRightStyle = $('#border_style_right').val();
+                ce.style.borderBottomStyle = $('#border_style_bottom').val();
+                ce.style.borderLeftStyle = $('#border_style_left').val();
             } else
-                ce.style.borderStyle = f.border_style_top.value;
+                ce.style.borderStyle = $('#border_style_top').val();
 
             if (!f.border_width_same.checked) {
-                ce.style.borderTopWidth = f.border_width_top.value + (this.isNum(f.border_width_top.value) ? f.border_width_top_measurement.value : "");
-                ce.style.borderRightWidth = f.border_width_right.value + (this.isNum(f.border_width_right.value) ? f.border_width_right_measurement.value : "");
-                ce.style.borderBottomWidth = f.border_width_bottom.value + (this.isNum(f.border_width_bottom.value) ? f.border_width_bottom_measurement.value : "");
-                ce.style.borderLeftWidth = f.border_width_left.value + (this.isNum(f.border_width_left.value) ? f.border_width_left_measurement.value : "");
+                ce.style.borderTopWidth = $('#border_width_top').val() + (this.isNum($('#border_width_top').val()) ? $('#border_width_top_measurement').val() : "");
+                ce.style.borderRightWidth = $('#border_width_right').val() + (this.isNum($('#border_width_right').val()) ? $('#border_width_right_measurement').val() : "");
+                ce.style.borderBottomWidth = $('#border_width_bottom').val() + (this.isNum($('#border_width_bottom').val()) ? $('#border_width_bottom_measurement').val() : "");
+                ce.style.borderLeftWidth = $('#border_width_left').val() + (this.isNum($('#border_width_left').val()) ? $('#border_width_left_measurement').val() : "");
             } else
-                ce.style.borderWidth = f.border_width_top.value + (this.isNum(f.border_width_top.value) ? f.border_width_top_measurement.value : "");
+                ce.style.borderWidth = $('#border_width_top').val() + (this.isNum($('#border_width_top').val()) ? $('#border_width_top_measurement').val() : "");
 
             if (!f.border_color_same.checked) {
-                ce.style.borderTopColor = f.border_color_top.value;
-                ce.style.borderRightColor = f.border_color_right.value;
-                ce.style.borderBottomColor = f.border_color_bottom.value;
-                ce.style.borderLeftColor = f.border_color_left.value;
+                ce.style.borderTopColor = $('#border_color_top').val();
+                ce.style.borderRightColor = $('#border_color_right').val();
+                ce.style.borderBottomColor = $('#border_color_bottom').val();
+                ce.style.borderLeftColor = $('#border_color_left').val();
             } else
-                ce.style.borderColor = f.border_color_top.value;
+                ce.style.borderColor = $('#border_color_top').val();
 
             // Build list styles
 
-            ce.style.listStyleType = f.list_type.value;
-            ce.style.listStylePosition = f.list_position.value;
-            ce.style.listStyleImage = f.list_bullet_image.value != "" ? "url(" + f.list_bullet_image.value + ")" : "";
+            ce.style.listStyleType = $('#list_type').val();
+            ce.style.listStylePosition = $('#list_position').val();
+            ce.style.listStyleImage = $('#list_bullet_image').val() != "" ? "url(" + $('#list_bullet_image').val() + ")" : "";
 
             // Build positioning styles
 
-            ce.style.position = f.positioning_type.value;
-            ce.style.visibility = f.positioning_visibility.value;
+            ce.style.position = $('#positioning_type').val();
+            ce.style.visibility = $('#positioning_visibility').val();
 
             if (ce.style.width == "")
-                ce.style.width = f.positioning_width.value + (this.isNum(f.positioning_width.value) ? f.positioning_width_measurement.value : "");
+                ce.style.width = $('#positioning_width').val() + (this.isNum($('#positioning_width').val()) ? $('#positioning_width_measurement').val() : "");
 
             if (ce.style.height == "")
-                ce.style.height = f.positioning_height.value + (this.isNum(f.positioning_height.value) ? f.positioning_height_measurement.value : "");
+                ce.style.height = $('#positioning_height').val() + (this.isNum($('#positioning_height').val()) ? $('#positioning_height_measurement').val() : "");
 
-            ce.style.zIndex = f.positioning_zindex.value;
-            ce.style.overflow = f.positioning_overflow.value;
+            ce.style.zIndex = $('#positioning_zindex').val();
+            ce.style.overflow = $('#positioning_overflow').val();
 
             if (!f.positioning_placement_same.checked) {
-                ce.style.top = f.positioning_placement_top.value + (this.isNum(f.positioning_placement_top.value) ? f.positioning_placement_top_measurement.value : "");
-                ce.style.right = f.positioning_placement_right.value + (this.isNum(f.positioning_placement_right.value) ? f.positioning_placement_right_measurement.value : "");
-                ce.style.bottom = f.positioning_placement_bottom.value + (this.isNum(f.positioning_placement_bottom.value) ? f.positioning_placement_bottom_measurement.value : "");
-                ce.style.left = f.positioning_placement_left.value + (this.isNum(f.positioning_placement_left.value) ? f.positioning_placement_left_measurement.value : "");
+                ce.style.top = $('#positioning_placement_top').val() + (this.isNum($('#positioning_placement_top').val()) ? $('#positioning_placement_top_measurement').val() : "");
+                ce.style.right = $('#positioning_placement_right').val() + (this.isNum($('#positioning_placement_right').val()) ? $('#positioning_placement_right_measurement').val() : "");
+                ce.style.bottom = $('#positioning_placement_bottom').val() + (this.isNum($('#positioning_placement_bottom').val()) ? $('#positioning_placement_bottom_measurement').val() : "");
+                ce.style.left = $('#positioning_placement_left').val() + (this.isNum($('#positioning_placement_left').val()) ? $('#positioning_placement_left_measurement').val() : "");
             } else {
-                s = f.positioning_placement_top.value + (this.isNum(f.positioning_placement_top.value) ? f.positioning_placement_top_measurement.value : "");
+                s = $('#positioning_placement_top').val() + (this.isNum($('#positioning_placement_top').val()) ? $('#positioning_placement_top_measurement').val() : "");
                 ce.style.top = s;
                 ce.style.right = s;
                 ce.style.bottom = s;
@@ -617,17 +620,17 @@
 
             if (!f.positioning_clip_same.checked) {
                 s = "rect(";
-                s += (this.isNum(f.positioning_clip_top.value) ? f.positioning_clip_top.value + f.positioning_clip_top_measurement.value : "auto") + " ";
-                s += (this.isNum(f.positioning_clip_right.value) ? f.positioning_clip_right.value + f.positioning_clip_right_measurement.value : "auto") + " ";
-                s += (this.isNum(f.positioning_clip_bottom.value) ? f.positioning_clip_bottom.value + f.positioning_clip_bottom_measurement.value : "auto") + " ";
-                s += (this.isNum(f.positioning_clip_left.value) ? f.positioning_clip_left.value + f.positioning_clip_left_measurement.value : "auto");
+                s += (this.isNum($('#positioning_clip_top').val()) ? $('#positioning_clip_top').val() + $('#positioning_clip_top_measurement').val() : "auto") + " ";
+                s += (this.isNum($('#positioning_clip_right').val()) ? $('#positioning_clip_right').val() + $('#positioning_clip_right_measurement').val() : "auto") + " ";
+                s += (this.isNum($('#positioning_clip_bottom').val()) ? $('#positioning_clip_bottom').val() + $('#positioning_clip_bottom_measurement').val() : "auto") + " ";
+                s += (this.isNum($('#positioning_clip_left').val()) ? $('#positioning_clip_left').val() + $('#positioning_clip_left_measurement').val() : "auto");
                 s += ")";
 
                 if (s != "rect(auto auto auto auto)")
                     ce.style.clip = s;
             } else {
                 s = "rect(";
-                t = this.isNum(f.positioning_clip_top.value) ? f.positioning_clip_top.value + f.positioning_clip_top_measurement.value : "auto";
+                t = this.isNum($('#positioning_clip_top').val()) ? $('#positioning_clip_top').val() + $('#positioning_clip_top_measurement').val() : "auto";
                 s += t + " ";
                 s += t + " ";
                 s += t + " ";
@@ -642,28 +645,20 @@
         isNum: function (s) {
             return new RegExp('[0-9]+', 'g').test(s);
         },
-        showDisabledControls: function () {
-            var f = document.forms, i, a;
 
-            for (i = 0; i < f.length; i++) {
-                for (a = 0; a < f[i].elements.length; a++) {
-                    if (f[i].elements[a].disabled)
-                        tinyMCEPopup.editor.dom.addClass(f[i].elements[a], "disabled");
-                    else
-                        tinyMCEPopup.editor.dom.removeClass(f[i].elements[a], "disabled");
-                }
-            }
-        },
-        fillSelect: function (f, s, param, dval, sep, em) {
+        showDisabledControls: function () {},
+
+        fillSelect: function (s, param, dval, sep, em) {
             var i, ar, p, se;
 
-            f = document.forms[f];
             sep = typeof (sep) == "undefined" ? ";" : sep;
 
-            if (em)
-                addSelectValue(f, s, "", "");
+            if (em) {
+                addSelectValue(s, "", "");
+            }
 
             ar = tinyMCEPopup.getParam(param, dval).split(sep);
+
             for (i = 0; i < ar.length; i++) {
                 se = false;
 
@@ -675,15 +670,17 @@
                 p = ar[i].split('=');
 
                 if (p.length > 1) {
-                    addSelectValue(f, s, p[0], p[1]);
+                    addSelectValue(s, p[0], p[1]);
 
-                    if (se)
-                        selectByValue(f, s, p[1]);
+                    if (se) {
+                      selectByValue(s, p[1]);
+                    }
                 } else {
-                    addSelectValue(f, s, p[0], p[0]);
+                    addSelectValue(s, p[0], p[0]);
 
-                    if (se)
-                        selectByValue(f, s, p[0]);
+                    if (se) {
+                      selectByValue(s, p[0]);
+                    }
                 }
             }
         },
@@ -694,12 +691,11 @@
             $('#' + pre + '_right_measurement, #' + pre + '_bottom_measurement, #' + pre + '_left_measurement').attr('disabled', s).toggleClass('disabled', s);
         },
         synch: function (fr, to) {
-            var f = document.forms[0];
+            $('#' + to).val($('#' + fr).val())
 
-            f.elements[to].value = f.elements[fr].value;
-
-            if (f.elements[fr + "_measurement"])
-                selectByValue(f, to + "_measurement", f.elements[fr + "_measurement"].value);
+            if (document.getElementById[fr + "_measurement"]) {
+                selectByValue(to + "_measurement", $('#' + fr + "_measurement").val());
+            }
         },
         updateTextDecorations: function () {
             var noneChecked = $("#text_none").is(':checked');
@@ -714,7 +710,7 @@
     };
 
     tinyMCEPopup.onInit.add(StyleDialog.init, StyleDialog);
-    
+
     window.StyleDialog = StyleDialog;
-    
+
 })(tinymce, tinyMCEPopup, jQuery);
