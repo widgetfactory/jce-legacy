@@ -38,11 +38,11 @@
         },
         createControl: function(n, cf) {
             var ed = this.editor;
-            
+
             switch (n) {
                 case "styleselect":
                     // only create the control if we are using it!
-                    if (ed.getParam('styleselect_stylesheet') !== false || ed.getParam('style_formats') || ed.getParam('theme_advanced_styles')) {
+                    if (ed.getParam('styleselect_stylesheet') !== false || ed.getParam('style_formats') || ed.getParam('styleselect_custom_classes')) {
                         return this._createStyleSelect();
                     }
 
@@ -70,7 +70,7 @@
 
                     tinymce.each(matches, function(match) {
                         if (!name || match === name) {
-                            
+
                             if (match) {
                                 ed.formatter.remove(match);
                             }
@@ -92,7 +92,7 @@
 
             // Handle specified format
             ed.onPreInit.add(function() {
-                var counter = 0, formats = ed.getParam('style_formats'), styles = ed.getParam('theme_advanced_styles', '', 'hash');
+                var counter = 0, formats = ed.getParam('style_formats'), styles = ed.getParam('styleselect_custom_classes', '', 'hash');
 
                 if (formats) {
                     each(formats, function(fmt) {
@@ -105,7 +105,7 @@
                         if (keys > 1) {
                             name = fmt.name = fmt.name || 'style_' + (counter++);
                             ed.formatter.register(name, fmt);
-                            
+
                             ctrl.add(fmt.title, name, {
                                 style: function() {
                                     return new PreviewCss(ed, fmt);
@@ -116,12 +116,15 @@
                         }
                     });
                 }
-                // legacy styles
+                // custom styles
                 if (styles) {
                     each(styles, function(val, key) {
                         var name, fmt;
 
                         if (val) {
+                            // remove leading period if any
+                            val = val.replace(/^\./, '');
+
                             name = 'style_' + (counter++);
                             fmt = {
                                 //inline: 'span',
@@ -130,6 +133,12 @@
                             };
 
                             ed.formatter.register(name, fmt);
+
+                            if (key) {
+                              // remove leading period if any
+                              key = key.replace(/^\./, '');
+                            }
+
                             ctrl.add(ed.translate(key), name, {
                                 style: function() {
                                     return new PreviewCss(ed, fmt);
