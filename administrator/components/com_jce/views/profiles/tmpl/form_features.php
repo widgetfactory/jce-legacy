@@ -59,7 +59,7 @@ if (strpos($theme, '.') === false) {
             <div class="profileLayoutContainer profileLayoutContainerCurrent">
               <div class="mceEditor defaultSkin <?php echo $theme; ?>" role="application">
 
-                <span id="editor_toggle"><?php echo $this->profile->layout_params->get('toggle_label', '[Toggle Editor]');?></span>
+                <span id="editor_toggle"></span>
                 <span class="widthMarker" style="width:<?php echo $width; ?>;"><span><?php echo $width; ?></span></span>
 
                 <div class="mceLayout" role="presentation" style="max-width:<?php echo $width;?>">
