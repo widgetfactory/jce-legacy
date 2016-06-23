@@ -2,7 +2,7 @@
 
 /**
  * @package   	JCE
- * @copyright 	Copyright (c) 2009-2016 Ryan Demmer. All rights reserved.
+ * @copyright 	Copyright (c) 2009-2015 Ryan Demmer. All rights reserved.
  * @license   	GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  * JCE is free software. This version may have been modified pursuant
  * to the GNU General Public License, and as distributed it includes or
@@ -116,8 +116,13 @@ class WFFileSystem extends WFExtension {
                 // Joomla! 1.6+
                 if (method_exists('JUserHelper', 'getUserGroups')) {
                     $groups = JUserHelper::getUserGroups($user->id);
+
+                    // get keys only
+                    $groups = array_keys($groups);
+
                     // get the first group
-                    $group_id = array_keys($groups)[0];
+                    $group_id = array_shift($groups);
+                    
                     // Joomla! 2.5?
                     if (is_int($group_id)) {
                         // usergroup table
