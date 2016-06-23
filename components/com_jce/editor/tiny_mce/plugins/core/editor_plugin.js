@@ -302,13 +302,16 @@
             });
 
             each(s.buttons, function(o) {
-                var btn = DOM.add(m, 'a', {
+                var btn = DOM.add(m, 'button', {
+                    'type': 'button',
                     'class': 'mceDialogButton',
                     'id': t.id + '_button_' + o.id
                 }, o.title || '');
 
                 if (o.click) {
                     Event.add(btn, 'click', function(e) {
+                        e.preventDefault();
+
                         t.restoreSelection();
 
                         var s = o.click.call(o.scope || t, e);
