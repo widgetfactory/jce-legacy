@@ -1,7 +1,7 @@
 <?php
 /**
  * @package   	JCE
- * @copyright 	Copyright (c) 2009-2016 Ryan Demmer. All rights reserved.
+ * @copyright 	Copyright (c) 2009-2015 Ryan Demmer. All rights reserved.
  * @license   	GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  * JCE is free software. This version may have been modified pursuant
  * to the GNU General Public License, and as distributed it includes or
@@ -16,48 +16,36 @@ if ($element == 'del' || $element == 'ins') :
     echo $this->loadTemplate('datetime');
 endif;
 ?>
-<table>
-    <tr>
-        <td class="label"><label for="title"><?php echo WFText::_('WF_XHTMLXTRAS_ATTRIBUTE_LABEL_TITLE'); ?></label></td>
-        <td><input id="title" type="text" value=""
-                   class="field mceFocus" /></td>
-    </tr>
-    <tr>
-        <td class="label"><label for="id"><?php echo WFText::_('WF_XHTMLXTRAS_ATTRIBUTE_LABEL_ID'); ?></label></td>
-        <td><input id="id" type="text" value="" class="field" /></td>
-    </tr>
-    <tr>
-        <td><label for="classlist" class="hastip" title="<?php echo WFText::_('WF_LABEL_CLASS_LIST_DESC'); ?>"><?php echo WFText::_('WF_LABEL_CLASS_LIST'); ?></label></td>
-        <td>
-            <select id="classlist">
-                <option value=""><?php echo WFText::_('WF_OPTION_NOT_SET'); ?></option>
-            </select>
-        </td>
-    </tr>
-    <tr>
-        <td><label for="title" class="hastip" title="<?php echo WFText::_('WF_LABEL_CLASSES_DESC'); ?>"><?php echo WFText::_('WF_LABEL_CLASSES'); ?></label></td>
-        <td><input id="classes" type="text" value="" /></td>
-    </tr>
-    <tr>
-        <td class="label"><label for="style"><?php echo WFText::_('WF_XHTMLXTRAS_ATTRIBUTE_LABEL_STYLE'); ?></label></td>
-        <td><input id="style" type="text" value="" class="field" /></td>
-    </tr>
-    <tr>
-        <td class="label"><label for="dir"><?php echo WFText::_('WF_XHTMLXTRAS_ATTRIBUTE_LABEL_LANGDIR'); ?></label></td>
-        <td><select id="dir" class="field">
+    <div class="ui-form-row">
+        <label class="ui-form-label ui-width-3-10" for="title"><?php echo WFText::_('WF_XHTMLXTRAS_ATTRIBUTE_LABEL_TITLE'); ?></label>
+        <div class="ui-form-controls ui-width-7-10"><input id="title" type="text" value="" /></div>
+    </div>
+    <div class="ui-form-row">
+        <label class="ui-form-label ui-width-3-10" for="id"><?php echo WFText::_('WF_XHTMLXTRAS_ATTRIBUTE_LABEL_ID'); ?></label>
+        <div class="ui-form-controls ui-width-7-10"><input id="id" type="text" value="" /></div>
+    </div>
+    <div class="ui-form-row">
+        <label for="classlist" class="ui-form-label ui-width-3-10 hastip" title="<?php echo WFText::_('WF_LABEL_CLASSES_DESC'); ?>"><?php echo WFText::_('WF_LABEL_CLASSES'); ?></label>
+        <div class="ui-form-controls ui-width-7-10 ui-datalist">
+            <input type="text" id="classes" />
+            <select id="classlist"></select>
+        </div>
+    </div>
+    <div class="ui-form-row">
+        <label class="ui-form-label ui-width-3-10" for="dir"><?php echo WFText::_('WF_XHTMLXTRAS_ATTRIBUTE_LABEL_LANGDIR'); ?></label>
+        <div class="ui-form-controls ui-width-7-10"><select id="dir">
                 <option value="">{#not_set}</option>
                 <option value="ltr"><?php echo WFText::_('WF_XHTMLXTRAS_ATTRIBUTE_OPTION_LTR'); ?></option>
                 <option value="rtl"><?php echo WFText::_('WF_XHTMLXTRAS_ATTRIBUTE_OPTION_RTL'); ?></option>
-            </select></td>
-    </tr>
-    <tr>
-        <td class="label"><label for="lang"><?php echo WFText::_('WF_XHTMLXTRAS_ATTRIBUTE_LABEL_LANGCODE'); ?></label></td>
-        <td><input id="lang" type="text" value="" class="field" />
-        </td>
-    </tr>
+            </select></div>
+    </div>
+    <div class="ui-form-row">
+        <label class="ui-form-label ui-width-3-10" for="lang"><?php echo WFText::_('WF_XHTMLXTRAS_ATTRIBUTE_LABEL_LANGCODE'); ?></label>
+        <div class="ui-form-controls ui-width-7-10"><input id="lang" type="text" value="" />
+        </div>
+    </div>
     <?php
     if ($this->plugin->isHTML5()) :
         echo $this->loadTemplate('html5');
     endif;
     ?>
-</table>
