@@ -8,12 +8,6 @@
  * other free or open source software licenses.
  */
 (function ($) {
-    var $tmp = document.createElement('div');
-
-    $.support.borderRadius = (function () {
-        return typeof $tmp.style['borderRadius'] !== 'undefined';
-    })();
-
     if (typeof Joomla === 'undefined') {
         Joomla = {};
     }
@@ -32,63 +26,6 @@
         };
 
         return SqueezeBox.fromElement(el, o);
-    };
-
-    $.fn.checkbox = function () {
-        if ($.support.borderRadius) {
-
-            if ($(this).hasClass('ui-checkbox-element')) {
-                return;
-            }
-
-            var n = this, css = {};
-
-            $.each(['marginTop', 'marginRight', 'marginBottom', 'marginLeft'], function (i, k) {
-                css[k] = $(n).css(k);
-            });
-
-            // Custom checkbox
-            $(this).addClass('ui-checkbox-element').wrap('<span class="ui-checkbox" />').click(function () {
-                $(this).parent().not('.disabled').toggleClass('checked', this.checked);
-            }).on('check', function () {
-                $(this).parent().toggleClass('checked', this.checked);
-            }).on('disable', function () {
-                $(this).parent().toggleClass('disabled', this.disabled);
-            }).each(function () {
-                $(this).parent().toggleClass('checked', this.checked).toggleClass('disabled', this.disabled).css(css);
-            });
-        }
-
-        return this;
-    };
-
-    $.fn.radio = function () {
-        if ($.support.borderRadius) {
-
-            if ($(this).hasClass('ui-radio-element')) {
-                return;
-            }
-
-            var n = this, css = {};
-
-            $.each(['marginTop', 'marginRight', 'marginBottom', 'marginLeft'], function (i, k) {
-                css[k] = $(n).css(k);
-            });
-
-            // Custom Radio list
-            $(this).addClass('ui-radio-element').wrap('<span class="ui-radio" />').click(function () {
-                $(this).parent().not('.disabled').toggleClass('checked', this.checked);
-                $('input[type="radio"][name="' + $(this).attr('name') + '"]').not(this).parent().toggleClass('checked', !this.checked);
-            }).on('check', function () {
-                $(this).parent().toggleClass('checked', this.checked);
-            }).on('disable', function () {
-                $(this).parent().toggleClass('disabled', this.disabled);
-            }).each(function () {
-                $(this).parent().toggleClass('checked', this.checked).toggleClass('disabled', this.disabled).css(css);
-            });
-        }
-
-        return this;
     };
 
     $.jce = {
@@ -119,16 +56,6 @@
             $('input[size="50"]').addClass('input-large');
             $('input[size="5"]').addClass('input-mini');
 
-            $('body').addClass('ui-jquery');
-
-            // handle basic tabs
-            $('#tabs').tabs({
-                beforeActivate: function (event, ui) {
-                    $(ui.oldTab).removeClass('active');
-                    $(ui.newTab).addClass('active');
-                }
-            });
-
             // dialogs
             $('a.dialog').click(function (e) {
                 self.createDialog(e, {
@@ -146,7 +73,7 @@
 
             // profiles list checkboxes
             $('th input[type="checkbox"]', $('#profiles-list, #users-list')).click(function () {
-                var n = $('td input[type="checkbox"]', $('#profiles-list, #users-list')).prop('checked', this.checked).trigger('check');
+                var n = $('td input[type="checkbox"]', $('#profiles-list, #users-list')).prop('checked', this.checked);
 
                 $('input[name="boxchecked"]').val($(n).filter(':checked').length);
             });
@@ -155,13 +82,10 @@
                 var bc = $('input[name="boxchecked"]').val();
                 var n = $('td input[type="checkbox"]', $('#profiles-list, #users-list')).length;
 
-                $('th input[type="checkbox"]', $('#profiles-list, #users-list')).prop('checked', bc == n).trigger('check');
+                $('th input[type="checkbox"]', $('#profiles-list, #users-list')).prop('checked', bc == n);
             });
 
-            // HTML5 style form elements
-            this._formWidgets();
-
-            $('label.radio').addClass('inline');
+            //$('label.radio').addClass('inline');
 
             // Sortable Profiles list
             $('#profiles-list tbody').sortable({
@@ -266,15 +190,7 @@
                 // set dependant parameters
                 self._setDependants();
             });
-
-            // create styled form elements
-            /*$(document).ready(function () {
-                // custom checkbox
-                $('input[type="checkbox"]').checkbox();
-                // custom radio
-                $('input[type="radio"]').radio();
-            });*/
-
+            
             // remove loader
             $(document).ready(function () {
                 $('#jce').removeClass('loading');
@@ -340,24 +256,7 @@
             });
 
         },
-        /**
-         * HTML5 form widgets
-         */
-        _formWidgets: function () {
-            var self = this;
 
-            $('input[type="password"]').each(function () {
-                self._passwordWidget(this);
-            });
-
-            $('input[placeholder]:not(:file), textarea[placeholder]').placeholder();
-
-            $(':input[pattern]').pattern();
-
-            $(':input[max]').max();
-
-            $(':input[min]').min();
-        },
         _setDependants: function () {
             $('[data-parent]').each(function () {
                 var el = this, data = $(this).data('parent') || '';

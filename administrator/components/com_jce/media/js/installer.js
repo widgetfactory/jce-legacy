@@ -8,27 +8,27 @@
  * other free or open source software licenses.
  */
 (function($) {
-    Joomla.submitbutton = submitbutton = function(button) {		
+    Joomla.submitbutton = submitbutton = function(button) {
         try {
             Joomla.submitform(button);
         } catch(e) {
             submitform(button);
         }
     };
-    
+
     $.jce.Installer = {
         options : {},
-        
+
         init : function(options) {
-    
+
             $.extend(this.options, options || {});
-            
+
             $(":file").upload(this.options);
-            
+
             var n = $('#tabs-plugins, #tabs-extensions, #tabs-languages, #tabs-related').find('input[type="checkbox"]');
-            
-            $(n).click(function() {               
-                $('input[name="boxchecked"]').val($(n).filter(':checked').length); 
+
+            $(n).click(function() {
+                $('input[name="boxchecked"]').val($(n).filter(':checked').length);
             });
 
             $('#upload_button').click( function(e) {
@@ -48,12 +48,14 @@
                 }
                 e.preventDefault();
             });
+
+            $('#tabs').tabs();
         }
     };
-    
+
     // run init when the doc is ready
     $(document).ready(function()  {
         $.jce.Installer.init();
     });
-    
+
 })(jQuery);

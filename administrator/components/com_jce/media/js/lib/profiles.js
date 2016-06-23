@@ -45,26 +45,13 @@
 
             var dir = $('body').css('direction') == 'rtl' ? 'right' : 'left';
 
-            // users list
-            $('a#users-add').button({
-                icons: {
-                    primary: 'ui-icon-person'
-                }
+            // handle basic tabs
+            $('#tabs, #tabs-editor').tabs().on('tabs:activate', function(e, tab) {
+              $(tab).addClass('active').siblings().removeClass('active');
             });
 
-            $("#tabs-editor").tabs({
-                'active': 0,
-                beforeActivate: function(event, ui) {
-                    $(ui.oldTab).removeClass('active');
-                    $(ui.newTab).addClass('active');
-                }
-            }).find('ul.ui-tabs-nav > li.ui-state-default:first-child').addClass('active');
-
-            $("#tabs-plugins").tabs({
-                beforeActivate: function(event, ui) {
-                    $(ui.oldTab).removeClass('active');
-                    $(ui.newTab).addClass('active');
-                }
+            $("#tabs-plugins").tabs().on('tabs:activate', function(e, tab) {
+              $(tab).addClass('active').siblings().removeClass('active');
             }).find('ul.ui-tabs-nav > li.ui-state-default').not('.tab-disabled').first().addClass('active').children('a.ui-tabs-anchor').click();
 
             $('input.checkbox-list-toggle-all').click(function() {
@@ -78,7 +65,7 @@
 
             // Editable Selects
 
-            $("select.editable, select.combobox").combobox(this.options.combobox);
+            $("select.editable, select.combobox").datalist();
 
             // Color Picker
             $('input.color').colorpicker($.extend(this.options.colorpicker, {parent: '#jce'}));

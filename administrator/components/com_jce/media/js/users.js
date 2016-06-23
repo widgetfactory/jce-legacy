@@ -21,24 +21,24 @@
                     if ($.jce.Users.check(s, v)) {
                         return;
                     }
-                    
+
                     // create element
                     var li = document.createElement('li');
                     li.innerHTML = '<input type="hidden" name="users[]" value="' + v + '" /><label><span class="users-list-delete"></span>' + h + '</label>';
-                    
+
                     // add to list
                     s.appendChild(li);
                 }
             });
-            
+
             this.close();
 
         },
 
-        check : function(s, v) {            
+        check : function(s, v) {
             $.each(s.childNodes, function(i, n) {
                 var input = n.firstChild;
-                
+
                 if (input.value === v) {
                     return true;
                 }
@@ -46,7 +46,7 @@
 
             return false;
         },
-        
+
         close : function() {
             var win = window.parent;
 
@@ -57,17 +57,17 @@
         }
 
     };
-    
+
     $(document).ready(function(){
         $('#cancel').click(function(e) {
             $.jce.Users.close();
-        
+
             e.preventDefault();
         });
-    
+
         $('#select').click(function(e) {
             $.jce.Users.select();
-        
+
             e.preventDefault();
         });
     });

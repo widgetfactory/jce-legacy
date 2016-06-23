@@ -86,7 +86,7 @@
                     }
 
                     if (r.error) {
-                        $('div.body', list).html('<div class="item error">' + r.error + '</div>');
+                        $('div.body', list).html('<div class="item alert alert-error">' + r.error + '</div>');
                         return false;
                     }
 
@@ -101,7 +101,7 @@
 
                         $.each(r, function(n, s) {
                             // authorisation success or not required
-                            $('div.body', list).append('<div class="item"><div class="span1"><span class="checkbox" data-uid="' + s.id + '"></span></div><div class="span5">' + s.title + '</div><div class="span3">' + s.version + '</div><div class="span3">' + priority[s.priority - 1] + '</div></div>');
+                            $('div.body', list).append('<div class="item"><div class="span1"><input type="checkbox" data-uid="' + s.id + '" /></div><div class="span5">' + s.title + '</div><div class="span3">' + s.version + '</div><div class="span3">' + priority[s.priority - 1] + '</div></div>');
 
                             // info...
                             var $info = $('<div class="item info">' + s.text + '</div>').appendTo($('div.body', list));
@@ -146,78 +146,72 @@
                                 $('div.body div.item', list).css('margin-right', -10);
                             }*/
 
-                            var el = $('span[data-uid=' + s.id + ']');
+                            var el = $('input[data-uid=' + s.id + ']');
 
                             if (s.auth) {
                                 // check checkbox if forced update or high priority
                                 if (parseInt(s.forced) == 1 || s.priority == 1) {
-                                    $(el).addClass('checked').addClass('disabled');
+                                    $(el).prop('checked', true).prop('disabled', true);
                                     $('button#install-button').prop('disabled', false);
 
                                     // disable any updates that this particular update overrides / negates eg: an equivalent patch or full version
                                     if (s.negates) {
-                                        $('span[data-uid=' + s.negates + ']').removeClass('checked').addClass('disabled');
+                                        $('input[data-uid=' + s.negates + ']').prop('checked', false).prop('disabled', true);
                                     }
                                 }
                                 // disable checkbox if forced update
                                 if (parseInt(s.forced) == 1) {
-                                    $(el).addClass('disabled');
+                                    $(el).prop('disabled', true);
                                 }
                                 // check required checkbox
                                 if (s.required) {
-                                    $('span[data-uid=' + s.required + ']').addClass('checked');
+                                    $('input[data-uid=' + s.required + ']').prop('checked', true);
                                 }
 
                                 // checkbox events
                                 $(el).click(function() {
-                                    if ($(this).is('.disabled, .error, .alert')) {
+                                    if ($(this).parents('.item').hasClass('alert')) {
                                         return;
-                                    }
-
-                                    if ($(this).hasClass('checked')) {
-                                        $(this).removeClass('checked');
-                                    } else {
-                                        $(this).addClass('checked');
                                     }
 
                                     // disable any updates that this particular update overrides / negates eg: an equivalent patch or full version
                                     if (s.negates) {
-                                        if ($(this).hasClass('checked')) {
-                                            $('span[data-uid=' + s.negates + ']').removeClass('checked').addClass('disabled');
+                                        if ($(this).prop('checked')) {
+                                            $('input[data-uid=' + s.negates + ']').prop('checked', false).prop('disabled', true);
                                         } else {
-                                            $('span[data-uid=' + s.negates + ']').removeClass('disabled');
+                                            $('input[data-uid=' + s.negates + ']').prop('disabled', false);
                                         }
                                     }
-                                    
-                                    var len = $('div.body span.checkbox.checked', list).length;
+
+                                    var len = $('.body .item input:checked', list).length;
 
                                     if (len) {
                                         $('button#install-button').attr('disabled', '').prop('disabled', false);
-                                        
-                                        if (len == $('div.body span.checkbox', list).length) {
-                                        	$('div.header div:first-child span.checkbox', list).addClass('checked');
+
+                                        if (len == $('.body .item input[type="checkbox"]', list).length) {
+                                        	$('.header div:first-child input[type="checkbox"]', list).prop('checked', true);
                                         } else {
-                                        	$('div.header div:first-child span.checkbox', list).removeClass('checked');
+                                        	$('.header div:first-child input[type="checkbox"]', list).prop('checked', false);
                                         }
-                                                                                
+
                                     } else {
                                         $('button#install-button').attr('disabled', 'disabled').prop('disabled', true);
-                                        $('div.header div:first-child span.checkbox', list).removeClass('checked');
+                                        $('.header div:first-child input[type="checkbox"]', list).prop('checked', false);
                                     }
                                 });
 
                             } else {
-                                $(el).removeClass('disabled').addClass('alert');
-                                $('div.body', list).append('<div class="item error">' + s.title + ' : ' + self.translate('auth_failed') + '</div>');
+                                $(el).prop('disabled', false).parents('.item').addClass('alert');
+                                $('div.body', list).append('<div class="item alert alert-error">' + s.title + ' : ' + self.translate('auth_failed') + '</div>');
                             }
                         });
-                        
+
                         if (r.length > 1) {
-                            $('<span class="checkbox"></span>').appendTo($('div.header div:first', list)).click(function() {
-                                $('div.body span.checkbox', list).click();
+                            $('<input type="checkbox" />').appendTo($('div.header div:first', list)).click(function() {
+                                $('div.body input[type="checkbox"]', list).click();
                             });
                         }
-                        
+
                     } else {
                         $('div.body', list).append('<div class="item">' + self.translate('no_updates') + '</div>');
                     }
@@ -235,9 +229,9 @@
             var t = this, n = 1;
 
             // get all checked updates
-            var s = $('#updates-list div.body div.item span.checkbox.checked');
+            var s = $('#updates-list .body .item input:checked');
             // disable all while downloading
-            $(s).addClass('disabled');
+            $(s).prop('disabled', true);
             // disable button while downloading
             $(btn).prop('disabled', true);
 
@@ -251,17 +245,18 @@
             $.each(s, function() {
                 var el = this, uid = $(this).data('uid');
 
-                $(el).removeClass('error').addClass('loader');
+                $(el).parents('.item').removeClass('alert alert-error').addClass('loading');
+
                 $.post("index.php?option=com_jce&view=updates&task=update&step=download", {
                     'id': uid
                 }, function(r) {
                     if (r && r.error) {
                         // add error icon and message
-                        $(el).removeClass('loader disabled check').addClass('error').parents('div.item').next('div.item.info').replaceWith('<div class="item error">' + r.error + '</div>');
+                        $(el).prop('disabled', false).prop('checked', false).parents('.item').removeClass('loading').addClass('alert alert-error').next('.item.info').replaceWith('<div class="item alert alert-error">' + r.error + '</div>');
                     } else {
                         // download success
                         if (r.file) {
-                            $(el).addClass('downloaded');
+                            $(el).parents('.item').addClass('downloaded');
                             // set id
                             $.extend(r, {
                                 'id': uid
@@ -287,7 +282,7 @@
          */
         install: function(btn) {
             var t = this, n = 0;
-            var s = $('div.body div.item span.checkbox.checked.downloaded');
+            var s = $('.body .item.downloaded input:checked');
 
             /**
              * Run install on each update
@@ -299,21 +294,21 @@
 
                 // any left?
                 if (updates.length) {
-                    var file = updates[0], id = file.id, el = $('span[data-uid=' + id + ']');
+                    var file = updates[0], id = file.id, el = $('input[data-uid=' + id + ']');
 
                     // double check to see it is a downloaded file
-                    if ($(el).hasClass('downloaded')) {
+                    if ($(el).parents('.item').hasClass('downloaded')) {
                         $.post("index.php?option=com_jce&view=updates&task=update&step=install", file, function(r) {
-                            $(el).removeClass('loader');
+                            $(el).parents('.item').removeClass('loading');
 
                             if (r && r.error) {
-                                $(el).removeClass('loader disabled check').addClass('error').parents('div.item').next('div.item.info').replaceWith('<div class="item error">' + r.error + '</div>');
+                                $(el).prop('disabled', false).prop('checked', false).parents('.item').removeClass('loading').addClass('alert alert-error').next('.item.info').replaceWith('<div class="item alert alert-error">' + r.error + '</div>');
                             } else {
                                 // install success
-                                $(el).addClass('tick').removeClass('check');
+                                $(el).prop('checked', false).parents('.item').addClass('tick');
                                 $('div#update_info_' + id, '').append('<h3>' + t.options.language['install_info'] + '</h3><div>' + r.text + '</div>');
 
-                                $(el).parents('div.item').find('span.priority').removeClass('label-warning label-important label-info').addClass('label-success').html(t.options.language['installed']);
+                                $(el).parents('.item').find('.priority').removeClass('label-warning label-important label-info').addClass('label-success').html(t.options.language['installed']);
                             }
                             // remove update
                             updates.splice(0, 1);

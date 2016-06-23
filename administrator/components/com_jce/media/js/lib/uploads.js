@@ -29,40 +29,31 @@
 		 * @param {Object} options Options object
 		 */
         _init: function() {
-            var self = this; 
-            
+            var self = this;
+
             $(document).ready(function() {
                 self._createUploader();
             });
-                        
-            // Safari needs to wait for the window to finish loading...!!!
-            /*if ($.browser.webkit && /Safari/.test(navigator.userAgent)) {
-                $(window).load(function() {
-                    self._createUploader();
-                });
-            } else {
-                self._createUploader();
-            }*/
         },
-		
+
         _createUploader : function() {
             var self = this, o = this.options, iframe;
-			
+
             var re = '.(' + o.extensions.join('|') + ')$';
-			
+
             var $form = $('form[name="adminForm"]');
 
             if (o.iframe) {
                 iframe = this.createIFrame();
             }
-			
+
             // create button
             var $button = $('<button/>').html(o.labels.browse).prepend('<i class="icon-search" />&nbsp;').addClass('upload-browse btn');
             // button container
-            var $buttoncontainer    = $('<div/>').addClass('upload_button_container').insertBefore(this.element).append(this.element);  
-			
+            var $buttoncontainer    = $('<div/>').addClass('upload_button_container').insertBefore(this.element).append(this.element);
+
             var $inputcontainer     = $('<div/>').addClass('upload_input_container').insertBefore($buttoncontainer);
-			
+
             var $input = $('<input/>').attr({
                 'type' 		: 'text',
                 'name'		: $(this.element).attr('name') + '_input',
@@ -78,27 +69,16 @@
                 $input.val('').focus();
                 $(self.element).val('');
             });
-			
+
             $button.click( function(e) {
                 e.preventDefault();
             });
-                        
+
             // hide file input element
             $(this.element).css({
                 'opacity' : 0
             });
 
-            // check for placeholder and create
-            $input.placeholder();
-
-            // remove value on click if file input
-            /*$input.click( function() {
-                if ($(self.element).val()) {
-                    // reset inputs
-                    $(this, self.element).val('');
-                }
-            });*/
-			
             $button.insertBefore($(this.element));
 
             // submit button
@@ -151,7 +131,7 @@
                 }
             });
         },
-		
+
         createIFrame : function() {
             var o = this.options;
 
