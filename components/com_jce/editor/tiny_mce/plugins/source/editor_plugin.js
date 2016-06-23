@@ -1,556 +1,244 @@
-/**
- * @copyright   @@copyright@@
- * @author		Ryan Demmer
- * @license     @@licence@@
- * JCE is free software. This version may have been modified
- * pursuant to the GNU General Public License, and as distributed it
- * includes or is derivative of works licensed under the GNU General
- * Public License or other free or open source software licenses.
- */
-
 (function() {
-    var each = tinymce.each;
-
-    tinymce.create('tinymce.plugins.Source', {
-        init : function(ed, url) {
-            var self = this;
-
-            this.editor = ed;
-            this.url = url;
-
-            // add command
-            ed.addCommand('mceSource', function() {
-                self.toggleSource();
-            });
-
-            this.invisibles = false;
-
-            // add context menu blocker
-            if (ed.onContextMenu) {
-                var cMenu = ed.onContextMenu.addToTop( function(ed, e) {
-                    if (ed.plugins.source.state) {
-                        return false;
-                    }
-                });
-            }
-
-            ed.onInit.add(function() {
-                var s = ed.getParam('source_state', false);
-
-                if (typeof s != 'undefined') {
-                    ed.settings.source_state = !s;
-                    self.toggleSource();
-                }
-
-                if (ed.onFullScreen) {
-                    ed.onFullScreen.add(function(editor, state) {
-
-                        if (!state) {
-                            ed.settings.source_state = !editor.settings.source_state;
-
-                            each(['source_highlight', 'source_numbers', 'source_wrap'], function(s) {
-                                ed.settings[s] = editor.settings[s];
-                            });
-
-                            self.toggleSource();
-                        }
-                    });
-                }
-            });
-
-            // Patch in Commands
-            ed.onBeforeExecCommand.add( function(ed, cmd, ui, val, o) {
-                var cm = ed.controlManager, se = self.getEditor();
-
-                if (self.state && se) {
-                    switch(cmd) {
-                        case 'Undo':
-                            o.terminate = true;
-                            se.undo();
-                            cm.setDisabled('redo', false);
-                            return true;
-                            break;
-                        case 'Redo':
-                            o.terminate = true;
-                            se.redo();
-                            cm.setDisabled('redo', true);
-                            return true;
-                            break;
-                        case 'mcePrint':
-                            o.terminate = true;
-                            return self.printSource();
-                            break;
-                        case 'mceFullScreen':
-                            if (self.getState()) {
-                                ed.setContent(self.getContent());
-                            }
-                            break;
-                    }
-                }
-            });
-
-            ed.onLoadContent.add( function(ed, o) {
-                if (self.getState()) {
-                    self._disable();
-                    self.setContent();
-                }
-            });
-
-            ed.onSetContent.add(function(ed, o) {
-                if (self.getState()) {
-                    self.setContent();
-                    self._disable();
-                }
-            });
-
-            ed.onSaveContent.add( function(ed, o) {
-                if (self.getState()) {
-                    o.content = self.getContent();
-                }
-            });
-
-            ed.onExecCommand.add( function(ed, cmd, ui, v, o) {
-                switch (cmd) {
-                    case 'mceCodeEditor':
-                    case 'mceSource' :
-                        self._disable();
-
-                        break;
-                    case 'mceFullScreen' :
-                        break;
-                    case 'mceInsertContent' :
-                        if (self.getState()) {
-                            o.terminate = true;
-
-                            self._disable();
-
-                            self.insertContent(v);
-                        }
-                        break;
-                }
-            });
-
-            ed.addButton('source', {
-                title : 'source.desc',
-                cmd : 'mceSource'
-            });
-
-            ed.onNodeChange.add( function(ed, cm, n) {
-                var s = self.getState();
-
-                if (s) {
-                    self._disable();
-                }
-            });
-
-            // add theme resize
-            ed.theme.onResize.add( function() {
-                self.resize();
-            });
-
-        },
-
-        _disable : function() {
-            var self = this;
-            window.setTimeout( function() {
-                self.toggleDisabled();
-            }, 0);
-        },
-
-        getWin : function() {
-            var ed = this.editor, f = tinymce.DOM.get('wf_'+ ed.id +'_source_iframe');
-
-            if (f) {
-                return f.contentWindow;
-            }
-
-            return false;
-        },
-
-        getDoc : function() {
-            var w = this.getWin();
-
-            if (w) {
-                return w.document;
-            }
-
-            return false;
-        },
-
-        getContainer : function() {
-            var se = this.getEditor();
-
-            if (se) {
-                return se.getContainer();
-            }
-
-            return null;
-        },
-
-        getEditor : function() {
-            var win = this.getWin();
-
-            if (win) {
-                return win.SourceEditor || null;
-            }
-
-            return null;
-        },
-
-        getState : function() {
-            return this.editor.getParam('source_state', false);;
-        },
-
-        setState : function(s) {
-            this.state = s;
-        },
-
-        getTop : function() {
-            var ed = this.editor, container = ed.getContentAreaContainer();
-            return container.offsetTop + 1;
-        },
-
-        printSource : function() {},
-
-        reInit : function() {
-            this.toggleDisabled(), se = this.getEditor();
-
-            if (this.getState() && se) {
-                se.focus();
-            }
-        },
-
-        setContent : function(v) {
-            var ed = this.editor, se = this.getEditor();
-
-            if (typeof v == 'undefined') {
-                v = ed.getContent();
-            }
-
-            if (se) {
-                se.setContent(v, ed.getParam('source_format', true));
-            }
-        },
-
-        insertContent : function(v) {
-            var DOM = tinymce.DOM, se = this.getEditor();
-
-            if (se) {
-                se.insertContent(DOM.decode(v));
-            }
-        },
-
-        getContent : function() {
-            var se = this.getEditor();
-
-            if (se) {
-                return se.getContent();
-            }
-        },
-
-        resize : function(w, h, init) {
-            if (!this.state)
-                return;
-
-            var ed = this.editor, DOM = tinymce.DOM, ifr = DOM.get(ed.id + '_ifr'), se = this.getEditor();
-
-            w = parseFloat(w) || ifr.clientWidth;
-            h = parseFloat(h) || ifr.clientHeight;
-
-            if (se) {
-                DOM.setStyles('wf_' + ed.id + '_source_iframe', {
-                    'width' 	: w,
-                    'height' 	: h
-                });
-
-                DOM.setStyles(this.getContainer(), {
-                    'width' 	: w,
-                    'height' 	: h
-                });
-
-                se.resize(w, h, init);
-            }
-        },
-
-        /**
-         * Disables all buttons except Source
-         */
-        toggleDisabled : function() {
-            var ed = this.editor, DOM = tinymce.DOM, cm = ed.controlManager;
-
-            var state 	= this.getState();
-            // store active buttons
-            var active 	= DOM.select('.mceButtonActive', DOM.get(ed.id + '_toolbargroup'));
-
-            each (active, function(n) {
-                cm.setActive(n.id, !state);
-            });
-
-            each(DOM.select('.mceButton, .mceListBox, .mceSplitButton', DOM.get(ed.id + '_toolbargroup')), function(n) {
-                var id = n.id;
-
-                // get splitButton id from parent
-                if (n.className.indexOf('mceSplitButton') !== -1) {
-                    id = n.parentNode.id;
-                }
-
-                if (id) {
-                    cm.setDisabled(id, state);
-                }
-            });
-
-            cm.setActive('source', state);
-            cm.setActive('fullscreen', (ed.id == 'mce_fullscreen'));
-
-            cm.setDisabled('source', false);
-            cm.setDisabled('fullscreen', false);
-            cm.setDisabled('kitchensink', false);
-        },
-
-        toggleSource : function() {
-            var self = this, ed = this.editor, DOM = tinymce.DOM, cm = ed.controlManager;
-            var se = this.getEditor();
-
-            var state = this.getState();
-
-            // editor iframe
-            var iframe 		= DOM.get(ed.id + '_ifr');
-
-            // set the state
-            this.setState(!state);
-
-            if (tinymce.isIE) {
-                DOM.setStyle(iframe.parentNode, 'position', 'relative');
-            }
-
-            // Path
-            var editorpath 	= DOM.get(ed.id + '_path_row');
-            // Word Count
-            var wordcount 	= DOM.get(ed.id + '-word-count');
-
-            if (!state) {
-                // hide Path
-                if (editorpath) {
-                    DOM.hide(editorpath);
-                }
-                // hide word count
-                if (wordcount) {
-                    DOM.hide(wordcount.parentNode);
-                }
-
-                // hide iframe
-                DOM.setStyle(iframe, 'visiblity', 'hidden');
-                DOM.setAttrib(iframe, 'aria-hidden', true);
-
-                window.setTimeout(function() {
-                    self.setHighlight(ed.getParam('source_highlight', true));
-
-                    if (se) {
-
-                        try {
-                            se.focus();
-                        } catch (e) {}
-                    }
-
-                }, 10);
+    var DOM = tinymce.DOM, Event = tinymce.dom.Event;
+
+    tinymce.create('tinymce.plugins.SourcePlugin', {
+      init: function(ed, url) {
+          var self = this; self.editor = ed;
+
+          ed.onFullScreen.add(function(ed, state) {
+            var element   = ed.getElement();
+            var container = element.parentNode;
+
+            var header    = DOM.getPrev(element, '.wf-editor-header');
+            var iframe    = DOM.get(ed.id + '_editor_source_iframe');
+
+            // store the containerHeight as we go into fullscreen mode
+            if (state) {
+              var vp = DOM.getViewPort();
+              // set height as viewport - header - footer
+              DOM.setStyle(iframe, 'height', vp.h - header.offsetHeight - 30);
             } else {
-                if (se) {
-                    // pass content
-                    ed.setContent(self.getContent());
-
-                    DOM.hide('wf_' + ed.id + '_source_container');
-                    DOM.setAttrib('wf_' + ed.id + '_source_container', 'aria-hidden', true);
-                }
-
-                // show iframe
-                DOM.setStyle(iframe, 'visiblity', 'visible');
-                iframe.removeAttribute('aria-hidden');
-
-                // show Path
-                if (editorpath) {
-                    DOM.show(editorpath);
-                }
-                // show word count
-                if (wordcount) {
-                    DOM.show(wordcount.parentNode);
-                }
-
-                ed.setProgressState(false);
+              DOM.setStyle(iframe, 'height', ed.settings.container_height - 30);
             }
-            // store state
-            ed.settings.source_state = !state;
-        },
+          });
 
-        loadEditor : function() {
-            var self = this, ed = this.editor, k, cm = ed.controlManager, DOM = tinymce.DOM, iframe = DOM.get(ed.id + '_ifr');
-            var w = iframe.clientWidth, h = iframe.clientHeight;
+          ed.onFullScreenResize.add(function(ed, vp) {
+              var element   = ed.getElement();
+              var header    = DOM.getPrev(element, '.wf-editor-header');
+              var iframe    = DOM.get(ed.id + '_editor_source_iframe');
 
-            // create the container
-            var container = DOM.create('div', {
-                role	: 'textbox',
-                style 	: {
-                    position  : 'absolute',
-                    top		    : 0,
-                    width     : '100%'
-                },
-                id		: 'wf_' + ed.id + '_source_container',
-                'class' : 'WFSourceEditor'
-            });
+              DOM.setStyle(iframe, 'height', vp.h - header.offsetHeight - 30);
+          });
 
-            DOM.insertAfter(container, iframe);
+          ed.onInit.add(function(ed) {
+            // get the stored active tab
+            var activeTab = sessionStorage.getItem('wf-editor-tabs');
 
-            var query 	= ed.getParam('site_url') + 'index.php?option=com_jce';
-
-            var args 	= {
-                'view' 		: 'editor',
-                'layout'	: 'plugin',
-                'plugin'	: 'source',
-                'component_id' : ed.getParam('component_id')
-            };
-
-            // set token
-            args[ed.settings.token] = 1;
-
-            // create query
-            for (k in args) {
-                query += '&' + k + '=' + encodeURIComponent(args[k]);
+            if (activeTab === "wf-editor-source") {
+                // hide editor
+                ed.hide();
+                // hide textarea
+                DOM.hide(ed.getElement());
+                // toggle source
+                self.toggle();
             }
+          });
+      },
+      getContent: function() {
+        var ed = this.editor;
 
-            var iframe = DOM.create('iframe', {
-                'frameborder' 	: 0,
-                'scrolling'		: 'no',
-                'id'			: 'wf_'+ ed.id +'_source_iframe',
-                'src'			: query,
-                'style'			: {
-                    'width' : w,
-                    'height': h
-                }
-            });
+        var iframe = DOM.get(ed.id + '_editor_source_iframe');
 
-            tinymce.dom.Event.add(iframe, 'load', function() {
-                var editor = self.getEditor();
+        if (iframe) {
+            var editor = iframe.contentWindow.SourceEditor;
 
-                var content = ed.getContent(), highlight = ed.getParam('source_highlight', true), wrap = ed.getParam('source_wrap', true), numbers = ed.getParam('source_numbers', true);
-
-                /*var selection = ed.selection.getContent({
-                    format : 'text'
-                });*/
-
-                editor.init({
-                    'wrap'          : wrap,
-                    'linenumbers'   : numbers,
-                    'highlight'     : highlight,
-                    'width'	: w,
-                    'height'	: h,
-                    'theme' 	: ed.getParam('source_theme', 'textmate'),
-                    'format'    : ed.getParam('source_format', true),
-                    'tag_closing' : ed.getParam('source_tag_closing', true),
-                    'selection_match' : ed.getParam('source_selection_match', true),
-                    'font_size' : ed.getParam('source_font_size', ''),
-                    'load'		: function() {
-                        ed.setProgressState(false);
-
-                        if (tinymce.isIE && !document.querySelector) {
-                            ed.hide();
-                            ed.show();
-                        }
-                    },
-                    change : function() {
-                        ed.controlManager.setDisabled('undo', false);
-                    }
-                }, content);
-
-                //editor.resize('100%', h, true);
-                self.resize();
-            });
-
-            DOM.add(container, iframe);
-        },
-
-        /**
-         * Toggle Syntax Highlighting editor
-         * Will create / show / hide the textarea source editor or Codemirror editor
-         */
-        setHighlight : function(s) {
-            var ed = this.editor, DOM = tinymce.DOM, se = this.getEditor();
-
-            // get editor selection
-            /*var selection = ed.selection.getContent({
-                format : 'text'
-            });*/
-
-            if (se) {
-                se.highlight(s);
-
-                this.setContent();
-
-                se.format();
-
-                DOM.show('wf_' + ed.id + '_source_container');
-                DOM.setAttrib('wf_' + ed.id + '_source_container', 'aria-hidden', false);
-
-                DOM.setStyle('wf_' + ed.id + '_source_container', 'top', 0);
-
-                this.resize();
-
-                this.setNumbers(ed.getParam('source_numbers', true));
-                this.setWrap(ed.getParam('source_wrap', true));
-
-                /*if (selection) {
-                    se.clearSearch();
-                    se.search(selection);
-                }*/
-
-                ed.focus();
-
-                ed.setProgressState(false);
-            } else {
-                ed.setProgressState(true);
-                this.loadEditor();
+            if (editor) {
+                return editor.getContent();
             }
-
-            ed.settings.source_highlight = !!s;
-        },
-
-        /**
-         * Set CodeMirror / Textarea word wrapping
-         * @param {Object} el Textarea element
-         * @param {Boolean} s State
-         */
-        setWrap: function(s) {
-            var ed = this.editor, se = this.getEditor();
-
-            ed.settings.source_wrap = !!s;
-
-            if (se) {
-                se.wrap(s);
-            }
-
-        },
-
-        setNumbers : function(s) {
-            var ed = this.editor, se = this.getEditor();
-
-            ed.settings.source_numbers = !!s;
-
-            if (se) {
-                return se.linenumbers(!!s);
-            }
-
-        },
-
-        getInfo : function() {
-            return {
-                longname : 'Source',
-                author : 'Ryan Demmer',
-                authorurl : 'http://www.joomlacontenteditor.net',
-                infourl : 'http://www.joomlacontenteditor.net',
-                version : '@@version@@'
-            };
         }
 
+        return null;
+      },
+      hide: function() {
+        DOM.hide(this.editor.id + '_editor_source');
+      },
+      toggle: function() {
+          var ed = this.editor;
+          var self = this,
+              s = ed.settings;
+
+          var element   = ed.getElement();
+          var container = element.parentNode;
+
+          // get tabs header
+          var header = DOM.getPrev(element, '.wf-editor-header');
+
+          var div = DOM.get(ed.id + '_editor_source');
+          var iframe = DOM.get(ed.id + '_editor_source_iframe');
+          var statusbar = DOM.get(ed.id + '_editor_source_resize');
+
+          // get editor iframe height
+          var ifrHeight = parseInt(DOM.get(ed.id + '_ifr').style.height) || s.height;
+
+          var o = tinymce.util.Cookie.getHash("TinyMCE_" + ed.id + "_size");
+
+          if (o && o.height) {
+              ifrHeight = o.height;
+          }
+
+          // get content from textarea / div
+          var content = tinymce.is(element.value) ? element.value : element.innerHTML;
+
+          if (!div) {
+              // create the container
+              var div = DOM.add(container, 'div', {
+                  role: 'textbox',
+                  id: ed.id + '_editor_source',
+                  'class': 'wf-editor-source defaultSkin'
+              });
+
+              if (s.skin !== 'default') {
+                DOM.addClass(div, s.skin + 'Skin');
+
+                if (s.skin_variant) {
+                  DOM.addClass(div, s.skin + 'Skin' + ucfirst(s.skin_variant));
+                }
+              }
+
+              var query = ed.getParam('site_url') + 'index.php?option=com_jce';
+
+              var args = {
+                  'view': 'editor',
+                  'layout': 'plugin',
+                  'plugin': 'source',
+                  'component_id': ed.getParam('component_id')
+              };
+
+              // set token
+              args[ed.settings.token] = 1;
+
+              // create query
+              for (k in args) {
+                  query += '&' + k + '=' + encodeURIComponent(args[k]);
+              }
+
+              var iframe = DOM.create('iframe', {
+                  'frameborder': 0,
+                  'scrolling': 'no',
+                  'id': ed.id + '_editor_source_iframe',
+                  'src': query
+              });
+
+              Event.add(iframe, 'load', function() {
+                  var editor = iframe.contentWindow.SourceEditor;
+
+                  editor.init({
+                      'wrap': ed.getParam('source_wrap', true),
+                      'linenumbers': ed.getParam('source_numbers', true),
+                      'highlight': ed.getParam('source_highlight', true),
+                      'theme': ed.getParam('source_theme', 'textmate'),
+                      'format': ed.getParam('source_format', true),
+                      'tag_closing': ed.getParam('source_tag_closing', true),
+                      'selection_match': ed.getParam('source_selection_match', true),
+                      'font_size': ed.getParam('source_font_size', ''),
+                      'fullscreen': DOM.hasClass(container, 'mce-fullscreen'),
+                      'load': function() {
+                          DOM.removeClass(container, 'mce-loading');
+                      }
+                  }, content);
+              });
+
+              var iframeContainer = DOM.add(div, 'div', {
+                  'class': 'mceIframeContainer'
+              });
+
+              DOM.add(iframeContainer, iframe);
+
+              // create statusbar
+              statusbar = DOM.add(div, 'div', {
+                  'id': ed.id + '_editor_source_statusbar',
+                  'class': 'mceStatusbar mceLast'
+              }, '<a tabindex="-1" class="mceResize" onclick="return false;" href="javascript:;" id="' + ed.id + '_editor_source_resize"></a>');
+
+              var resize = DOM.get(ed.id + '_editor_source_resize');
+
+              // cancel default click
+              Event.add(resize, 'click', function(e) {
+                  e.preventDefault();
+              });
+
+              // Resize source editor
+              Event.add(resize, 'mousedown', function(e) {
+                  var mm, mu, sx, sy, sw, sh, w, h;
+
+                  e.preventDefault();
+
+                  if (DOM.hasClass(resize, 'wf-editor-source-resizing')) {
+                      return false;
+                  }
+
+                  function resizeOnMove(e) {
+                      e.preventDefault();
+
+                      w = sw + (e.screenX - sx);
+                      h = sh + (e.screenY - sy);
+
+                      DOM.setStyle(iframe, 'max-width', w + 'px');
+                      DOM.setStyle(iframe, 'height', h);
+                      DOM.setStyle(container, 'max-width', w + 'px');
+
+                      DOM.addClass(resize, 'wf-editor-source-resizing');
+                  }
+
+                  function endResize(e) {
+                      // Stop listening
+                      Event.remove(DOM.doc, 'mousemove', mm);
+                      Event.remove(DOM.doc, 'mouseup', mu);
+
+                      w = sw + (e.screenX - sx);
+                      h = sh + (e.screenY - sy);
+
+                      DOM.setStyle(iframe, 'max-width', w + 'px');
+                      DOM.setStyle(iframe, 'height', h);
+                      DOM.setStyle(container, 'max-width', w + 'px');
+
+                      DOM.removeClass(resize, 'wf-editor-source-resizing');
+                  }
+
+                  // Get the current rect size
+                  sx = e.screenX;
+                  sy = e.screenY;
+
+                  sw = w = container.offsetHeight;
+                  sh = h = iframe.clientHeight;
+
+                  // Register envent handlers
+                  mm = Event.add(DOM.doc, 'mousemove', resizeOnMove);
+                  mu = Event.add(DOM.doc, 'mouseup', endResize);
+              });
+
+          } else {
+              DOM.show(div);
+              var editor = iframe.contentWindow.SourceEditor;
+              // set fullscreen state
+              editor.setButtonState('fullscreen', DOM.hasClass(container, 'mce-fullscreen'));
+              // set content
+              editor.setContent(content);
+              DOM.removeClass(container, 'mce-loading');
+          }
+
+          // get height from setting or session data or editor textarea
+          var height = ed.settings.container_height || sessionStorage.getItem('wf-editor-container-height') || (ifrHeight + statusbar.offsetHeight);
+
+          if (DOM.hasClass(container, 'mce-fullscreen')) {
+            var vp = DOM.getViewPort();
+            height = vp.h - header.offsetHeight;
+          }
+
+          DOM.setStyle(iframe, 'height', height - 30);
+      }
     });
 
     // Register plugin
-    tinymce.PluginManager.add('source', tinymce.plugins.Source);
+    tinymce.PluginManager.add('source', tinymce.plugins.SourcePlugin);
 })();

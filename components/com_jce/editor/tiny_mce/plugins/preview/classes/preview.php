@@ -94,8 +94,8 @@ class WFPreviewPlugin extends WFEditorPlugin {
 
           require_once(JPATH_SITE . '/components/com_content/helpers/route.php');
 
-          // set error reporting to error only
-          error_reporting(E_ERROR);
+          // set error reporting off to produce empty string on Fatal error
+          error_reporting(0);
 
           $dispatcher->trigger('onPrepareContent', array(& $article, & $params, $limitstart));
         }

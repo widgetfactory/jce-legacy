@@ -23,10 +23,14 @@ final class WFSourcePlugin extends WFEditorPlugin {
 
         $theme  = $this->getParam('source.theme', 'codemirror');
         
-        $document->addScript(array('tiny_mce_popup'), 'tiny_mce');
+        $document->addScript(array('jquery.min'), 'jquery');
+        $document->addScript(array('plugin.min.js'));
+
         $document->addScript(array('editor', 'format'), 'plugins');
         $document->addStyleSheet(array('editor'), 'plugins');
-        
+        $document->addStyleSheet(array('plugin.min.css'), 'libraries');
+
+
         $document->addScript(array('codemirror-compressed'), 'jce.tiny_mce.plugins.source.js.codemirror');
         $document->addStyleSheet(array('codemirror', 'theme/' . $theme), 'jce.tiny_mce.plugins.source.css.codemirror');
     }

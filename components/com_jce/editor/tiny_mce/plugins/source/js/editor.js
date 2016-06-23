@@ -1,11 +1,73 @@
-(function() {
-    var DOM = tinyMCEPopup.dom, ed = tinyMCEPopup.editor, Event = tinymce.dom.Event;
-    var writer = new tinymce.html.Writer(ed.settings), parser = new tinymce.html.SaxParser(writer, ed.schema);
+// fake tinyMCEPopup
+var tinyMCEPopup = {
+  init: function() {
+    var self = this;
 
-    /* Source Editor Class
-     * Depends on codemirror.js with modes (css, javascript, htmlmixed, xml, php, clike) and utilities (search, searchcursor, matchbrackets, closebrackets, match-highlighter, closetag, mark-selection, active-line)
-     */
+    var win = this.getWin();
+    var tinymce = win.tinymce || false;
 
+    self.editor = tinymce ? tinymce.EditorManager.activeEditor : false;
+  },
+  getLang: function(n, dv) {
+    var lang = jQuery.Plugin.getLanguage();
+    return jQuery.Plugin.i18n[lang + '.dlg.' + n] || dv;
+  },
+  getWin : function() {
+      return (!window.frameElement && window.dialogArguments) || opener || parent || top;
+  },
+  getParam : function(n, v) {
+      if (this.editor) {
+          return this.editor.getParam(n, dv);
+      }
+  },
+  /**
+	 * Stores the current editor selection for later restoration. This can be useful since some browsers
+	 * looses it's selection if a control element is selected/focused inside the dialogs.
+	 *
+	 * @method storeSelection
+	 */
+	storeSelection : function() {
+		this.editor.windowManager.bookmark = this.editor.selection.getBookmark(1);
+	},
+
+	/**
+	 * Restores any stored selection. This can be useful since some browsers
+	 * looses it's selection if a control element is selected/focused inside the dialogs.
+	 *
+	 * @method restoreSelection
+	 */
+	restoreSelection : function() {
+		this.editor.selection.moveToBookmark(this.editor.windowManager.bookmark);
+	},
+  execCommand : function(cmd, ui, val, a) {
+		a = a || {};
+		a.skip_focus = 1;
+
+		this.restoreSelection();
+
+		return this.editor.execCommand(cmd, ui, val, a);
+	},
+  addI18n: function(p, o) {
+    var win = this.getWin();
+
+    if (win.tinyMCE) {
+        return win.tinyMCE.addI18n(p, o);
+    }
+
+    return jQuery.Plugin.addI18n(p, o);
+  }
+};
+
+tinyMCEPopup.init();
+
+// fake tinyMCE object
+var tinyMCE = {
+  addI18n: function(p, o) {
+    return tinyMCEPopup.addI18n(p, o);
+  }
+};
+
+(function($) {
     var SourceEditor = {
         options: {
             format: true,
@@ -16,148 +78,78 @@
             load: function() {
             },
             change: function() {
-            }
+            },
+            fullscreen: false
         },
         init: function(options, content, selection) {
             var self = this;
 
-            if (Event.domLoaded) {
-                tinymce.extend(this.options, options);
+            $.extend(this.options, options);
 
-                this.container = DOM.add(document.body, 'div', {
-                    'style': {
-                        width: this.options.width,
-                        height: this.options.height
-                    },
-                    'id': 'source-container'
-                });
+            $(document).ready(function() {
 
-                this._createToolbar();
+              self._createToolbar();
 
-                // format content
-                if (this.options.format) {
-                    content = this._format(content);
-                }
+              // format content
+              if (self.options.format) {
+                  content = self._format(content);
+              }
 
-                // load editor
-                this._load(content, selection);
-                // keep trying...
-            } else {
-                Event.add(document, 'init', function() {
-                    self.init(options, content, selection);
-                });
-            }
+              self._load(content);
+            });
         },
         _createToolbar: function() {
             var self = this, o = this.options, doc = document;
 
-            this.toolbar = DOM.add(this.container, 'div', {
-                id: 'source-toolbar'
-            });
+            $('.source-editor .ui-navbar button').click(function(e) {
+                e.preventDefault();
 
-            tinymce.each(['highlight', 'linenumbers', 'wrap'], function(s) {
-                var n = DOM.add(self.toolbar, 'span', {
-                    'class': 'button source_' + s,
-                    'title': ed.getLang('source.' + s, s)
-                }, '<span class="mceIcon"></span>');
+                var action = $(this).data('action');
 
-                // create function
-                var func = self[s];
+                // search
+                if (action == 'search' || action == 'search-previous') {
+                  var f = $('#source_search_value').val();
+                  var prev = !!(action == 'search-previous');
 
-                if (o[s]) {
-                    DOM.addClass(n, 'active');
+                  self.search(f, prev, $('#source_search_regex').prop('checked'))
                 }
 
-                Event.add(n, 'click', function() {
-                    func.call(self, !DOM.hasClass(n, 'active'));
+                // replace
+                if (action == 'replace' || action == 'replace-all') {
+                    var f = $('#source_search_value').val();
+                    var r = $('#source_replace_value').val();
 
-                    if (DOM.hasClass(n, 'active')) {
-                        DOM.removeClass(n, 'active');
-                    } else {
-                        DOM.addClass(n, 'active');
-                    }
-                });
+                    var all = !!(action == 'replace-all');
+
+                    return self.replace(f, r, all, $('#source_search_regex').prop('checked'));
+                }
+
+                var fn = self[action] || function() {};
+
+                if ($(this).hasClass('ui-button-checkbox')) {
+                  $(this).toggleClass('ui-active');
+                }
+
+                fn.call(self, $(this).hasClass('ui-active'));
+            }).filter('.ui-button-checkbox').each(function() {
+                var action = $(this).data('action');
+
+                if (!!o[action]) {
+                    $(this).addClass('ui-active');
+                }
             });
 
-            var format = DOM.add(self.toolbar, 'span', {
-                'class': 'button source_format',
-                'title': ed.getLang('source.format', 'Format')
-            }, '<span class="mceIcon"></span>');
+            $('.source-editor .ui-navbar button[data-action="fullscreen"]').toggleClass('ui-active', o.fullscreen);
 
-            DOM.bind(format, 'click', function() {
-                self.format();
-            });
-
-            var search = DOM.add(this.toolbar, 'span', {
-                'class': 'source_search_container'
-            });
-
-            // search / replace
-            tinymce.each(['search', 'replace'], function(s) {
-                var input = DOM.add(search, 'input', {
-                    id: 'source_' + s + '_value',
-                    type: 'text',
-                    'placeholder': ed.getLang('source.' + s, s)
-                });
-
-                var btn = DOM.add(search, 'span', {
-                    'class': 'button source_' + s,
-                    'title': ed.getLang('source.' + s, s)
-                }, '<span class="mceIcon"></span>');
-
-                // shortcut for function name, eg: search() or replace()
-                var fn = self[s];
-
-                DOM.bind(btn, 'click', function() {
-                    var f = DOM.get('source_search_value').value, r;
-
-                    // replace
-                    if (s == 'replace') {
-                        r = DOM.get('source_replace_value').value;
-                        return fn.call(self, f, r, false, DOM.get('source_search_regex').checked);
-                    }
-                    // search
-                    fn.call(self, f, false, DOM.get('source_search_regex').checked);
-                });
-
-                var k = (s == 'search') ? 'prev' : 'all';
-
-                var btn2 = DOM.add(search, 'span', {
-                    'class': 'button source_' + s + '_' + k,
-                    'title': ed.getLang('source.' + s + '_' + k, s + ' ' + k)
-                }, '<span class="mceIcon"></span>');
-
-                DOM.bind(btn2, 'click', function() {
-                    var f = DOM.get('source_search_value').value, r;
-
-                    // replace
-                    if (s == 'replace') {
-                        r = DOM.get('source_replace_value').value;
-
-                        return fn.call(self, f, r, true, DOM.get('source_search_regex').checked);
-                    }
-
-                    // search
-                    return fn.call(self, f, true, DOM.get('source_search_regex').checked);
-                });
-            });
             // clear search if search input emptied
-            DOM.bind(DOM.get('source_search_value'), 'change', function() {
-                if (DOM.get('source_search_value').value == '') {
+            $('#source_search_value').change(function() {
+                if (this.value === "") {
                     self.clearSearch();
                 }
             });
-
-            // regex checkbox
-            DOM.add(search, 'input', {
-                'id': 'source_search_regex',
-                'type': 'checkbox'
-            });
-
-            // regex label
-            DOM.add(search, 'label', {
-                'for': 'source_search_regex'
-            }, ed.getLang('source.regex', 'Regular Expression'));
+        },
+        setButtonState: function(button, state) {
+          $('.source-editor .ui-navbar button[data-action="' + state + '"]').toggleClass('ui-active', state);
         },
         _format: function(html, validate) {
             if (validate) {
@@ -187,11 +179,16 @@
                     autoCloseTags: !!o.tag_closing
                 };
 
-                cm = CodeMirror(this.container, settings);
+                cm = CodeMirror($('.source-editor-container').get(0), settings);
 
                 // onchange
                 cm.on('change', function() {
                     o.change.call();
+
+                    var history = cm.historySize();
+
+                    $('.source-editor .ui-navbar button[data-action="undo"]').prop('disabled', !history.undo);
+                    $('.source-editor .ui-navbar button[data-action="redo"]').prop('disabled', !history.redo);
                 });
 
                 // line wrapping
@@ -237,11 +234,6 @@
                     if (!init) {
                         h = h - self.toolbar.offsetHeight;
                     }
-
-                    /*DOM.setStyles(scroller, {
-                        height: h
-                    });*/
-
                     cm.setSize(w || null, h);
                 };
 
@@ -449,6 +441,7 @@
                 }
 
                 this.editor = cm;
+
                 this._loaded(content);
 
                 if (selection) {
@@ -499,13 +492,15 @@
             if (format) {
                 v = this._format(v);
             }
-
             return this.editor.setContent(v);
         },
         insertContent: function(v) {
             return this.editor.insertContent(v);
         },
         getContent: function() {
+            return this.editor.getContent();
+        },
+        save: function() {
             return this.editor.getContent();
         },
         showInvisibles: function(s) {
@@ -539,8 +534,15 @@
             html = this._format(html);
             // set content
             this.setContent(html);
+        },
+        fullscreen: function() {
+            var ed = tinyMCEPopup.editor;
+
+            if (ed) {
+                return ed.execCommand('mceFullScreen', false);
+            }
         }
     };
 
     window.SourceEditor = SourceEditor;
-}());
+})(jQuery);

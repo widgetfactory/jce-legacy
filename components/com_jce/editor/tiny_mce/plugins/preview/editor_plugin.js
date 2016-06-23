@@ -1,354 +1,166 @@
-/**
- * editor_plugin_src.js
- *
- * Copyright 2009, Moxiecode Systems AB
- * Released under LGPL License.
- *
- * License: http://www.tinymce.com/license
- * Contributing: http://tinymce.moxiecode.com/contributing
- */
-
 (function() {
-	var each = tinymce.each;
-	tinymce.create('tinymce.plugins.Preview', {
-		init : function(ed, url) {
-			var self = this, DOM = tinymce.DOM;
-
-			this.editor = ed, this.url = url;
-
-			this.active = [];
-
-			ed.addCommand('mcePreview', function() {
-				self._togglePreview();
-			});
-
-			ed.onBeforeExecCommand.add(function(ed, cmd, ui, v, o) {
-				if (cmd == 'mcePrint') {
-					if (self.getState()) {
-						o.terminate = true;
-						var preview = DOM.get(ed.id + '_preview_iframe');
-
-						if (preview) {
-							preview.contentWindow.print();
-						}
-					}
-				}
-			});
-
-			ed.onInit.add(function() {
-				var s = ed.getParam('preview_state', false);
-
-				if (typeof s != 'undefined') {
-					self.setState(!s);
-					self._togglePreview();
-				}
-
-				if (ed.onFullScreen) {
-					ed.onFullScreen.add(function(editor, state) {
-						if (!state) {
-							self.setState(!editor.settings.preview_state);
-							self._togglePreview();
-						}
-					});
-				}
-			});
-
-			ed.onSetContent.add(function(ed, o) {
-				if (self.getState()) {
-					self._disable();
-				}
-			});
-
-			ed.onExecCommand.add(function(ed, cmd) {
-				switch (cmd) {
-					case 'mcePreview' :
-						window.setTimeout(function() {
-							self._disable();
-						}, 0);
-						break;
-					case 'mceFullScreen' :
-						break;
-				}
-			});
-
-			ed.onNodeChange.add( function(ed, cm, n) {
-				var s = self.getState();
-
-				if (s) {
-					self._disable();
-				}
-			});
-
-			ed.addButton('preview', {title : 'preview.desc', cmd : 'mcePreview'});
-
-			// add theme resize
-			ed.theme.onResize.add(function() {
-				if (self.getState()) {
-					self.resize();
-				}
-			});
-		},
-
-		getState : function() {
-			return this.editor.getParam('preview_state',false);
-		},
-
-		setState : function(s) {
-			this.editor.settings.preview_state = s;
-		},
-
-		getTop : function() {
-			var ed = this.editor, container = ed.getContentAreaContainer();
-			return container.offsetTop + Math.round((container.offsetHeight - container.clientHeight) / 2);
-		},
-
-		resize : function(w, h) {
-			var self = this, ed = this.editor, DOM = tinymce.DOM, ifr = DOM.get(ed.id + '_ifr');
-
-			w = parseFloat(w) || parseFloat(DOM.getStyle(ifr, 'width'));
-			h = parseFloat(h) || parseFloat(DOM.getStyle(ifr, 'height'));
-
-			DOM.setStyles(DOM.get(ed.id + '_preview_iframe'), {
-				'width' 	: w,
-				'height' 	: h
-			});
-		},
-
-		_disable : function() {
-			var self = this;
-			window.setTimeout( function() {
-				self._toggleDisabled();
-			}, 0);
-		},
-
-		/**
-		 * Disables all buttons except Preview
-		 */
-		_toggleDisabled : function() {
-			var self = this, ed = this.editor, DOM = tinymce.DOM, cm = ed.controlManager;
-
-			var state 	= this.getState();
-			// store active buttons
-			var active 	= DOM.select('.mceButtonActive', DOM.get(ed.id + '_toolbargroup'));
-
-			each (active, function(n) {
-				cm.setActive(n.id, !state);
-			});
-
-			each(DOM.select('.mceButton, .mceListBox, .mceSplitButton', DOM.get(ed.id + '_toolbargroup')), function(n) {
-				var id = n.id;
-
-				// get splitButton id from parent
-				if (n.className.indexOf('mceSplitButton') !== -1) {
-					id = n.parentNode.id;
-				}
-
-				if (id) {
-					cm.setDisabled(id, state);
-				}
-			});
-
-			cm.setActive('preview', state);
-			cm.setActive('fullscreen', (ed.id == 'mce_fullscreen'));
-
-			cm.setDisabled('preview', false);
-			cm.setDisabled('print', false);
-			cm.setDisabled('fullscreen', false);
-		},
-
-		_togglePreview : function(state) {
-			var self = this, ed = tinymce.activeEditor, s = tinymce.settings, DOM = tinymce.DOM;
-
-			var state 		= this.getState();
-
-			var iframe 		= DOM.get(ed.id + '_ifr');
-			var preview 	= DOM.get(ed.id + '_preview_iframe');
-
-			var container 	= DOM.get(ed.id + '_preview_container');
-			var toolbar 	= DOM.get(ed.id + '_toolbargroup');
-
-			var w = parseFloat(iframe.clientWidth);
-			var h = parseFloat(iframe.clientHeight);
-
-			// Path
-			var editorpath 	= DOM.get(ed.id + '_path_row');
-			// Word Count
-			var wordcount 	= DOM.get(ed.id + '-word-count');
-
-			if (tinymce.isIE) {
-				DOM.setStyle(iframe.parentNode, 'position', 'relative');
-			}
-
-			if (!state) {
-				ed.setProgressState(true);
-
-				if (!container) {
-					container = DOM.create('div', {
-						id : ed.id + '_preview_container',
-						role : 'application',
-						style : {
-							position : 'absolute',
-							top		 : 0
-						}
-					});
-
-					var parent = iframe.parentNode;
-					parent.insertBefore(container, iframe);
-				}
-
-				if (!preview) {
-					// create iframe
-					preview = DOM.add(container, 'iframe', {
-						frameborder	: 0,
-						src			: 'javascript:""',
-						id			: ed.id + '_preview_iframe'
-					});
-
-					var html = '<!DOCTYPE html>';
-					html += '<head xmlns="http://www.w3.org/1999/xhtml">';
-					html += '<base href="' + s.document_base_url + '" />';
-					html += '<meta http-equiv="X-UA-Compatible" content="IE=7" />';
-					html += '<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />';
-
-					// insert css
-					html += '';
-
-					var css = [self.url + '/css/preview.css'];
-
-					if (ed.settings.compress.css) {
-						css = [s.site_url + 'index.php?option=com_jce&view=editor&layout=editor&task=pack&type=css&context=preview&component_id=' + s.component_id + '&' + s.token + '=1'];
-					} else {
-						css = tinymce.explode(ed.settings.content_css);
-					}
-
-					tinymce.each(css, function(url) {
-						html += '<link href="' + url + '" rel="stylesheet" type="text/css" />';
-					});
-
-					html += '</head><body style="margin:5px;">';
-					html += '</body></html>';
-
-					var doc = preview.contentWindow.document;
-
-					doc.open();
-					doc.write(html);
-					doc.close();
-				}
-
-				DOM.setStyles(preview, {
-					width : w,
-					height : h
-				});
-
-				// hide Path
-				if (editorpath) {
-					DOM.hide(editorpath);
-				}
-				// hide word count
-				if (wordcount) {
-					DOM.hide(wordcount.parentNode);
-				}
-
-				self._loadData(preview);
-
-				DOM.setStyle(iframe, 'hidden');
-				DOM.setAttrib(iframe, 'aria-hidden', true);
-
-				DOM.show(container);
-				container.removeAttribute('aria-hidden');
-
-			} else {
-				if (preview) {
-					// show Path
-					if (editorpath) {
-						DOM.show(editorpath);
-					}
-					// show word count
-					if (wordcount) {
-						DOM.show(wordcount.parentNode);
-					}
-
-					var doc = preview.contentWindow.document;
-					doc.body.innerHTML = '';
-
-					DOM.removeClass(iframe, 'hidden');
-					iframe.removeAttribute('aria-hidden');
-
-					DOM.hide(container);
-					DOM.setAttrib(container, 'aria-hidden', true);
-				}
-			}
-
-			this.setState(!state);
-		},
-
-		_loadData : function(n) {
-			var self = this, ed = tinymce.activeEditor, s = tinymce.settings, doc = n.contentWindow.document;
-
-			var query = '', args = {'format' : 'raw'};
-
-			// set token
-			args[ed.settings.token] = 1;
-
-			tinymce.extend(args, {
-				'data' : ed.getContent()
-			});
-
-			// create query
-			for (k in args) {
-				query += '&' + k + '=' + encodeURIComponent(args[k]);
-			}
-
-			// load preview data
-			tinymce.util.XHR.send({
-				url 	: s['site_url'] + 'index.php?option=com_jce&view=editor&layout=plugin&plugin=preview&component_id=' + s['component_id'],
-				data 	: 'json=' + JSON.stringify({'fn' : 'showPreview'}) + '&' + query,
-				content_type : 'application/x-www-form-urlencoded',
-				success : function(x) {
-					var o = {}, msg = "";
-
-					try {
-						o = JSON.parse(x);
-					} catch (e) {
-						o.error = /[{}]/.test(o) ? 'The server returned an invalid JSON response' : x;
-					}
-
-					if (o.error) {
-
-						if (typeof o.error === "string") {
-							msg = o.error;
-						} else {
-							msg = o.error.text;
-						}
-
-						ed.windowManager.alert(msg);
-						ed.setProgressState(false);
-						return false;
-					}
-
-					r = o.result;
-
-					doc.body.innerHTML = r;
-					ed.setProgressState(false);
-				},
-				error 	: function(e, x) {
-					doc.body.innerHTML = ed.getContent();
-					ed.setProgressState(false);
-				}
-			});
-		},
-
-		getInfo : function() {
-			return {
-				longname : 'Preview',
-				author : 'Moxiecode Systems AB',
-				authorurl : 'http://tinymce.moxiecode.com',
-				infourl : 'http://wiki.moxiecode.com/index.php/TinyMCE:Plugins/preview',
-				version : tinymce.majorVersion + "." + tinymce.minorVersion
-			};
-		}
-	});
-
-	// Register plugin
-	tinymce.PluginManager.add('preview', tinymce.plugins.Preview);
+    var DOM = tinymce.DOM,
+        Event = tinymce.dom.Event;
+
+    var counter = 0;
+
+    /**
+      Generates an unique ID.
+      @method uid
+      @return {String} Virtually unique id.
+    */
+    function uid() {
+        var guid = new Date().getTime().toString(32),
+            i;
+
+        for (i = 0; i < 5; i++) {
+            guid += Math.floor(Math.random() * 65535).toString(32);
+        }
+
+        return 'wf_' + guid + (counter++).toString(32);
+    }
+
+    tinymce.create('tinymce.plugins.PreviewPlugin', {
+        init: function(ed, url) {
+            this.editor = ed;
+        },
+
+        hide: function() {
+          DOM.hide(this.editor.id + '_editor_preview');
+        },
+
+        toggle: function() {
+            var ed = this.editor;
+
+            var self = this,
+                s = ed.settings;
+
+            var element   = ed.getElement();
+            var container = element.parentNode;
+            // get tabs header
+            var header = DOM.getPrev(element, '.wf-editor-header');
+
+            // get editor iframe height
+            var ifrHeight = parseInt(DOM.get(ed.id + '_ifr').style.height) || s.height;
+            var preview   = DOM.get(ed.id + '_editor_preview');
+            var iframe    = DOM.get(ed.id + '_editor_preview_iframe');
+
+            if (!preview) {
+                // create the container
+                var preview = DOM.add(container, 'div', {
+                    role: 'textbox',
+                    id: ed.id + '_editor_preview',
+                    'class': 'wf-editor-preview'
+                });
+
+                // create iframe
+                iframe = DOM.add(preview, 'iframe', {
+                    frameborder: 0,
+                    src: 'javascript:""',
+                    id: ed.id + '_editor_preview_iframe'
+                });
+
+                var html = '<!DOCTYPE html>';
+                html += '<head xmlns="http://www.w3.org/1999/xhtml">';
+                html += '<base href="' + s.document_base_url + '" />';
+                html += '<meta http-equiv="X-UA-Compatible" content="IE=7" />';
+                html += '<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />';
+
+                // insert css
+                html += '';
+
+                var css = [self.url + '/css/preview.css'];
+
+                if (ed.settings.compress.css) {
+                    css = [s.site_url + 'index.php?option=com_jce&view=editor&layout=editor&task=pack&type=css&context=preview&component_id=' + s.component_id + '&' + s.token + '=1'];
+                } else {
+                    css = tinymce.explode(ed.settings.content_css);
+                }
+
+                tinymce.each(css, function(url) {
+                    html += '<link href="' + url + '" rel="stylesheet" type="text/css" />';
+                });
+
+                html += '</head><body style="margin:5px;">';
+                html += '</body></html>';
+
+                var doc = iframe.contentWindow.document;
+
+                doc.open();
+                doc.write(html);
+                doc.close();
+            }
+
+            // get height from setting or session data or editor textarea
+            var height = ed.settings.container_height || sessionStorage.getItem('wf-editor-container-height') || ifrHeight;
+
+            if (DOM.hasClass(container, 'mce-fullscreen')) {
+              var vp = DOM.getViewPort();
+              height = vp.h - header.offsetHeight;
+            }
+
+            DOM.setStyle(preview, 'height', height);
+
+            // show preview
+            DOM.show(preview);
+
+            var query = '',
+                args = {
+                    'format': 'raw'
+                };
+
+            // set token
+            args[ed.settings.token] = 1;
+
+            tinymce.extend(args, {
+                'data': ed.getContent(),
+                'id': uid()
+            });
+
+            // create query
+            for (k in args) {
+                query += '&' + k + '=' + encodeURIComponent(args[k]);
+            }
+
+            function update(text) {
+                DOM.removeClass(container, 'mce-loading');
+                iframe.contentWindow.document.body.innerHTML = text;
+            }
+
+            // load preview data
+            tinymce.util.XHR.send({
+                url: s['site_url'] + 'index.php?option=com_jce&view=editor&layout=plugin&plugin=preview&component_id=' + s['component_id'],
+                data: 'json=' + JSON.stringify({
+                    'method': 'showPreview'
+                }) + '&' + query,
+                content_type: 'application/x-www-form-urlencoded',
+                success: function(x) {
+                    var o = {},
+                        msg = "";
+
+                    try {
+                        o = JSON.parse(x);
+                    } catch (e) {
+                        o.error = /[{}]/.test(o) ? 'The server returned an invalid JSON response' : x;
+                    }
+
+                    r = o.result;
+
+                    // revert to unprocessed content on error
+                    if (!x || o.error) {
+                        r = ed.getContent();
+                    }
+
+                    update(r);
+                },
+                error: function(e, x) {
+                    update(ed.getContent());
+                }
+            });
+        }
+
+    });
+
+    // Register plugin
+    tinymce.PluginManager.add('preview', tinymce.plugins.PreviewPlugin);
 })();
