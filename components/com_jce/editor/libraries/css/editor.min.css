@@ -7,8 +7,40 @@
  * is derivative of works licensed under the GNU General Public License or
  * other free or open source software licenses.
  */
+.wf-editor-container, .wf-editor-container * {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  outline: 0;
+  vertical-align: top;
+  background: transparent;
+  text-decoration: none;
+  color: #333;
+  font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+  font-size: 14px;
+  text-shadow: none;
+  float: none;
+  position: static;
+  width: auto;
+  height: auto;
+  white-space: nowrap;
+  cursor: inherit;
+  -webkit-tap-highlight-color: transparent;
+  line-height: normal;
+  font-weight: normal;
+  text-align: left;
+  -moz-box-sizing: content-box;
+  -webkit-box-sizing: content-box;
+  box-sizing: content-box;
+  direction: ltr;
+  max-width: none;
+}
+/* Yootheme Zoo */
+.repeatable-content {width: 100%}
+
 .wf-editor-container {
     position: relative;
+    width: 100%;
 }
 
 .wf-editor-container.mce-fullscreen {
