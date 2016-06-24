@@ -45,6 +45,12 @@
             var preview   = DOM.get(ed.id + '_editor_preview');
             var iframe    = DOM.get(ed.id + '_editor_preview_iframe');
 
+            var o = tinymce.util.Cookie.getHash("TinyMCE_" + ed.id + "_size");
+
+            if (o && o.height) {
+                ifrHeight = o.height;
+            }
+
             if (!preview) {
                 // create the container
                 var preview = DOM.add(container, 'div', {
@@ -100,6 +106,12 @@
             }
 
             DOM.setStyle(preview, 'height', height);
+
+            /*var width = ed.settings.container_width || sessionStorage.getItem('wf-editor-container-width');
+
+            if (width) {
+                DOM.setStyle(preview, 'width', width);
+            }*/
 
             // show preview
             DOM.show(preview);

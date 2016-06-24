@@ -185,6 +185,7 @@
 
                       DOM.setStyle(iframe, 'max-width', w + 'px');
                       DOM.setStyle(iframe, 'height', h);
+                      //DOM.setStyle(div, 'width', w);
                       DOM.setStyle(container, 'max-width', w + 'px');
 
                       DOM.addClass(resize, 'wf-editor-source-resizing');
@@ -236,6 +237,12 @@
           }
 
           DOM.setStyle(iframe, 'height', height - 30);
+
+          /*var width = ed.settings.container_width || sessionStorage.getItem('wf-editor-container-width');
+
+          if (width) {
+              DOM.setStyle(div, 'width', width);
+          }*/
       }
     });
 
