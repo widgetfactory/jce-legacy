@@ -486,7 +486,19 @@
                     dom.setAttrib(elm, 'border', '');
                 }
 
+                // set alignment for html5
+                if (align && ed.settings.schema !== "html4") {
+                    if (align === "center") {
+                      dom.setStyles(elm, {'margin-left' : 'auto', 'margin-right' : 'auto'});
+                    } else {
+                      dom.setStyle(elm, 'float', align);
+                    }
+
+                    align = "";
+                }
+
                 dom.setAttrib(elm, 'align', align);
+
                 dom.setAttrib(elm, 'frame', frame);
                 dom.setAttrib(elm, 'rules', rules);
                 dom.setAttrib(elm, 'class', className);
@@ -599,6 +611,17 @@
                 style += 'width: ' + width;
             } else {
                 html += this.makeAttrib('width', width);
+            }
+
+            // set alignment for html5
+            if (align && ed.settings.schema !== "html4") {
+                if (align === "center") {
+                  style += 'margin-left: auto;margin-right: auto;';
+                } else {
+                  style += 'float: ' + align;
+                }
+
+                align = "";
             }
 
             /*	if (height) {
