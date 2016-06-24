@@ -40,11 +40,15 @@
   display: block;
   width: 100%;
 }
-.defaultSkin .mceLeft {
+.defaultSkin .mceLeft .mceToolbarRow {
   text-align: left
 }
-.defaultSkin .mceRight {
+.defaultSkin .mceRight .mceToolbarRow {
   text-align: right
+}
+
+.defaultSkin .mceCenter .mceToolbarRow {
+  text-align: center
 }
 
 /* External */
