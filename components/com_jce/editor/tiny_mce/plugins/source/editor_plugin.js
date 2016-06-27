@@ -238,11 +238,11 @@
 
           DOM.setStyle(iframe, 'height', height - 30);
 
-          /*var width = ed.settings.container_width || sessionStorage.getItem('wf-editor-container-width');
+          var width = ed.settings.container_width || sessionStorage.getItem('wf-editor-container-width');
 
-          if (width) {
+          if (width && !DOM.hasClass(container, 'mce-fullscreen')) {
               DOM.setStyle(div, 'width', width);
-          }*/
+          }
       }
     });
 

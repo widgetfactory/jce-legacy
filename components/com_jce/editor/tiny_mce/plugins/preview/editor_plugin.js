@@ -107,11 +107,11 @@
 
             DOM.setStyle(preview, 'height', height);
 
-            /*var width = ed.settings.container_width || sessionStorage.getItem('wf-editor-container-width');
+            var width = ed.settings.container_width || sessionStorage.getItem('wf-editor-container-width');
 
-            if (width) {
+            if (width && !DOM.hasClass(container, 'mce-fullscreen')) {
                 DOM.setStyle(preview, 'width', width);
-            }*/
+            }
 
             // show preview
             DOM.show(preview);

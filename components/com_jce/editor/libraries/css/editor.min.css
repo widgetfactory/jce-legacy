@@ -157,6 +157,7 @@
     border: 1px solid #ccc;
     box-sizing: border-box;
     background: #fff;
+    min-width: 300px;
 }
 .wf-editor-source {
     border-top-width: 0;
