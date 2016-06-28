@@ -273,6 +273,7 @@ div#wf_upload_button input[type="file"] {
   line-height: 20px;
   font-size: 12px;
   border: 1px solid transparent;
+  cursor: pointer;
   -webkit-border-radius: 4px 4px 0 0;
      -moz-border-radius: 4px 4px 0 0;
           border-radius: 4px 4px 0 0;
