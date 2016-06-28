@@ -421,3 +421,10 @@ input[type="range"]::-ms-thumb {
     top: 0;
     opacity: 0;
 }
+
+.ui-progress-bar {
+  line-height: 20px;
+  text-shadow: inherit;
+  font-size: inherit;
+  box-shadow: inherit;
+}
