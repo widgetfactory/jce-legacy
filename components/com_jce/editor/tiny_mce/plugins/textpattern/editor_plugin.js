@@ -157,17 +157,13 @@
 
             var custom_patterns = editor.getParam('textpattern_custom_patterns', '', 'hash');
 
-            editor.addCommand('InsertCustomPattern', function(ui, node) {
+            editor.addCommand('InsertCustomTextPattern', function(ui, node) {
               node = node.replace(/\$\$/g, '');
 
               if (custom_patterns[node]) {
                   var html = custom_patterns[node];
                   editor.execCommand('mceReplaceContent', false, html);
               }
-            });
-
-            editor.addCommand('ApplyCustomFormat', function(ui, node) {
-
             });
 
             patterns = editor.settings.textpattern_patterns || [
@@ -187,8 +183,7 @@
                     {start: '1. ', cmd: 'InsertOrderedList'},
                     {start: '* ', cmd: 'InsertUnorderedList'},
                     {start: '- ', cmd: 'InsertUnorderedList'},
-                    {start: '$$', end: '$$', cmd: 'InsertCustomPattern'},
-                    {start: '!!', end: '!!', cmd: 'ApplyCustomFormat'}
+                    {start: '$$', end: '$$', cmd: 'InsertCustomTextPattern'}
                 ];
 
             // Returns a sorted patterns list, ordered descending by start length
