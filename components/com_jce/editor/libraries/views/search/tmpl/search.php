@@ -16,7 +16,7 @@ defined('_JEXEC') or die('RESTRICTED');
         <div id="searchbox" class="ui-form-icon ui-form-icon-flip ui-width-3-4">
             <input type="text" id="search-input" class="ui-width-1-1" placeholder="<?php echo WFText::_('WF_LABEL_SEARCH'); ?>..." />
             <i class="ui-icon ui-icon-close" id="search-clear"></i>
-            <i class="ui-icon ui-icon-spinner ui-icon-spin"></i>
+            <i class="ui-icon ui-icon-spinner"></i>
         </div>
 
         <div class="ui-button-group ui-width-1-4">

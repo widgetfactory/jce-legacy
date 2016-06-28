@@ -428,3 +428,11 @@ input[type="range"]::-ms-thumb {
   font-size: inherit;
   box-shadow: inherit;
 }
+
+.ui-icon-spinner:before {
+    content: "";
+    background: url('../img/load.gif') no-repeat center;
+    width: 20px;
+    display: inline-block;
+    height: 20px;
+}
