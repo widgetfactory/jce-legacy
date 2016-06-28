@@ -1079,11 +1079,19 @@ abstract class WFInstall {
         $packages = array(
             'editor'    => array('jce'),
             'system'    => array('jce'),
+            'installer' => array('jce'),
             'quickicon' => array('jcefilebrowser'),
             'module'    => array('mod_jcefilebrowser')
         );
 
+        $version = new JVersion;
+
         foreach ($packages as $folder => $element) {
+            // skip installer plugin on legacy Joomla
+            if ($folder === "installer" && !$version->isCompatible('3.5')) {
+                continue;
+            }
+
             // Joomla! 2.5
             if (defined('JPATH_PLATFORM')) {
                 if ($folder == 'module') {
@@ -1134,8 +1142,8 @@ abstract class WFInstall {
                     $module->store();
                 }
 
-                // enable jce system plugin
-                if ($folder == 'system') {
+                // enable jce system and installer plugin
+                if ($folder == 'system' || $folder == 'installer') {
                     $plugin = JTable::getInstance('extension');
 
                     foreach ($element as $item) {

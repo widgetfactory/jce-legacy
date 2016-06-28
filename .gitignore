@@ -7,6 +7,7 @@ language/en-GB/*
 components/*
 plugins/editors/*
 plugins/system/*
+plugins/installer/*
 plugins/quickicon/*
 administrator/modules/*
 
@@ -24,6 +25,9 @@ components/com_jce/editor/.gitignore
 
 # system
 !plugins/system/jce
+
+# installer
+!plugins/installer/jce
 
 # module
 !administrator/modules/mod_jcefilebrowser
