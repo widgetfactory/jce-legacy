@@ -54,7 +54,7 @@ class WFModelPreferences extends WFModel {
             $groups = $this->getUserGroups();
 
             $tabs = array('<ul class="nav nav-tabs">');
-            $content = array('<div class="tabs-content">');
+            $content = array('<div class="tab-content">');
 
             foreach ($groups as $group) {
                 $difLevel = $group->level - $curLevel;

@@ -26,24 +26,26 @@ defined('_JEXEC') or die('RESTRICTED');
                 <?php endforeach; ?>
                 <?php if ($this->permissons) : ?>
                     <li><a href="#tabs-access"><?php echo JText :: _('WF_PREFERENCES_PERMISSIONS'); ?></a></li>
-                <?php endif; ?>		
-            </ul>	
+                <?php endif; ?>
+            </ul>
+            <div class="tab-content">
             <?php foreach ($this->params->getGroups() as $group) : ?>
-                <div id="tabs-<?php echo $group ?>">
+                <div id="tabs-<?php echo $group ?>" class="tab-pane">
                     <?php echo $this->params->render('params[preferences]', $group); ?>
                 </div>
             <?php endforeach; ?>
             <?php if ($this->permissons) : ?>
-                <div id="tabs-access">
+                <div id="tabs-access" class="tab-pane">
                     <?php
                     if (!class_exists('JForm')) :
-                        echo '<div id="tabs-access-permissions" class="tabbable tabs-left">';
+                        echo '<div id="tabs-access-permissions" class="tabs-left">';
                         echo $this->permissons;
                         echo '</div>';
                     endif;
                     ?>
                 </div>
                 <?php endif; ?>
+            </div>
         </div>
     </div>
     <input type="hidden" name="option" value="com_jce" />
