@@ -155,40 +155,20 @@
 								return false;
             });
 
-            /*function formatIframe(v) {
-                v = v.replace(/youtu(\.)?be([^\/]+)?\/(.+)/, function(a, b, c, d) {
-                    d = d.replace(/(watch\?v=|v\/|embed\/)/, '');
+            var custom_patterns = editor.getParam('textpattern_custom_patterns', '', 'hash');
 
-                    if (b && !c) {
-                        c = '.com';
-                    }
+            editor.addCommand('InsertCustomPattern', function(ui, node) {
+              node = node.replace(/\$\$/g, '');
 
-                    return 'youtube' + c + '/embed/' + d;
-                });
+              if (custom_patterns[node]) {
+                  var html = custom_patterns[node];
+                  editor.execCommand('mceReplaceContent', false, html);
+              }
+            });
 
-                return v;
-            }
+            editor.addCommand('ApplyCustomFormat', function(ui, node) {
 
-            editor.onPreInit.add(function(editor) {
-                editor.formatter.register('iframe', {inline : 'iframe', selector : 'iframe', remove : 'all',
-                    onmatch : function() {
-                        return true;
-                    },
-
-                    onformat : function(elm, fmt, vars) {
-                        tiymce.each(vars, function(value, key) {
-
-                            if (key === "src") {
-                                value = formatIframe(value);
-                            }
-
-                            editor.dom.dom.setAttrib(elm, key, value);
-                        });
-
-                        editor.dom.setAttribs(elm, {'allowfullscreen' : true, 'frameborder': 0});
-                    }
-                });
-            });*/
+            });
 
             patterns = editor.settings.textpattern_patterns || [
                     {start: '*', end: '*', format: 'italic'},
@@ -206,7 +186,9 @@
                     {start: '>', format: 'blockquote'},
                     {start: '1. ', cmd: 'InsertOrderedList'},
                     {start: '* ', cmd: 'InsertUnorderedList'},
-                    {start: '- ', cmd: 'InsertUnorderedList'}
+                    {start: '- ', cmd: 'InsertUnorderedList'},
+                    {start: '$$', end: '$$', cmd: 'InsertCustomPattern'},
+                    {start: '!!', end: '!!', cmd: 'ApplyCustomFormat'}
                 ];
 
             // Returns a sorted patterns list, ordered descending by start length
