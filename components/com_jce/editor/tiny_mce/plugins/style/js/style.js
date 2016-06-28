@@ -92,7 +92,7 @@
             return mergedStyles;
         },
         init: function () {
-            var ed = tinyMCEPopup.editor, ce = document.getElementById('container'), h;
+            var self = this, ed = tinyMCEPopup.editor, ce = document.getElementById('container'), h;
 
             if (!this.settings.file_browser) {
                 $('.browser').removeClass('browser');
@@ -103,6 +103,18 @@
             ce.style.cssText = ed.dom.serializeStyle(this.existingStyles);
 
             this.applyActionIsInsert = ed.getParam("edit_css_style_insert_span", false);
+
+            $('#insert').click(function(e) {
+                e.preventDefault();
+
+                self.updateAction();
+            });
+
+            $('#apply').click(function(e) {
+                e.preventDefault();
+
+                self.applyAction();
+            });
 
             $('#toggle_insert_span').prop('checked', this.applyActionIsInsert);
 
@@ -543,7 +555,7 @@
 
             ce.style.clear = $('#box_clear').val();
 
-            if (!f.box_padding_same.checked) {
+            if (!$('#box_padding_same').prop('checked')) {
                 ce.style.paddingTop = $('#box_padding_top').val() + (this.isNum($('#box_padding_top').val()) ? $('#box_padding_top_measurement').val() : "");
                 ce.style.paddingRight = $('#box_padding_right').val() + (this.isNum($('#box_padding_right').val()) ? $('#box_padding_right_measurement').val() : "");
                 ce.style.paddingBottom = $('#box_padding_bottom').val() + (this.isNum($('#box_padding_bottom').val()) ? $('#box_padding_bottom_measurement').val() : "");
@@ -551,7 +563,7 @@
             } else
                 ce.style.padding = $('#box_padding_top').val() + (this.isNum($('#box_padding_top').val()) ? $('#box_padding_top_measurement').val() : "");
 
-            if (!f.box_margin_same.checked) {
+            if (!$('#box_padding_same').prop('checked')) {
                 ce.style.marginTop = $('#box_margin_top').val() + (this.isNum($('#box_margin_top').val()) ? $('#box_margin_top_measurement').val() : "");
                 ce.style.marginRight = $('#box_margin_right').val() + (this.isNum($('#box_margin_right').val()) ? $('#box_margin_right_measurement').val() : "");
                 ce.style.marginBottom = $('#box_margin_bottom').val() + (this.isNum($('#box_margin_bottom').val()) ? $('#box_margin_bottom_measurement').val() : "");
@@ -561,7 +573,7 @@
 
             // Build border styles
 
-            if (!f.border_style_same.checked) {
+            if (!$('#border_style_same').prop('checked')) {
                 ce.style.borderTopStyle = $('#border_style_top').val();
                 ce.style.borderRightStyle = $('#border_style_right').val();
                 ce.style.borderBottomStyle = $('#border_style_bottom').val();
@@ -569,7 +581,7 @@
             } else
                 ce.style.borderStyle = $('#border_style_top').val();
 
-            if (!f.border_width_same.checked) {
+            if (!$('#border_width_same').prop('checked')) {
                 ce.style.borderTopWidth = $('#border_width_top').val() + (this.isNum($('#border_width_top').val()) ? $('#border_width_top_measurement').val() : "");
                 ce.style.borderRightWidth = $('#border_width_right').val() + (this.isNum($('#border_width_right').val()) ? $('#border_width_right_measurement').val() : "");
                 ce.style.borderBottomWidth = $('#border_width_bottom').val() + (this.isNum($('#border_width_bottom').val()) ? $('#border_width_bottom_measurement').val() : "");
@@ -577,7 +589,7 @@
             } else
                 ce.style.borderWidth = $('#border_width_top').val() + (this.isNum($('#border_width_top').val()) ? $('#border_width_top_measurement').val() : "");
 
-            if (!f.border_color_same.checked) {
+            if (!$('#border_color_same').prop('checked')) {
                 ce.style.borderTopColor = $('#border_color_top').val();
                 ce.style.borderRightColor = $('#border_color_right').val();
                 ce.style.borderBottomColor = $('#border_color_bottom').val();
@@ -605,7 +617,7 @@
             ce.style.zIndex = $('#positioning_zindex').val();
             ce.style.overflow = $('#positioning_overflow').val();
 
-            if (!f.positioning_placement_same.checked) {
+            if (!$('#positioning_placement_same').prop('checked')) {
                 ce.style.top = $('#positioning_placement_top').val() + (this.isNum($('#positioning_placement_top').val()) ? $('#positioning_placement_top_measurement').val() : "");
                 ce.style.right = $('#positioning_placement_right').val() + (this.isNum($('#positioning_placement_right').val()) ? $('#positioning_placement_right_measurement').val() : "");
                 ce.style.bottom = $('#positioning_placement_bottom').val() + (this.isNum($('#positioning_placement_bottom').val()) ? $('#positioning_placement_bottom_measurement').val() : "");
@@ -618,7 +630,7 @@
                 ce.style.left = s;
             }
 
-            if (!f.positioning_clip_same.checked) {
+            if (!$('#positioning_clip_same').prop('checked')) {
                 s = "rect(";
                 s += (this.isNum($('#positioning_clip_top').val()) ? $('#positioning_clip_top').val() + $('#positioning_clip_top_measurement').val() : "auto") + " ";
                 s += (this.isNum($('#positioning_clip_right').val()) ? $('#positioning_clip_right').val() + $('#positioning_clip_right_measurement').val() : "auto") + " ";

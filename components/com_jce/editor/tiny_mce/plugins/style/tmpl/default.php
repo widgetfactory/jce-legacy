@@ -21,8 +21,8 @@ $tabs = WFTabs::getInstance();
           <label for="toggle_insert_span"><?php echo WFText::_('WF_STYLES_TOGGLE_INSERT_SPAN');?></label>
       </div>
 
-        <button type="submit" id="insert" onclick="StyleDialog.updateAction();"><?php echo WFText::_('WF_LABEL_UPDATE');?></button>
-        <button type="button" class="button" id="apply" onclick="StyleDialog.applyAction();"><?php echo WFText::_('WF_STYLES_APPLY');?></button>
+        <button type="submit" id="insert"><?php echo WFText::_('WF_LABEL_UPDATE');?></button>
+        <button type="button" id="apply"><?php echo WFText::_('WF_STYLES_APPLY');?></button>
         <button type="button" id="cancel"><?php echo WFText::_('WF_LABEL_CANCEL');?></button>
     </div>
 </form>
