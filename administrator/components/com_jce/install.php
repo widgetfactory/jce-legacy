@@ -749,9 +749,6 @@ abstract class WFInstall {
             $admin . '/media/css/profile.css',
             $admin . '/media/css/profiles.css',
             $admin . '/media/css/upload.css',
-
-            $admin . '/media/img/glyphicons-halflings-white.png',
-            $admin . '/media/img/glyphicons-halflings.png',
             $admin . '/media/img/list_label_bg.gif',
 
             $site . '/editor/libraries/js/html5.js',
