@@ -448,7 +448,7 @@
 
             fields += '</div>';
 
-            $.Modal.open(ed.getLang('link_dlg.email', 'Create E-Mail Address'), fields, {
+            $.Modal.open(ed.getLang('link_dlg.email', 'Create E-Mail Address'), {
                 width: 300,
                 buttons: [{
                     text: ed.getLang('dlg.create', 'Create'),
@@ -488,7 +488,7 @@
                     icon: 'ui-icon-close',
                     classes: 'ui-modal-close'
                 }]
-            });
+            }, fields);
         },
         openHelp: function() {
             $.Plugin.help('link');
