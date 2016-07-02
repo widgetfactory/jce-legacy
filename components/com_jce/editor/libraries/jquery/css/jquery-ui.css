@@ -61,19 +61,6 @@
 	cursor: default !important;
 }
 
-
-/* Icons
-----------------------------------*/
-
-/* states and images */
-.ui-icon {
-	display: block;
-	text-indent: -99999px;
-	overflow: hidden;
-	background-repeat: no-repeat;
-}
-
-
 /* Misc visuals
 ----------------------------------*/
 
