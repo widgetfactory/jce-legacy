@@ -8,94 +8,94 @@
  * other free or open source software licenses.
  */
 .file, .file.default {
-    background: #FFFFFF url(../img/ext.png) no-repeat 0 0;
+    background: url(../img/ext.png) no-repeat 0 0;
 }
 .file.txt {
-    background: #FFFFFF url(../img/ext.png) no-repeat 0 -20px;
+    background: url(../img/ext.png) no-repeat 0 -20px;
 }
 .file.zip, .file.tar, .file.gz, .file.rar {
-    background: #FFFFFF url(../img/ext.png) no-repeat 0 -40px;
+    background: url(../img/ext.png) no-repeat 0 -40px;
 }
 .file.html, .file.htm {
-    background: #FFFFFF url(../img/ext.png) no-repeat 0 -60px;
+    background: url(../img/ext.png) no-repeat 0 -60px;
 }
 .file.mp3, .file.wav, .file.aiff {
-    background: #FFFFFF url(../img/ext.png) no-repeat 0 -80px;
+    background: url(../img/ext.png) no-repeat 0 -80px;
 }
 .file.php {
-    background: #FFFFFF url(../img/ext.png) no-repeat 0 -100px;
+    background: url(../img/ext.png) no-repeat 0 -100px;
 }
 .file.sql {
-    background: #FFFFFF url(../img/ext.png) no-repeat 0 -120px;
+    background: url(../img/ext.png) no-repeat 0 -120px;
 }
 .file.gif {
-    background: #FFFFFF url(../img/ext.png) no-repeat 0 -140px;
+    background: url(../img/ext.png) no-repeat 0 -140px;
 }
 .file.jpg, .file.jpeg {
-    background: #FFFFFF url(../img/ext.png) no-repeat 0 -160px;
+    background: url(../img/ext.png) no-repeat 0 -160px;
 }
 .file.png {
-    background: #FFFFFF url(../img/ext.png) no-repeat 0 -180px;
+    background: url(../img/ext.png) no-repeat 0 -180px;
 }
 .file.webm, .file.ogg, .file.mp4, .file.mpeg, .file.mpg {
-    background: #FFFFFF url(../img/ext.png) no-repeat 0 -200px;
+    background: url(../img/ext.png) no-repeat 0 -200px;
 }
 .file.js, .file.xml, .file.xaml {
-    background: #FFFFFF url(../img/ext.png) no-repeat 0 -220px;
+    background: url(../img/ext.png) no-repeat 0 -220px;
 }
 .file.css {
-    background: #FFFFFF url(../img/ext.png) no-repeat 0 -420px;
+    background: url(../img/ext.png) no-repeat 0 -420px;
 }
 .file.rtf {
-    background: #FFFFFF url(../img/ext.png) no-repeat 0 -300px;
+    background: url(../img/ext.png) no-repeat 0 -300px;
 }
 .file.notwritable, dd.file.notwritable, .file.duplicate {
-    background: #FFFFFF url(../img/icons.png) no-repeat 0 -620px;
+    background: url(../img/icons.png) no-repeat 0 -620px;
 }
 .file.notsafe, dd.file.notsafe {
-    background: #FFFFFF url(../img/icons.png) no-repeat 0 -640px;
+    background: url(../img/icons.png) no-repeat 0 -640px;
 }
 
 /* Adobe Flash Player */
 .file.swf, .file.as, .file.fla {
-    background: #FFFFFF url(../img/ext.png) no-repeat 0 -340px;
+    background: url(../img/ext.png) no-repeat 0 -340px;
 }
 /* Adobe Flash Video */
 .file.flv, .file.f4v, .file.f4p, .file.f4a, .file.f4b {
-    background: #FFFFFF url(../img/ext.png) no-repeat 0 -340px;
+    background: url(../img/ext.png) no-repeat 0 -340px;
 }
 /* Microsoft Word */
 .file.doc, .file.docx {
-    background: #FFFFFF url(../img/ext.png) no-repeat 0 -400px;
+    background: url(../img/ext.png) no-repeat 0 -400px;
 }
 /* Microsoft Excel */
 .file.xls, .file.xlsx, .file.xlsm {
-    background: #FFFFFF url(../img/ext.png) no-repeat 0 -320px;
+    background: url(../img/ext.png) no-repeat 0 -320px;
 }
 /* Microsoft Powerpoint */
 .file.ppt, .file.pptx {
-    background: #FFFFFF url(../img/ext.png) no-repeat 0 -380px;
+    background: url(../img/ext.png) no-repeat 0 -380px;
 }
 /* Adobe® Acrobat */
 .file.pdf {
-    background: #FFFFFF url(../img/ext.png) no-repeat 0 -360px;
+    background: url(../img/ext.png) no-repeat 0 -360px;
 }
 
 /** Application specific file types. These currently use a generic set of icons but can be edited to use custom / specific icons where the user has licence from the trademark holders to use such icons **/
 
 /* Apple Quicktime */
 .file.mov, .file.qt, .file.m4a {
-    background: #FFFFFF url(../img/ext.png) no-repeat 0 -200px;
+    background: url(../img/ext.png) no-repeat 0 -200px;
 }
 /* RealPlayer */
 .file.ra, .file.rm, .file.ram {
-    background: #FFFFFF url(../img/ext.png) no-repeat 0 -200px;
+    background: url(../img/ext.png) no-repeat 0 -200px;
 }
 /* Adobe Shockwave */
 .file.dcr {
-    background: #FFFFFF url(../img/ext.png) no-repeat 0 -200px;
+    background: url(../img/ext.png) no-repeat 0 -200px;
 }
 /* Windows Media Player */
 .file.wmv, .file.wma, .file.wm, .file.wmx, .file.wvx, .file.asf, .file.asx, .file.avi {
-    background: #FFFFFF url(../img/ext.png) no-repeat 0 -200px;
+    background: url(../img/ext.png) no-repeat 0 -200px;
 }
