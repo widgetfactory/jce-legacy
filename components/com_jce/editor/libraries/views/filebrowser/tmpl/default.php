@@ -22,8 +22,12 @@ defined('_JEXEC') or die('RESTRICTED');
                     <i class="ui-icon ui-icon-small ui-icon-angle-double-down"></i>
                   </div>
 
-                  <i class="ui-icon ui-icon-spinner ui-icon-small"></i>
-                  <ul class="ui-breadcrumb pathway ui-margin-remove"></ul>
+                  <ul class="ui-breadcrumb pathway ui-margin-remove">
+                    <li title="<?php echo WFText::_('WF_LABEL_HOME', 'Home'); ?>">
+                      <i class="ui-icon ui-icon-spinner"></i>
+                      <i class="ui-icon ui-icon-home"></i>
+                    </li>
+                  </ul>
             </div>
             <div id="browser-actions" class="ui-width-5-10 ui-navbar-content ui-navbar-flip ui-text-right ui-padding-remove"></div>
         </nav>
@@ -78,9 +82,8 @@ defined('_JEXEC') or die('RESTRICTED');
 
                             <div class="ui-padding-remove ui-text-right ui-position-top-right">
                                 <!-- Toggle Details -->
-                                <div class="ui-button" id="show-details" role="button">
-                                    <i class="ui-icon-th-list details"></i>
-                                    <i class="ui-icon-th details"></i>
+                                <div class="ui-button ui-active" id="show-details" role="button">
+                                    <i class="ui-icon-columns details"></i>
                                 </div>
                                 <!-- Search -->
                                 <div class="ui-button" id="show-search" role="button">
@@ -136,12 +139,12 @@ defined('_JEXEC') or die('RESTRICTED');
                     <div class="ui-navbar-content ui-navbar-center"><?php echo WFText::_('WF_LABEL_DETAILS'); ?></div>
                 </div>
                 <div id="browser-details-container" class="ui-grid ui-grid-collapse ui-flex">
-                    <div id="browser-details" class="ui-width-5-6">
+                    <div id="browser-details" class="ui-width-8-10">
                         <div id="browser-details-text"></div>
                         <div id="browser-details-comment"></div>
                     </div>
 
-                    <div id="browser-buttons" class="ui-width-1-6 ui-text-center"></div>
+                    <div id="browser-buttons" class="ui-width-2-10 ui-text-center"></div>
                 </div>
                 <div id="browser-details-nav" class="ui-navbar">
                     <div class="ui-navbar-content ui-width-1-1 ui-padding-remove">
