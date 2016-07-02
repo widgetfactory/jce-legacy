@@ -395,6 +395,14 @@
   box-shadow: 0 2px 5px rgba(0,0,0,0.1);
 }
 
+.defaultSkin .mceMenuItemSub {
+    box-shadow: inherit;
+    border: 0;
+    margin: 0;
+}
+
+.defaultSkin .mceSplitButtonMenu .mceMenuItem {margin: 2px;}
+
 /* ColorSplitButton */
 .defaultSkin .mceColorSplitMenu {
 }
@@ -464,7 +472,7 @@
   text-align: center;
 }
 
-.defaultSkin .mceTableSplitMenu td a {width: 13px; height: 13px; display: block; border: 1px solid #ddd;}
+.defaultSkin .mceTableSplitMenu td a {width: 20px; height: 20px; display: block; border: 1px solid #ddd;}
 
 .defaultSkin .mceTableSplitMenu .selected a {
   background-color: #f5fbfe;
