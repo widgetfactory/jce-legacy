@@ -7,103 +7,85 @@
  * is derivative of works licensed under the GNU General Public License or
  * other free or open source software licenses.
  */
-div.tree ul {
-	padding: 0pt;
-	margin: 0pt;
-	list-style: none;
-	-webkit-user-select: none; -moz-user-select: none; user-select: none;
-}
-div.tree ul li {
-	padding: 2px 0px 2px 16px;
-	margin: 2px 0;
-	vertical-align: middle;
-}
-div.tree ul li.spacer {
-	margin:0pt;
-	padding:0pt;
-	display:none;
-	visibility:hidden;
-}
-div.tree ul li div.tree-row {
-	height: 20px;
-}
-div.tree ul li div.tree-row:hover {
-	background-color: #ddd;
-	color: black;
-}
-div.tree ul li div.tree-row div.tree-image {
-	height: 20px;
-	width: 20px;
-	margin-left: -20px;
-	cursor: pointer;
-	background: url(../img/icons.png) no-repeat 0 -540px;
-	float: left;
-}
-div.tree ul li div.tree-row div.tree-noimage {
-	float: left;
-	width: 20px;
-}
-div.tree ul li.open > div.tree-row div.tree-image {
-	background: url(../img/icons.png) no-repeat 0 -560px;
-}
-div.tree ul li div.tree-row span {
-	height: 20px;
-	background: url(../img/icons.png);
-	background-repeat: no-repeat;
-	display: block;
-	cursor: pointer;
-        user-select : none;
-        -moz-user-select : none;
-        -ms-user-select : none;
-        -webkit-user-select: none;
-}
-div.tree ul li div.tree-row span.folder {
-	background-position: 0 -220px;
-}
-div.tree ul li div.tree-row span.file {
-	background-position: 0 -400px;
-}
-div.tree ul li.open > div.tree-row span.folder {
-	background-position: 0 -240px;
-}
-div.tree ul li div.tree-row span.load {
-	background: url(../img/load.gif) no-repeat 0 0 !important;
-}
-div.tree ul li div.tree-row span a {
-	margin: 0px 0px 0px 22px;
-	text-decoration: none;
-	line-height: 20px;
-	display: block;
-	white-space: nowrap;
-}
-div.tree ul li div.tree-row span a.nolink {}
-div.tree ul li div.tree-row span a:visited, 
-div.tree ul li div.tree-row span a:active, 
-div.tree ul li div.tree-row span a:link{
-	text-decoration: none;
-	color: black;
-}
-div.tree ul li div.tree-row span.root, 
-div.tree ul li div.tree-row span.root.open {
-	background-position: 0 -320px;
-}
 
-/** IE **/
-#jce.ie div.tree ul {
-	margin: 0px 0px 0px -16px;
+.ui-tree a {
+    line-height: 20px;
+    display: inline-block;
+    vertical-align: middle;
+    width: calc(100% - 24px);
 }
-#jce.ie div.tree ul li {
-	clear: left;
-	margin: 0px 0px 0px 16px;
+.ui-tree a, .ui-tree a:hover, .ui-tree a:active {
+    text-decoration: none;
+    color: inherit;
 }
-#jce.ie div.tree ul li div.tree-row {
-	margin: 0px 0px 0px -16px;
+.ui-tree-toggle {
+    cursor: pointer;
 }
-#jce.ie div.tree ul li div.tree-row span {
-	float: left;
-	clear: right;
-	white-space: pre;
+.ui-tree-toggle, .ui-tree-icon {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    text-align: center;
+    vertical-align: middle;
+    line-height: 20px;
 }
-#jce.ie div.tree ul li div.tree-row div.tree-image {
-	margin-left: 0px;
+.ui-tree-toggle .ui-icon, .ui-tree-icon .ui-icon {
+    height: 20px;
+    width: 20px;
+    vertical-align: middle;
+    line-height: 20px;
+}
+.ui-icon-minus-square-o {
+    display: none;
+}
+.ui-tree-open> .ui-tree-row .ui-tree-toggle .ui-icon-plus-square-o {
+    display: none;
+}
+.ui-tree-open> .ui-tree-row .ui-tree-toggle .ui-icon-minus-square-o {
+    display: inline-block;
+}
+.ui-icon-folder-open {
+    display: none;
+}
+.ui-tree-open> .ui-tree-row .ui-tree-icon .ui-icon-folder {
+    display: none;
+}
+.ui-tree-open> .ui-tree-row .ui-tree-icon .ui-icon-folder-open {
+    display: inline-block;
+}
+.ui-tree-loading .ui-icon {
+    display: none !important;
+}
+.ui-tree-loading {
+    background: url('../img/load.gif') no-repeat center;
+}
+.ui-tree, .ui-tree ul {
+    padding: 0;
+    margin: 0;
+    list-style: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    user-select: none;
+}
+.ui-tree-node li {
+    padding: 0 0 0 23px;
+    margin: 0;
+    vertical-align: middle;
+    line-height: 28px;
+}
+.ui-tree-row .ui-tree-text {
+    display: inline-block;
+    line-height: 20px;
+    vertical-align: middle;
+}
+.ui-tree-node li:empty {
+    padding: 0;
+    margin: 0;
+    visibility: hidden;
+}
+.ui-tree-row:hover {
+    background-color: #d9edf7;
+}
+.ui-tree-hide {
+    display: none;
 }

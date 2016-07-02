@@ -17,11 +17,6 @@
         this.element = element;
 
         this.options = $.extend({
-            rootName: 'Root',
-            rootClass: 'root',
-            loaderClass: 'load',
-            collapseClass: '',
-            expandClass: '',
             collapseTree: false,
             charLength: false
         }, options);
@@ -65,32 +60,38 @@
             }
 
             // Add ARIA role and tabindex to root and ARIA level to children
-            $('ul:first', parent).attr({'role': 'tree'}).children('li').attr('aria-level', 1);
+            $('ul:first', parent).attr({'role': 'tree'}).addClass('ui-tree').children('li').attr('aria-level', 1);
 
             // Add ARIA role and tabindex to tree items
             $('li', parent).attr({'role': 'treeitem'}).attr('aria-expanded', function () {
-                return $(this).hasClass('open') ? true : false;
+                return $(this).hasClass('ui-tree-open') ? true : false;
             }).attr('aria-level', function (i, v) {
                 if (!v) {
                     return parseFloat($(this.parentNode.parentNode).attr('aria-level')) + 1;
                 }
-            });
+            }).click(function(e) {
+                var n = e.target, p = $(n).parents('li').get(0);
 
-            $('div.tree-image', parent).attr('role', 'presentation').each(function () {
-                var p = $(this).parents('li').get(0);
+                e.preventDefault();
 
-                $(this).click(function (e) {
+                if (n.nodeName === "I") {
+                    n = n.parentNode;
+                }
+
+                if (n.nodeName === "SPAN") {
                     self.toggleNode(e, p);
-                });
+                }
+
+                if (n.nodeName === "A") {
+                    self._trigger('nodeclick', p);
+                }
             });
 
-            $('span', parent).attr('role', 'presentation').click(function (e) {
-                var p = $(this).parents('li').get(0);
+            // add toggle icons
+            $('li', parent).find('.ui-tree-row').attr('role', 'presentation').prepend('<span class="ui-tree-toggle" role="presentation"><i class="ui-icon ui-icon-plus-square-o"></i><i class="ui-icon ui-icon-minus-square-o"></i></span>');
 
-                self.toggleNode(e, p);
-
-                self._trigger('nodeclick', p);
-            });
+            // add icons
+            $('li', parent).not('.ui-tree-root').find('.ui-tree-icon').attr('role', 'presentation').append('<i class="ui-icon ui-icon-folder"></i><i class="ui-icon ui-icon-folder-open"></i>');
         },
         /**
          * Does a parent (ul) have childnodes
@@ -104,7 +105,7 @@
                 parent = this._findParent(parent);
             }
             var c = $('li', parent);
-            return c.length > 1 || (c.length == 1 && !$(c).is('.spacer'));
+            return c.length > 1 || (c.length == 1 && !$(c).is(':empty'));
         },
         /**
          * Does the node exist?
@@ -132,13 +133,13 @@
                 parent = this._findParent(parent);
             }
 
-            return $(parent).find('ul.tree-node');
+            return $(parent).find('.ui-tree-node');
         },
         /**
          * Reset all nodes. Set to closed
          */
         _resetNodes: function () {
-            $('span, div.tree-image', this.element).removeClass('open');
+            $('li', this.element).removeClass('ui-tree-open');
         },
         /**
          * Rename a node
@@ -216,12 +217,12 @@
              */
             if (nodes && nodes.length) {
                 // Get parent ul
-                var ul = $('ul.tree-node:first', parent) || null;
+                var ul = $('.ui-tree-node:first', parent) || null;
 
                 // Create it if it doesn't exist
                 if (!ul.length) {
                     ul = document.createElement('ul');
-                    $(ul).attr({'role': 'group'}).addClass('tree-node').append('<li class="spacer" role="treeitem" aria-expanded="false"></li>');
+                    $(ul).attr({'role': 'group'}).addClass('ui-tree-node').append('<li role="treeitem" aria-expanded="false"></li>');
 
                     $(parent).append(ul);
                 }
@@ -230,10 +231,6 @@
                 $.each(nodes, function (i, node) {
 
                     if (!self._isNode(node.id, parent)) {
-                        // Set default
-                        if (!node['class']) {
-                            node['class'] = 'folder';
-                        }
                         // title and link html
                         var title = node.name || node.id;
                         // decode
@@ -246,37 +243,53 @@
                             name = name.substring(0, len) + '...';
                         }
 
-                        var img = /folder/.test(node['class']) ? 'tree-image' : 'tree-noimage';
-                        var url = !node.url ? 'javascript:;' : node.url;
+                        var url = node.url || '#';
+                        var li  = document.createElement('li');
 
-                        var li = document.createElement('li');
+                        if (!node['class']) {
+                            node['class'] = 'folder';
+                        }
 
-                        $(li).attr({'id': self._escape(encodeURI(node.id))}).append('<div class="tree-row">'
-                                + '<div role="presentation" class="' + img
-                                + '"></div>' + '<span role="presentation" class="'
-                                + node['class'] + '">'
-                                + '<a href="' + url
-                                + '" title="' + title + '">'
-                                + name + '</a>' + '</span>'
-                                + '</div>').attr('aria-level', parseFloat($(parent).attr('aria-level')) + 1);
+                        $(li).addClass(node['class']);
+
+                        var html = '<div class="ui-tree-row">';
+
+                        if (node['class'].indexOf('folder') >= 0) {
+                            html += '<span class="ui-tree-toggle" role="presentation">'
+                            + ' <i class="ui-icon ui-icon-plus-square-o"></i>'
+                            + ' <i class="ui-icon ui-icon-minus-square-o"></i>'
+                            + '</span>';
+                        }
+
+                        html += '<a href="' + url + '" title="' + title + '">';
+
+                        if (node['class'].indexOf('folder') >= 0) {
+                            html += '<i role="presentation" class="ui-icon ui-icon-folder"></i><i role="presentation" class="ui-icon ui-icon-folder-open"></i>';
+                        } else {
+                            html += '<i role="presentation" class="ui-icon ui-icon-file-text-o"></i>';
+                        }
+
+                        html += '<span class="ui-tree-text ui-margin-small-left">' + name + '</span>';
+                        html += '</a></div>';
+
+                        $(li).attr({'id': self._escape(encodeURI(node.id))}).append(html).attr('aria-level', parseFloat($(parent).attr('aria-level')) + 1);
 
                         $(ul).append(li);
 
-                        // add node click
-                        $('div.tree-image', li).click(function (e) {
-                            self.toggleNode(e, li);
-                        });
-
-                        // add name / icon click
-                        $('span', li).click(function (e) {
-                            if ($(this).hasClass('folder')) {
-                              self.toggleNode(e, li);
-                            }
-
-                            self._trigger('nodeclick', li);
+                        $(li).click(function(e) {
+                            var n = e.target;
 
                             e.preventDefault();
-                            return false;
+
+                            if (n.nodeName === "I") {
+                                n = n.parentNode;
+                            }
+
+                            if ($(n).hasClass('ui-tree-toggle')) {
+                                self.toggleNode(e, li);
+                            } else {
+                                self._trigger('nodeclick', li);
+                            }
                         });
 
                         self.toggleNodeState(parent, 1);
@@ -334,7 +347,7 @@
          *            The target node
          */
         toggleLoader: function (node) {
-            $('span:first', node).toggleClass(this.options.loaderClass);
+            $('.ui-tree-toggle:first', node).toggleClass('ui-tree-loading');
         },
         /**
          * Collapse all tree nodes except one excluded
@@ -360,7 +373,7 @@
                   var child = self._getNode(el);
 
                   if (child) {
-                    $(child).addClass('hide');
+                    $(child).addClass('ui-tree-hide');
                   }
                 }
             });
@@ -369,26 +382,27 @@
          * Toggle a node's state, open or closed
          *
          * @param {Element}
-         *            The node
+         * The node
          */
         toggleNodeState: function (node, state) {
-            if (state == 1) {
-                $(node).addClass('open').attr('aria-expanded', true);
+            if (state) {
+                $(node).addClass('ui-tree-open').attr('aria-expanded', true);
             } else {
-                $(node).removeClass('open').attr('aria-expanded', false);
+                $(node).removeClass('ui-tree-open').attr('aria-expanded', false);
             }
 
-            if (state == 1) {
-                if (node.id == '/') {
+            if (state) {
+                if ($(node).hasClass('ui-tree-root')) {
                     return;
                 }
-                var c = $('ul.tree-node', node);
+
+                var c = $('.ui-tree-node', node);
 
                 if (c.length) {
-                    if ($(node).hasClass('open')) {
-                        $(c).removeClass('hide');
+                    if ($(node).hasClass('ui-tree-open')) {
+                        $(c).removeClass('ui-tree-hide');
                     } else {
-                        $(c).addClass('hide');
+                        $(c).addClass('ui-tree-hide');
                     }
                 }
             }
@@ -409,15 +423,15 @@
 
             // No children load or close
             if (!child.length) {
-                if ($('div.tree-image', node).hasClass('open')) {
+                if ($(node).hasClass('ui-tree-open')) {
                     this.toggleNodeState(node, 0);
                 } else {
                     this._trigger('nodeload', node);
                 }
             // Hide children, toggle node
             } else {
-                $(child).toggleClass('hide');
-                this.toggleNodeState(node, !$(child).hasClass('hide'));
+                $(child).toggleClass('ui-tree-hide');
+                this.toggleNodeState(node, !$(child).hasClass('ui-tree-hide'));
             }
 
             // Collpase the all other tree nodes
