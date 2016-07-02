@@ -82,8 +82,6 @@
                 return this.initMerge();
             }
 
-            TinyMCE_Utils.addClassesToList('classlist', "table_styles");
-
             if (this.html5) {
                 // hide HTML4 only attributes (tframe = frame)
                 $('#axis, #abbr, #scope, #summary, #char, #charoff, #tframe, #nowrap, #rules, #cellpadding, #cellspacing').each(function () {
