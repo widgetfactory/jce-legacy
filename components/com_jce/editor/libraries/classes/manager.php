@@ -9,7 +9,7 @@
  * other free or open source software licenses.
  */
 
-if (is_file(WF_EDITOR_LIBRARIES . '/pro/classes/manager.php')) {
+if (is_dir(WF_EDITOR_LIBRARIES . '/pro')) {
   require_once(WF_EDITOR_LIBRARIES . '/pro/classes/manager.php');
 } else {
   require_once(dirname( __FILE__ ).'/manager/manager.php');
