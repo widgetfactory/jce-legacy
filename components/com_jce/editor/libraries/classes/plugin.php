@@ -102,10 +102,6 @@ class WFEditorPlugin extends JObject {
         return self::$instance;
     }
 
-    public function isPro() {
-        return is_dir(WF_EDITOR_LIBRARIES . '/pro');
-    }
-
     /**
      * Get plugin View
      * @access public
@@ -241,16 +237,14 @@ class WFEditorPlugin extends JObject {
 
         $document->addScript(array('jquery.min'), 'jquery');
 
-        if (!$this->isPro() && in_array($this->getName(), array('filemanager', 'imgmanager_ext'))) {
-          $document->addScript(array('jquery-ui.min'), 'jquery');
-          $document->addStyleSheet(array('jquery-ui.css'), 'jquery');
-        }
+        $document->addScript(array('jquery-ui.min'), 'jquery');
+        $document->addStyleSheet(array('jquery-ui.css'), 'jquery');
 
         $document->addScript(array('plugin.min.js'));
         $document->addStyleSheet(array('plugin.min.css'), 'libraries');
 
-        // legacy stylesheet
-        if (!$this->isPro()) {
+        // legacy stylesheet if jcepro is not available TODO: remove in stable
+        if (!is_dir(WF_EDITOR_LIBRARIES . '/pro')) {
           $document->addStyleSheet(array('legacy.min.css'), 'libraries');
         }
 
