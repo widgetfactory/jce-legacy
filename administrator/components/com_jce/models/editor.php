@@ -1058,7 +1058,7 @@ class WFModelEditor extends WFModelBase {
                 }
 
                 // add Editor file
-                $files[] = WF_EDITOR . '/libraries/js/editor.js';
+                $files[] = WF_EDITOR . '/libraries/js/editor.min.js';
 
                 // parse ini language files
                 $parser = new WFLanguageParser();
@@ -1105,7 +1105,8 @@ class WFModelEditor extends WFModelBase {
                 } else {
                     $files = array();
 
-                    $files[] = WF_EDITOR_LIBRARIES . '/css/editor.css';
+                    $files[] = WF_EDITOR_LIBRARIES . '/css/editor.min.css';
+                    $files[] = WF_EDITOR_PLUGINS . '/inlinepopups/css/window.css';
                     $dialog = $wf->getParam('editor.dialog_theme', 'jce');
 
                     $files[] = WF_EDITOR_THEMES . '/' . $themes[0] . '/skins/' . $toolbar[0] . '/ui.css';
