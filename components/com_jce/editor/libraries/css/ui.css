@@ -1,5 +1,6 @@
 .ui-datalist {
     position: relative;
+    display: inline-block;
 }
 
 .ui-form-horizontal .ui-datalist input[type="text"] {
