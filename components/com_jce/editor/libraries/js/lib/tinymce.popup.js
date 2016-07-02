@@ -126,32 +126,6 @@
                     parent = document.getElementById(parent);
                 }
                 document.getElementById(parent.id + '_pick').style.backgroundColor = parent.value;
-            },
-
-            addClassesToList: function(list_id, specific_option) {
-                // Setup class droplist
-                var styleSelectElm = document.getElementById(list_id);
-                var styles = tinyMCEPopup.getParam('theme_advanced_styles', false);
-                styles = tinyMCEPopup.getParam(specific_option, styles);
-
-                if (styles) {
-                    var stylesAr = styles.split(';');
-
-                    for (var i = 0; i < stylesAr.length; i++) {
-                        if (stylesAr != "") {
-                            var key, value;
-
-                            key = stylesAr[i].split('=')[0];
-                            value = stylesAr[i].split('=')[1];
-
-                            styleSelectElm.options[styleSelectElm.length] = new Option(key, value);
-                        }
-                    }
-                } else {
-                    tinymce.each(this.getClasses(), function(o) {
-                        styleSelectElm.options[styleSelectElm.length] = new Option(o.title || o['class'], o['class']);
-                    });
-                }
             }
         }
         win.TinyMCE_Utils = TinyMCE_Utils;
