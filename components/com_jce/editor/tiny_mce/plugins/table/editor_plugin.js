@@ -9,7 +9,7 @@
  */
 
 (function (tinymce) {
-    var each = tinymce.each;
+    var DOM = tinymce.DOM, Event = tinymce.dom.Event, is = tinymce.is, each = tinymce.each;
 
     // Checks if the selection/caret is at the start of the specified block element
     function isAtStart(rng, par) {
@@ -837,10 +837,12 @@
                 }
             }
 
+
+
             // Register buttons
-            each([
-                ['table', 'table.desc', 'mceInsertTable', true],
-                /*['delete_table', 'table.del', 'mceTableDelete'],
+            /*each([
+                ['table', 'table.desc', 'mceInsertTable', true]
+                ['delete_table', 'table.del', 'mceTableDelete'],
                 ['delete_col', 'table.delete_col_desc', 'mceTableDeleteCol'],
                 ['delete_row', 'table.delete_row_desc', 'mceTableDeleteRow'],
                 ['col_after', 'table.col_after_desc', 'mceTableInsertColAfter'],
@@ -850,11 +852,13 @@
                 ['row_props', 'table.row_desc', 'mceTableRowProps', true],
                 ['cell_props', 'table.cell_desc', 'mceTableCellProps', true],
                 ['split_cells', 'table.split_cells_desc', 'mceTableSplitCells', true],
-                ['merge_cells', 'table.merge_cells_desc', 'mceTableMergeCells', true]*/
+                ['merge_cells', 'table.merge_cells_desc', 'mceTableMergeCells', true]
                 ['table_props', 'table.props_desc', 'mceTableProps', false]
             ], function (c) {
                 ed.addButton(c[0], {title: c[1], cmd: c[2], ui: c[3]});
-            });
+            });*/
+
+            ed.addButton('table', 'table.desc', 'mceInsertTable', true);
 
             // Select whole table is a table border is clicked
             if (!tinymce.isIE) {
@@ -1097,17 +1101,6 @@
                         if (ed.dom.getParent(e, 'td') || ed.dom.getParent(e, 'th') || ed.dom.select('td.mceSelected,th.mceSelected').length) {
                             m.removeAll();
 
-                            /*if (el.nodeName == 'A' && !ed.dom.getAttrib(el, 'name')) {
-                             m.add({title: 'advanced.link_desc', icon: 'link', cmd: ed.plugins.advlink ? 'mceAdvLink' : 'mceLink', ui: true});
-                             m.add({title: 'advanced.unlink_desc', icon: 'unlink', cmd: 'UnLink'});
-                             m.addSeparator();
-                             }
-
-                             if (el.nodeName == 'IMG' && el.className.indexOf('mceItem') == -1) {
-                             m.add({title: 'advanced.image_desc', icon: 'image', cmd: ed.plugins.advimage ? 'mceAdvImage' : 'mceImage', ui: true});
-                             m.addSeparator();
-                             }*/
-
                             m.add({title: 'table.desc', icon: 'table', cmd: 'mceInsertTable', value: {action: 'insert'}});
                             m.add({title: 'table.props_desc', icon: 'table_props', cmd: 'mceInsertTable'});
                             m.add({title: 'table.del', icon: 'delete_table', cmd: 'mceTableDelete'});
@@ -1344,27 +1337,6 @@
                     }
                 });
 
-
-                /**
-                 * Fixes bug in Gecko where shift-enter in table cell does not place caret on new line
-                 *
-                 * Removed: Since the new enter logic seems to fix this one.
-                 */
-                /*
-                 if (tinymce.isGecko) {
-                 ed.onKeyDown.add(function(ed, e) {
-                 if (e.keyCode === tinymce.VK.ENTER && e.shiftKey) {
-                 var node = ed.selection.getRng().startContainer;
-                 var tableCell = dom.getParent(node, 'td,th');
-                 if (tableCell) {
-                 var zeroSizedNbsp = ed.getDoc().createTextNode("\uFEFF");
-                 dom.insertAfter(zeroSizedNbsp, node);
-                 }
-                 }
-                 });
-                 }
-                 */
-
                 fixTableCaretPos();
                 ed.startContent = ed.getContent({format: 'raw'});
             });
@@ -1520,84 +1492,232 @@
         createControl: function (n, cm) {
             var t = this, ed = t.editor;
 
-            switch (n) {
-                case 'table_insert':
-                    var border = ed.getParam('table_default_border', '');
+            function createMenuGrid(cols, rows) {
+              var html = '<table role="presentation" class="mceTableSplitMenu"><tbody>';
 
-                    // any value border will always be 1 in html5
-                    if (ed.settings.schema == 'html5' && ed.settings.validate) {
-                        if (border) {
-                            border = 1;
+              for (i = 0; i < rows; i++) {
+                  html += '<tr>';
+
+                  for (x = 0; x < cols; x++) {
+                      html += '<td><a href="#"></a></td>';
+                  }
+
+                  html += '</tr>';
+              }
+
+              html += '</tbody>';
+              html += '<tfoot><tr><td colspan="' + rows + '" class="mceTableGridCount">&nbsp;</td></tr></tfoot>';
+              html += '</table>';
+
+              return html;
+            }
+
+            function menuGridMouseOver(e) {
+              var el = e.target;
+
+              // might be <a> in table cell
+              if (el.nodeName !== "TD") {
+                  el = el.parentNode;
+              }
+              // get tbody
+              var tbody = DOM.getParent(el, 'tbody');
+
+              // might be in footer, so return
+              if (!tbody) {
+                return;
+              }
+              // get all table rows
+              var rows = tbody.childNodes;
+
+              var row = el.parentNode, i, z;
+              var x = tinymce.inArray(row.childNodes, el), y = tinymce.inArray(rows, row);
+
+              if (x < 0 || y < 0) {
+                  return;
+              }
+
+              for (i = 0; i < rows.length; i++) {
+                  cells = rows[i].childNodes;
+
+                  for (z = 0; z < cells.length; z++) {
+                      if (z > x || i > y) {
+                          DOM.removeClass(cells[z], 'selected');
+                      } else {
+                          DOM.addClass(cells[z], 'selected');
+                      }
+                  }
+              }
+
+              DOM.setHTML(DOM.select('td.mceTableGridCount', n), (y + 1) + ' x ' + (x + 1));
+            }
+
+            function menuGridClick(e) {
+              var c, el = e.target, bookmark = 0;
+
+              if (el.nodeName !== "TD") {
+                  el = el.parentNode;
+              }
+
+              var table = DOM.getParent(el, 'table');
+
+              var styles = [];
+              var width = ed.getParam('table_default_width');
+
+              if (/^[0-9\.]+$/.test(width)) {
+                  width += 'px';
+              }
+              // add width
+              if (width) {
+                  styles.push('width:' + width);
+              }
+
+              var height = ed.getParam('table_default_height');
+
+              if (/^[0-9\.]+$/.test(height)) {
+                  height += 'px';
+              }
+
+              // add height
+              if (height) {
+                  styles.push('height:' + height);
+              }
+
+              var border = ed.getParam('table_default_border', '');
+
+              // any value border will always be 1 in html5
+              if (ed.settings.schema == 'html5' && ed.settings.validate) {
+                  if (border) {
+                      border = 1;
+                  }
+              }
+
+              var html = '<table';
+
+              if (border != '') {
+                  html += ' border="' + border + '"';
+              }
+
+              var align = ed.getParam('table_default_align', '');
+              var classes = ed.getParam('table_classes', '');
+
+              if (align != '' && ed.settings.schema === "html4") {
+                  html += ' align="' + align + '"';
+              }
+
+              if (align != '' && ed.settings.schema !== "html4") {
+                  if (align === "center") {
+                      styles.push('margin-left: auto');
+                      styles.push('margin-right: auto');
+                  } else {
+                      styles.push('float: ' + align);
+                  }
+              }
+
+              if (classes) {
+                  html += ' class="' + classes + '"';
+              }
+
+              if (styles.length) {
+                  html += ' style="' + styles.join(';') + ';"';
+              }
+              html += '>';
+
+              var rows = tinymce.grep(DOM.select('tr', table), function (row) {
+                  return DOM.select('td.selected', row).length;
+              });
+
+              for (var y = 0; y < rows.length; y++) {
+                  html += "<tr>";
+
+                  var cols = DOM.select('td.selected', rows[y]).length;
+
+                  for (var x = 0; x < cols; x++) {
+                      if (!tinymce.isIE)
+                          html += '<td><br data-mce-bogus="1"/></td>';
+                      else
+                          html += '<td></td>';
+                  }
+                  html += "</tr>";
+              }
+              html += "</table>";
+
+              // restore bookmark
+              if (bookmark) {
+                  ed.selection.moveToBookmark(bookmark);
+                  ed.focus();
+                  bookmark = 0;
+              }
+
+              ed.execCommand('mceInsertContent', false, html);
+
+              return Event.cancel(e); // Prevent IE auto save warning
+            }
+
+            if (n === "table_insert") {
+                var c = cm.createSplitButton('table_insert', {
+                  title : 'table.desc',
+                  cmd: 'mceInsertTable',
+                  'class': 'mce_table'
+                });
+
+                c.onRenderMenu.add(function(c, m) {
+                    var sb, tm, sm;
+
+                    tm = m.addMenu({title: 'table.desc', icon: 'table', cmd: 'mceInsertTable'});
+                    sb = tm.add({"onmouseover" : menuGridMouseOver, "onclick" : menuGridClick, html: createMenuGrid(6, 6)});
+
+                    m.onShowMenu.add(function() {
+                        if (n = DOM.get(sb.id)) {
+                          DOM.removeClass(DOM.select('.mceTableSplitMenu td', n), 'selected');
+                          DOM.setHTML(DOM.select('.mceTableSplitMenu .mceTableGridCount', n), '&nbsp;');
                         }
-                    }
 
-                    var c = new tinymce.ui.TableSplitButton(cm.prefix + 'table_insert', {
-                        title: ed.getLang('table.desc', 'Inserts a new table'),
-                        'class': 'mce_table_insert',
-                        'menu_class': ed.getParam('skin') + 'Skin',
-                        onclick: function (e) {
-                            ed.execCommand('mceInsertTable');
-                        },
-                        onselect: function (html) {
-                            ed.execCommand('mceInsertContent', false, html);
-                        },
-                        scope: ed,
-                        width: ed.getParam('table_default_width'),
-                        height: ed.getParam('table_default_height'),
-                        border: border,
-                        align: ed.getParam('table_default_align', ''),
-                        classes: ed.getParam('table_classes', '')
-                    }, ed);
+                        var se = ed.selection, el = se.getNode(), n, p = DOM.getParent(el, 'table')
 
-                    ed.onMouseDown.add(c.hideMenu, c);
+                        tinymce.walk(m, function(o) {
+                					if (o === sb || o === tm) {
+                              return false;
+                          }
 
-                    // Remove the menu element when the editor is removed
-                    ed.onRemove.add(function () {
-                        c.destroy();
+                          if (o.settings.cmd) {
+                              o.setDisabled(!p);
+                          }
+
+                				}, 'items', m);
                     });
 
-                    return cm.add(c);
-                    break;
+                    m.add({title: 'table.del', icon: 'delete_table', cmd: 'mceTableDelete'});
 
-                  case 'table_props':
-                        var c = cm.createSplitButton('table_props', {
-                          title : 'table.props_desc',
-                          'class': 'mce_table_props'
-                        });
+                    m.addSeparator();
 
-                        c.onRenderMenu.add(function(c, m) {
-                            var sm, se = ed.selection, el = se.getNode() || ed.getBody();
+                    // Cell menu
+                    sm = m.addMenu({title: 'table.cell'});
+                    sm.add({title: 'table.cell_desc', icon: 'cell_props', cmd: 'mceTableCellProps'});
+                    sm.add({title: 'table.split_cells_desc', icon: 'split_cells', cmd: 'mceTableSplitCells'});
+                    sm.add({title: 'table.merge_cells_desc', icon: 'merge_cells', cmd: 'mceTableMergeCells'});
 
-                            m.add({title: 'table.del', icon: 'delete_table', cmd: 'mceTableDelete'});
-                            m.addSeparator();
+                    // Row menu
+                    sm = m.addMenu({title: 'table.row'});
+                    sm.add({title: 'table.row_desc', icon: 'row_props', cmd: 'mceTableRowProps'});
+                    sm.add({title: 'table.row_before_desc', icon: 'row_before', cmd: 'mceTableInsertRowBefore'});
+                    sm.add({title: 'table.row_after_desc', icon: 'row_after', cmd: 'mceTableInsertRowAfter'});
+                    sm.add({title: 'table.delete_row_desc', icon: 'delete_row', cmd: 'mceTableDeleteRow'});
 
-                            // Cell menu
-                            sm = m.addMenu({title: 'table.cell'});
-                            sm.add({title: 'table.cell_desc', icon: 'cell_props', cmd: 'mceTableCellProps'});
-                            sm.add({title: 'table.split_cells_desc', icon: 'split_cells', cmd: 'mceTableSplitCells'});
-                            sm.add({title: 'table.merge_cells_desc', icon: 'merge_cells', cmd: 'mceTableMergeCells'});
+                    sm.addSeparator();
 
-                            // Row menu
-                            sm = m.addMenu({title: 'table.row'});
-                            sm.add({title: 'table.row_desc', icon: 'row_props', cmd: 'mceTableRowProps'});
-                            sm.add({title: 'table.row_before_desc', icon: 'row_before', cmd: 'mceTableInsertRowBefore'});
-                            sm.add({title: 'table.row_after_desc', icon: 'row_after', cmd: 'mceTableInsertRowAfter'});
-                            sm.add({title: 'table.delete_row_desc', icon: 'delete_row', cmd: 'mceTableDeleteRow'});
-                            sm.addSeparator();
-                            sm.add({title: 'table.cut_row_desc', icon: 'cut', cmd: 'mceTableCutRow'});
-                            sm.add({title: 'table.copy_row_desc', icon: 'copy', cmd: 'mceTableCopyRow'});
-                            sm.add({title: 'table.paste_row_before_desc', icon: 'paste', cmd: 'mceTablePasteRowBefore'});
-                            sm.add({title: 'table.paste_row_after_desc', icon: 'paste', cmd: 'mceTablePasteRowAfter'});
+                    sm.add({title: 'table.cut_row_desc', icon: 'cut', cmd: 'mceTableCutRow'});
+                    sm.add({title: 'table.copy_row_desc', icon: 'copy', cmd: 'mceTableCopyRow'});
+                    sm.add({title: 'table.paste_row_before_desc', icon: 'paste', cmd: 'mceTablePasteRowBefore'});
+                    sm.add({title: 'table.paste_row_after_desc', icon: 'paste', cmd: 'mceTablePasteRowAfter'});
 
-                            // Column menu
-                            sm = m.addMenu({title: 'table.col'});
-                            sm.add({title: 'table.col_before_desc', icon: 'col_before', cmd: 'mceTableInsertColBefore'});
-                            sm.add({title: 'table.col_after_desc', icon: 'col_after', cmd: 'mceTableInsertColAfter'});
-                            sm.add({title: 'table.delete_col_desc', icon: 'delete_col', cmd: 'mceTableDeleteCol'});
-                        });
+                    // Column menu
+                    sm = m.addMenu({title: 'table.col'});
+                    sm.add({title: 'table.col_before_desc', icon: 'col_before', cmd: 'mceTableInsertColBefore'});
+                    sm.add({title: 'table.col_after_desc', icon: 'col_after', cmd: 'mceTableInsertColAfter'});
+                    sm.add({title: 'table.delete_col_desc', icon: 'delete_col', cmd: 'mceTableDeleteCol'});
+                });
 
-                        return c;
-                        break;
+                return c;
             }
 
             return null;
@@ -1606,362 +1726,4 @@
 
     // Register plugin
     tinymce.PluginManager.add('table', tinymce.plugins.TablePlugin);
-})(tinymce);
-
-/* Table Grid SplitButton Control */
-(function (tinymce) {
-    var DOM = tinymce.DOM, Event = tinymce.dom.Event, is = tinymce.is, each = tinymce.each;
-    /**
-     * This class is used to create UI table split button. A table split button will show a table grid
-     * when you press the open menu.
-     *
-     * @class tinymce.ui.TableSplitButton
-     * @extends tinymce.ui.SplitButton
-     */
-    tinymce.create('tinymce.ui.TableSplitButton:tinymce.ui.SplitButton', {
-        /**
-         * Constructs a new color split button control instance.
-         *
-         * @constructor
-         * @method ColorSplitButton
-         * @param {String} id Control id for the color split button.
-         * @param {Object} s Optional name/value settings object.
-         * @param {Editor} ed The editor instance this button is for.
-         */
-        TableSplitButton: function (id, s, ed) {
-            var t = this;
-
-            this.editor = ed;
-
-            t.parent(id, s, ed);
-
-            /**
-             * Settings object.
-             *
-             * @property settings
-             * @type Object
-             */
-            t.settings = s = tinymce.extend({
-                cols: 6,
-                rows: 6,
-                width: '',
-                height: '',
-                border: 0,
-                align: ''
-            }, t.settings);
-
-            /**
-             * Fires when the menu is shown.
-             *
-             * @event onShowMenu
-             */
-            t.onShowMenu = new tinymce.util.Dispatcher(t);
-
-            /**
-             * Fires when the menu is hidden.
-             *
-             * @event onHideMenu
-             */
-            t.onHideMenu = new tinymce.util.Dispatcher(t);
-        },
-        /**
-         * Shows the color menu. The color menu is a layer places under the button
-         * and displays a table of colors for the user to pick from.
-         *
-         * @method showMenu
-         */
-        showMenu: function () {
-            var t = this, r, p, e, p2, ed = this.editor;
-
-            if (t.isDisabled())
-                return;
-
-            // Store bookmark
-            if (tinymce.isIE) {
-                ed.focus();
-                this.bookmark = ed.selection.getBookmark(1);
-            }
-
-            if (!t.isMenuRendered) {
-                t.renderMenu();
-                t.isMenuRendered = true;
-            }
-
-            if (t.isMenuVisible)
-                return t.hideMenu();
-
-            e = DOM.get(t.id);
-            DOM.show(t.id + '_menu');
-            DOM.addClass(e, 'mceSplitButtonSelected');
-            p2 = DOM.getPos(e);
-            DOM.setStyles(t.id + '_menu', {
-                left: p2.x,
-                top: p2.y + e.clientHeight,
-                zIndex: 200000
-            });
-            e = 0;
-
-            Event.add(DOM.doc, 'mousedown', t.hideMenu, t);
-            t.onShowMenu.dispatch(t);
-
-            if (t._focused) {
-                t._keyHandler = Event.add(t.id + '_menu', 'keydown', function (e) {
-                    if (e.keyCode == 27)
-                        t.hideMenu();
-                });
-            }
-
-            t.isMenuVisible = 1;
-
-            t.setActive(1);
-        },
-        /**
-         * Hides the color menu. The optional event parameter is used to check where the event occured so it
-         * doesn't close them menu if it was a event inside the menu.
-         *
-         * @method hideMenu
-         * @param {Event} e Optional event object.
-         */
-        hideMenu: function (e) {
-            var t = this;
-
-            if (t.isMenuVisible) {
-                // Prevent double toogles by canceling the mouse click event to the button
-                if (e && e.type == "mousedown" && DOM.getParent(e.target, function (e) {
-                    return e.id === t.id + '_open';
-                }))
-                    return;
-
-                if (!e || !DOM.getParent(e.target, '.mceSplitButtonMenu')) {
-                    Event.remove(t.id, 'mouseover');
-                    DOM.removeClass(DOM.select('table td.selected', t.id + '_menu'), 'selected');
-                    DOM.setHTML(DOM.select('table td.mceTableGridCount', t.id + '_menu'), '&nbsp;');
-
-                    DOM.removeClass(t.id, 'mceSplitButtonSelected');
-                    Event.remove(DOM.doc, 'mousedown', t.hideMenu, t);
-                    Event.remove(t.id + '_menu', 'keydown', t._keyHandler);
-                    DOM.hide(t.id + '_menu');
-                }
-
-                t.isMenuVisible = 0;
-
-                t.setActive(0);
-            }
-        },
-        /**
-         * Renders the menu to the DOM.
-         *
-         * @method renderMenu
-         */
-        renderMenu: function () {
-            var t = this, ed = this.editor, m, i = 0, s = t.settings, n, tb, tr, w, context, bm;
-
-            if (s['class'].indexOf('defaultSkin') === -1) {
-              s['class'] = 'defaultSkin ' + s['class'];
-            }
-
-            w = DOM.add(s.menu_container, 'div', {
-                role: 'listbox',
-                id: t.id + '_menu',
-                'class': s['menu_class'] + ' ' + s['class'],
-                style: 'position:absolute;left:0;top:-1000px;'
-            });
-            m = DOM.add(w, 'div', {
-                'class': s['class'] + ' mceSplitButtonMenu'
-            });
-            DOM.add(m, 'span', {
-                'class': 'mceMenuLine'
-            });
-
-            n = DOM.add(m, 'table', {
-                role: 'presentation',
-                'class': 'mceTableSplitMenu'
-            });
-            tb = DOM.add(n, 'tbody');
-
-            for (i = 0; i < s.rows; i++) {
-                tr = DOM.add(tb, 'tr');
-
-                for (x = 0; x < s.cols; x++) {
-                    td = DOM.create('td', {}, '<a href="#"></a>');
-                    DOM.add(tr, td);
-                }
-            }
-
-            var rows = tb.childNodes;
-
-            Event.add(n, 'mouseover', function (e) {
-                var el = e.target;
-
-                if (el.nodeName == 'TD') {
-                    var row = el.parentNode, i, z;
-                    var x = tinymce.inArray(row.childNodes, el), y = tinymce.inArray(rows, row);
-
-                    if (x < 0 || y < 0) {
-                        return;
-                    }
-
-                    for (i = 0; i < rows.length; i++) {
-                        cells = rows[i].childNodes;
-
-                        for (z = 0; z < cells.length; z++) {
-                            if (z > x || i > y) {
-                                DOM.removeClass(cells[z], 'selected');
-                            } else {
-                                DOM.addClass(cells[z], 'selected');
-                            }
-                        }
-                    }
-
-                    DOM.setHTML(DOM.select('td.mceTableGridCount', n), (y + 1) + ' x ' + (x + 1));
-                }
-            });
-
-            tf = DOM.add(n, 'tfoot');
-            DOM.add(DOM.add(tf, 'tr'), 'td', {
-                colspan: s.rows,
-                'class': 'mceTableGridCount'
-            }, '&nbsp;');
-
-            DOM.addClass(m, 'mceTableSplitMenu');
-
-            new tinymce.ui.KeyboardNavigation({
-                root: t.id + '_menu',
-                items: DOM.select('a', t.id + '_menu'),
-                onCancel: function () {
-                    t.hideMenu();
-                    t.focus();
-                }
-            });
-
-            // Prevent IE from scrolling and hindering click to occur #4019
-            Event.add(t.id + '_menu', 'mousedown', function (e) {
-                return Event.cancel(e);
-            });
-
-            Event.add(t.id + '_menu', 'click', function (e) {
-                var c, el = e.target;
-
-                if (el.nodeName == 'A') {
-                    var table = DOM.getParent(el, 'table');
-
-                    var styles = [];
-
-                    var width = t.settings.width;
-
-                    if (/^[0-9\.]+$/.test(width)) {
-                        width += 'px';
-                    }
-                    // add width
-                    if (width) {
-                        styles.push('width:' + width);
-                    }
-
-                    var height = t.settings.height;
-
-                    if (/^[0-9\.]+$/.test(height)) {
-                        height += 'px';
-                    }
-                    // add height
-                    if (height) {
-                        styles.push('height:' + height);
-                    }
-
-                    var html = '<table';
-
-                    if (t.settings.border != '') {
-                        html += ' border="' + t.settings.border + '"';
-                    }
-
-                    if (t.settings.align != '' && ed.settings.schema === "html4") {
-                        html += ' align="' + t.settings.align + '"';
-                    }
-
-                    if (t.settings.align != '' && ed.settings.schema !== "html4") {
-                        if (t.settings.align === "center") {
-                            styles.push('margin-left: auto');
-                            styles.push('margin-right: auto');
-                        } else {
-                            styles.push('float: ' + t.settings.align);
-                        }
-                    }
-
-                    if (t.settings.classes) {
-                        html += ' class="' + t.settings.classes + '"';
-                    }
-
-                    if (styles.length) {
-                        html += ' style="' + styles.join(';') + ';"';
-                    }
-                    html += '>';
-
-                    var rows = tinymce.grep(DOM.select('tr', table), function (row) {
-                        return DOM.select('td.selected', row).length;
-                    });
-
-                    for (var y = 0; y < rows.length; y++) {
-                        html += "<tr>";
-
-                        var cols = DOM.select('td.selected', rows[y]).length;
-
-                        for (var x = 0; x < cols; x++) {
-                            if (!tinymce.isIE)
-                                html += '<td><br data-mce-bogus="1"/></td>';
-                            else
-                                html += '<td></td>';
-                        }
-                        html += "</tr>";
-                    }
-                    html += "</table>";
-
-                    // restore bookmark
-                    if (t.bookmark) {
-                        ed.selection.moveToBookmark(t.bookmark);
-                        ed.focus();
-                        t.bookmark = 0;
-                    }
-
-                    t.createGrid(html);
-                }
-
-                return Event.cancel(e); // Prevent IE auto save warning
-            });
-
-            return w;
-        },
-        /**
-         * Sets the current color for the control and hides the menu if it should be visible.
-         *
-         * @method setColor
-         * @param {String} html Table HTML
-         */
-        createGrid: function (html) {
-            this.hideMenu();
-            this.settings.onselect(html);
-        },
-        /**
-         * Post render event. This will be executed after the control has been rendered and can be used to
-         * set states, add events to the control etc. It's recommended for subclasses of the control to call this method by using this.parent().
-         *
-         * @method postRender
-         */
-        postRender: function () {
-            var t = this, id = t.id;
-
-            t.parent();
-        },
-        /**
-         * Destroys the control. This means it will be removed from the DOM and any
-         * events tied to it will also be removed.
-         *
-         * @method destroy
-         */
-        destroy: function () {
-            this.parent();
-
-            Event.clear(this.id + '_menu');
-            Event.clear(this.id + '_more');
-            DOM.remove(this.id + '_menu');
-        }
-    });
 })(tinymce);

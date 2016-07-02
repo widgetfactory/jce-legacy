@@ -472,7 +472,7 @@
   text-align: center;
 }
 
-.defaultSkin .mceTableSplitMenu td a {width: 20px; height: 20px; display: block; border: 1px solid #ddd;}
+.defaultSkin .mceTableSplitMenu td a {width: 20px; height: 20px; display: block; border: 1px solid #ddd; padding: 0;}
 
 .defaultSkin .mceTableSplitMenu .selected a {
   background-color: #f5fbfe;
@@ -498,7 +498,7 @@
   z-index: 1000;
   border: 1px solid #ddd;
   direction: ltr;
-
+  background-color: #fff;
   border-radius: 2px;
   min-width: 148px; /* DropMenu button length + 2 buttons */
 }
@@ -544,6 +544,9 @@
 .defaultSkin .mceMenu .mceMenuItemEnabled a:hover, .defaultSkin .mceMenu .mceMenuItemActive {
   background-color: #dbecf3
 }
+
+.defaultSkin .mceMenu .mceMenuItemEnabled .mceTableSplitMenu a:hover {background-color: transparent;}
+
 .defaultSkin .mceMenuItemSeparator {
   background: #ddd;
   height: 1px
@@ -571,7 +574,7 @@
   display: none
 }
 .defaultSkin .mceMenuItemSub a {
-  background: url(img/menu_arrow.gif) no-repeat top right;
+  background: url(img/menu_arrow.gif) no-repeat center right;
 }
 
 /* Dialog */
