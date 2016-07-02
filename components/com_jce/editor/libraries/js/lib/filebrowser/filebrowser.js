@@ -142,47 +142,47 @@
 				'id': 'item-list',
 				'role': 'listbox'
 			}).bind('click.item-list', function(e) {
-				var n = e.target,
-					p = n.parentNode;
+					var n = e.target, p = n.parentNode;
 
-				switch (n.nodeName) {
-					case 'A':
-						if ($(p).hasClass('folder')) {
-							var u = $(p).data('url') || self._getPreviousDir();
-							return self._changeDir(u);
-						} else {
-							self._setSelectedItems(e, true);
+					// move to parent if target is span or i (size, date, thumbnail)
+					if ($(n).is('.ui-icon, span, a')) {
+							n = $(n).parents('li').get(0);
+							p = n.parentNode;
+					}
 
-							var data = self._serializeItemData(p);
-							self._trigger('onFileClick', [p, data]);
-						}
+					// checkbox
+					if ($(n).hasClass('ui-item-checkbox')) {
+						n = n.firstChild;
+					}
 
-						e.preventDefault();
-
-						break;
-					case 'LI':
-						if ($(n).hasClass('folder-up')) {
-							var u = $(p).data('url') || self._getPreviousDir();
-							return self._changeDir(u);
-						}
-
+					if (n.nodeName === "LI") {
 						if ($(n).hasClass('folder')) {
-							if (e.pageX < $('a', p).offset().left) {
-								var u = $(p).data('url') || self._getPreviousDir();
-								return self._changeDir(u);
-							}
+							var u = $(n).data('url') || self._getPreviousDir();
+							return self._changeDir(u);
 						}
+						// set target to node
+						e.target = n;
 
 						self._setSelectedItems(e, true);
-						break;
-					case 'INPUT':
+
+						var data = self._serializeItemData(p);
+						self._trigger('onFileClick', [p, data]);
+
+						return true;
+					}
+
+					if (n.nodeName === "INPUT") {
 						if ($(n).is(':checked')) {
+							// set target to node
+							e.target = n;
+
 							self._setSelectedItems(e, true);
 						} else {
 							self._removeSelectedItems([p.parentNode], true);
 						}
-						break;
-				}
+
+						return true;
+					}
 			}).bind('dblclick.item-list', function(e) {
 				e.preventDefault();
 				return false;
@@ -328,6 +328,8 @@
 					return;
 				}
 
+				$('#show-search').removeClass('ui-active');
+
 				$('#searchbox').addClass('ui-hidden').attr('aria-hidden', true);
 			});
 
@@ -375,6 +377,7 @@
 
 			// Details button
 			$('#show-details:visible').click(function(e) {
+				$(this).toggleClass('ui-active');
 				$('main').toggleClass('ui-tree-hidden');
 			});
 
@@ -645,7 +648,7 @@
 			$('#item-list').empty();
 
 			if (!this._isRoot()) {
-				h += '<li class="folder folder-up" title="Up"><i class="ui-width-1-10 ui-icon ui-icon-undo ui-icon-folder-up"></i><a class="ui-width-9-10" href="javascript:;">...</a></li>';
+				h += '<li class="folder folder-up" title="Up"><span class="ui-width-0-10"></span><i class="ui-width-1-10 ui-icon ui-icon-arrow-circle-left ui-icon-folder-up"></i><a class="ui-flex-item-auto" href="#">...</a></li>';
 			}
 
 			if (o.folders.length) {
@@ -674,12 +677,56 @@
 
 					h += '<li class="ui-grid ui-grid-collapse ui-flex folder ' + classes.join(' ') + '" title="' + e.name + '"' +
 						data.join(' ') +
-						'><span class="ui-width-0-10"><input type="checkbox" /></span><i class="ui-width-1-10 ui-icon ui-icon-folder folder"></i><a class="ui-flex-item-auto" href="javascript:;">' + e.name + '</a><span class="ui-width-5-10 date">' + $.String.formatDate(e.properties.modified, self.options.date_format) + '</span></li>';
+						'><label class="ui-width-0-10 ui-item-checkbox"><input type="checkbox" /></label><i class="ui-width-1-10 ui-icon ui-icon-folder folder"></i><a class="ui-flex-item-auto" href="#">' + e.name + '</a><span class="ui-width-5-10 ui-item-date">' + $.String.formatDate(e.properties.modified, self.options.date_format) + '</span></li>';
 				});
 
 			}
 
 			if (o.total.files) {
+				function mapIcon(ext) {
+					if (/^(flv|mp4|m4v|webm|ogg|ogv|mov|wmv|avi)$/.test(ext)) {
+							return 'video';
+					}
+
+					if (/^(mp3|ogg|oga|webm)$/.test(ext)) {
+							return 'audio';
+					}
+
+					if (/^(jpg|jpeg|png|gif|png|svg|bmp|tiff)$/.test(ext)) {
+							return 'image';
+					}
+
+					if (/^(txt|htm|html)$/.test(ext)) {
+							return 'text';
+					}
+
+					if (/^(doc|docx)$/.test(ext)) {
+							return 'word';
+					}
+
+					if (/^(xls|xlsx)$/.test(ext)) {
+							return 'excel';
+					}
+
+					if (/^(ppt|pptx)$/.test(ext)) {
+							return 'powerpoint';
+					}
+
+					if (/^(rar|zip|tar|gz)$/.test(ext)) {
+							return 'zip';
+					}
+
+					if (/^(html|htm)$/.test(ext)) {
+							return 'code';
+					}
+
+					if (/^(txt|rtf|csv)$/.test(ext)) {
+							return 'text';
+					}
+
+					return ext;
+				}
+
 				$.each(o.files, function(i, e) {
 					var data = [],
 						classes = [];
@@ -716,13 +763,12 @@
 							data.push('download="' + e.preview + '"');
 					}*/
 
-					var ext = $.String.getExt(e.name);
+					var ext 	= $.String.getExt(e.name);
+					var name 	= $.String.stripExt(e.name);
 
-					h += '<li class="ui-grid ui-grid-collapse ui-flex file ' + ext.toLowerCase() + ' ' + classes.join(' ') + '" title="' + e.name + '"' + data.join(' ') + '><span class="ui-width-0-10"><input type="checkbox" /></span><i class="ui-width-1-10 ui-icon ui-icon-file ui-icon-' + ext + ' file ' + ext + '"></i><a class="ui-flex-item-auto" href="javascript:;">' + e.name + '</a><span class="ui-width-2-10 date">' + $.String.formatDate(e.properties.modified, self.options.date_format) + '</span><span class="ui-width-3-10 size">' + $.String.formatSize(e.properties.size) + '</span></li>';
+					h += '<li class="ui-grid ui-grid-collapse ui-flex file ' + ext.toLowerCase() + ' ' + classes.join(' ') + '" title="' + e.name + '"' + data.join(' ') + '><label class="ui-width-0-10 ui-item-checkbox"><input type="checkbox" /></label><i class="ui-width-1-10 ui-icon ui-icon-file-o ui-icon-file-' + mapIcon(ext) + '-o file ' + ext + '"></i><a class="ui-flex-item-auto" href="#"><span class="ui-item-text">' + name + '</span><span class="ui-item-extension">.' + ext + '</span></a><span class="ui-width-2-10 ui-item-date">' + $.String.formatDate(e.properties.modified, self.options.date_format) + '</span><span class="ui-width-3-10 ui-item-size">' + $.String.formatSize(e.properties.size) + '</span></li>';
 				});
 
-			} else {
-				h += '<li class="ui-width-1-1 nofile">' + self._translate('no_files', 'No files') + '</li>';
 			}
 
 			$('#item-list').html(h);
@@ -860,15 +906,17 @@
 				state: ''
 			});
 
-			var $pathway = $('.ui-breadcrumb.pathway', $status).empty();
+			var $pathway = $('.ui-breadcrumb.pathway', $status);
+			// remove all but "home"
+			$('li', $pathway).not(':first').remove();
 
 			// get width
 			var sw = $status.width();
-
-			// add root item
-			var $root = $('<li title="' + self._translate('home', 'Home') + '" />').html('<i class="ui-icon ui-icon-small ui-icon-home" />').click(function() {
+			
+			// add "home" click
+			$('li:first', $pathway).click(function() {
 				self._changeDir('/');
-			}).appendTo($pathway);
+			});
 
 			// trim path
 			dir = $.trim(dir.replace(/^\//, ''));
@@ -1582,6 +1630,10 @@
 				'view_mode': 'th-list th-large'
 			};
 
+			// normalise class name
+			var cls = name.replace(/_/g, '-');
+
+			// create button element
 			var action = document.createElement('button');
 
 			$(action).addClass('action ui-button');
@@ -1591,12 +1643,12 @@
 					'id': name,
 					'title': o.title,
 					'labelledby': name + '_label'
-				}).addClass(name).append('<span id="' + name + '_label" class="ui-hidden-mini">&nbsp;' + o.title + '</span>');
+				}).addClass(cls).append('<span id="' + name + '_label" class="ui-hidden-mini">&nbsp;' + o.title + '</span>');
 
 				var icon = (map[name] || name);
 
 				$.each(icon.split(' '), function(i, k) {
-					$(action).prepend('<i class="ui-icon ui-icon-medium ui-icon-' + name.replace(/_/g, '-') + ' ui-icon-' + k + '" />');
+					$(action).prepend('<i class="ui-icon ui-icon-medium ui-icon-' + cls + ' ui-icon-' + k + '" />');
 				});
 
 				if (o.name) {
@@ -1668,7 +1720,8 @@
 				'paste': 'paste',
 				'rename': 'pencil-square-o',
 				'preview': 'search',
-				'view': 'search'
+				'view': 'search',
+				'image-editor': 'paint-brush'
 			};
 
 			// only create button type once
@@ -1687,7 +1740,7 @@
 					$(button).css('background-image', $.String.path($.Plugin.getPath(this.options.plugin), o.icon));
 				}
 				var name = o.name.replace(/_/g, '-');
-				$(button).prepend('<i class="ui-icon ui-icon-small ui-icon-' + name + ' ui-icon-' + (map[name] || name) + '" />');
+				$(button).prepend('<i class="ui-icon ui-icon-' + name + ' ui-icon-' + (map[name] || name) + '" />');
 
 				if (name) {
 					$(button).click(function() {

@@ -29,6 +29,10 @@ label {
 /* button */
 .ui-button, .ui-button-primary, .ui-button-success, .ui-button-danger {text-shadow: inherit;box-shadow: inherit;}
 
+.ui-button:active, .ui-button.ui-active {background-color: #ddd;}
+
+.ui-navbar .ui-button {border-radius: 0;}
+
 .ui-modal-footer .ui-button:not(.ui-button-primary):not(.ui-button-danger):not(.ui-button-success) {background-color: #fff; border-color: #ddd;}
 
 .ui-form input[type="range"] {
@@ -169,6 +173,8 @@ label {
 .ui-comment-meta {
     color: #444;
     font-size: 12px;
+    margin: 0;
+    line-height: 16px;
 }
 
 /*.ui-form-horizontal .ui-form-controls input[type="checkbox"] {
