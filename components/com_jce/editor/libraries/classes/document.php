@@ -419,16 +419,6 @@ class WFDocument extends JObject {
             $url = $this->buildStylePath($file, $root);
             // store path
             $this->_styles[$url] = $type;
-
-            if ($browser->getBrowser() == 'msie') {
-                // All versions
-                $file = $file . '_ie.css';
-                $path = $this->urlToPath($url);
-
-                if (file_exists(dirname($path) . '/' . $file)) {
-                    $this->_styles[dirname($url) . '/' . $file] = $type;
-                }
-            }
         }
     }
 
