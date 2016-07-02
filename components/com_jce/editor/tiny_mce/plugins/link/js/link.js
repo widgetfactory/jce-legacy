@@ -42,11 +42,11 @@
                 charLength: 50
             }).on('tree:nodeclick', function(e, node) {
                 var v;
-
-                if (!$('.nolink', node).length) {
+                
+                if ($(node).hasClass('file')) {
                     v = $('a', node).attr('href');
 
-                    if (v == 'javascript:;') {
+                    if (v == '#') {
                         v = $(node).attr('id');
                     }
 

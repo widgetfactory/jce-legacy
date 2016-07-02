@@ -534,17 +534,34 @@ class WFFileBrowser extends JObject {
         if ($init) {
             $treedir = $dir;
             if ($root) {
-                $result = '<ul><li id="/" class="open"><div class="tree-row"><div class="tree-image"></div><span class="root"><a href="javascript:;">' . WFText::_('WF_LABEL_HOME', 'Home') . '</a></span></div>';
+                $result = '<ul>'
+                . '<li id="/" class="ui-tree-open ui-tree-root ui-padding-remove">'
+                . ' <div class="ui-tree-row">'
+                . '   <a href="#">'
+                . '     <span class="ui-tree-icon" role="presentation">'
+                . '       <i class="ui-icon ui-icon-home"></i>'
+                . '     </span>'
+                . '     <span class="ui-tree-text">' . WFText::_('WF_LABEL_HOME', 'Home') . '</span>'
+                . '   </a>'
+                .' </div>';
+
                 $dir = '/';
             }
         }
         $folders = $this->getFolders($dir);
 
         if ($folders) {
-            $result .= '<ul class="tree-node">';
+            $result .= '<ul class="ui-tree-node">';
             foreach ($folders as $folder) {
-                $open = strpos($treedir, ltrim($folder['id'], '/')) === 0 ? ' open' : '';
-                $result .= '<li id="' . $this->escape($folder['id']) . '" class="' . $open . '"><div class="tree-row"><div class="tree-image"></div><span class="folder"><a href="javascript:;">' . $folder['name'] . '</a></span></div>';
+                $open = strpos($treedir, ltrim($folder['id'], '/')) === 0;
+
+                $result .= '<li id="' . $this->escape($folder['id']) . '" class="' . ($open ? 'ui-tree-open' : '') . '">'
+                . ' <div class="ui-tree-row">'
+                . '   <a href="#">'
+                . '     <span class="ui-tree-icon" role="presentation"></span>'
+                . '     <span class="ui-tree-text">' . $folder['name'] . '</span>'
+                . '   </a>'
+                .' </div>';
 
                 if ($open) {
                     if ($h = $this->getTreeItems($folder['id'], false, false)) {
