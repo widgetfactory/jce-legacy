@@ -1107,7 +1107,6 @@ class WFModelEditor extends WFModelBase {
 
                     $files[] = WF_EDITOR_LIBRARIES . '/css/editor.min.css';
                     $files[] = WF_EDITOR_PLUGINS . '/inlinepopups/css/window.css';
-                    $dialog = $wf->getParam('editor.dialog_theme', 'jce');
 
                     $files[] = WF_EDITOR_THEMES . '/' . $themes[0] . '/skins/' . $toolbar[0] . '/ui.css';
 
