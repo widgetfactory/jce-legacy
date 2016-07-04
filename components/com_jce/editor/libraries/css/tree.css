@@ -9,9 +9,7 @@
  */
 
 .ui-tree a {
-    line-height: 20px;
     display: inline-block;
-    vertical-align: middle;
     width: calc(100% - 24px);
 }
 .ui-tree a, .ui-tree a:hover, .ui-tree a:active {
@@ -38,25 +36,25 @@
 .ui-icon-minus-square-o {
     display: none;
 }
-.ui-tree-open> .ui-tree-row .ui-tree-toggle .ui-icon-plus-square-o {
+.ui-tree-open> .ui-tree-row> .ui-tree-toggle .ui-icon-plus-square-o {
     display: none;
 }
-.ui-tree-open> .ui-tree-row .ui-tree-toggle .ui-icon-minus-square-o {
+.ui-tree-open> .ui-tree-row> .ui-tree-toggle .ui-icon-minus-square-o {
     display: inline-block;
 }
 .ui-icon-folder-open {
     display: none;
 }
-.ui-tree-open> .ui-tree-row .ui-tree-icon .ui-icon-folder {
+.ui-tree-open> .ui-tree-row> .ui-tree-icon .ui-icon-folder {
     display: none;
 }
-.ui-tree-open> .ui-tree-row .ui-tree-icon .ui-icon-folder-open {
+.ui-tree-open> .ui-tree-row> .ui-tree-icon .ui-icon-folder-open {
     display: inline-block;
 }
-.ui-tree-loading .ui-icon {
+.ui-tree-loading> .ui-tree-row> .ui-tree-toggle .ui-icon {
     display: none !important;
 }
-.ui-tree-loading {
+.ui-tree-loading> .ui-tree-row> .ui-tree-toggle {
     background: url('../img/load.gif') no-repeat center;
 }
 .ui-tree, .ui-tree ul {
@@ -67,11 +65,13 @@
     -moz-user-select: none;
     user-select: none;
 }
+.ui-tree li {
+    line-height: 28px;
+    vertical-align: middle;
+    margin: 0;
+}
 .ui-tree-node li {
     padding: 0 0 0 23px;
-    margin: 0;
-    vertical-align: middle;
-    line-height: 28px;
 }
 .ui-tree-row .ui-tree-text {
     display: inline-block;

@@ -42,8 +42,8 @@
                 charLength: 50
             }).on('tree:nodeclick', function(e, node) {
                 var v;
-                
-                if ($(node).hasClass('file')) {
+
+                if (!$(node).hasClass('nolink')) {
                     v = $('a', node).attr('href');
 
                     if (v == '#') {
@@ -52,6 +52,11 @@
 
                     self.insertLink($.String.decode(v));
                 }
+
+                if ($(node).hasClass('folder')) {
+                  $(this).trigger('tree:togglenode', [e, node]);
+                }
+
             }).on('tree:nodeload', function(e, node) {
                 var self = this;
 

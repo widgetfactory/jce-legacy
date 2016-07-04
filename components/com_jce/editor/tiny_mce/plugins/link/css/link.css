@@ -22,11 +22,3 @@
   height: 244px;
   margin-top: 5px;
 }
-
-div.tree ul {}
-div.tree ul li {}
-div.tree ul li span {}
-div.tree ul li div {}
-div.tree ul li span.file {
-	background-position: 0 -180px;
-}
