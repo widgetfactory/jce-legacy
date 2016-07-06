@@ -3,7 +3,9 @@ html {
     -webkit-font-smoothing: antialiased;
 }
 label {
-    vertical-align: middle;
+  vertical-align: middle;
+  line-height: 28px;
+  display: inline-block;
 }
 
 .ui-form-horizontal .ui-form-label {
@@ -20,11 +22,13 @@ label {
 .ui-grid-small > div {padding-left: 8px;}
 
 [class*="ui-icon-"] {font-size: 14px;}
-.ui-icon-medium {font-size: 200%}
-.ui-icon-large {font-size: 250%}
-.ui-icon-small {font-size: 150%}
+.ui-icon-medium {font-size: 2em;}
+.ui-icon-large {font-size: 2.5em;}
+.ui-icon-small {font-size: 1.5em;}
 
 .ui-close {font-size: 16px;}
+
+.ui-placeholder-small {padding: 5px;}
 
 /* button */
 .ui-button, .ui-button-primary, .ui-button-success, .ui-button-danger {text-shadow: inherit;box-shadow: inherit;}
@@ -139,7 +143,7 @@ label {
     padding: 2px;
 }
 .ui-form input[type="checkbox"] {
-    margin: 0 4px 0 0;
+    margin: 2px 4px 0 0;
 }
 .ui-form legend {
     padding-bottom: 5px;
@@ -441,4 +445,27 @@ input[type="range"]::-ms-thumb {
     width: 20px;
     display: inline-block;
     height: 20px;
+}
+
+.ui-stack {
+  position: relative;
+  display: inline-block;
+  width: 1em;
+  height: 1em;
+  line-height: 1em;
+  vertical-align: middle;
+}
+
+.ui-stack-medium {
+  width: 2em;
+  height: 2em;
+  line-height: 2em;
+}
+
+.ui-stack .ui-icon-stack {
+  position: absolute;
+  left: 0;
+  top: 0.5em;
+  width: 100%;
+  text-align: center;
 }
