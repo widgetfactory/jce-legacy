@@ -291,11 +291,15 @@ div#browser-message span {
 #searchbox {
   margin: 0 28px 0 0 !important;
   height: 28px;
+  top: -1px;
+  right: -1px;
+  left: 1px;
 }
 #searchbox input {
   border-radius: 0;
   height: 100%;
   margin: 0 0 0 -1px;
+  border: 0;
 }
 #searchbox .ui-icon {
   margin-top: -11px;
@@ -555,13 +559,7 @@ ul.item-list li.folder-up {
   padding: 0;
   min-height: inherit;
 }
-#browser-actions span {
-  border: 0 none;
-  position: relative;
-  float: right;
-  margin: 0;
-  vertical-align: middle;
-}
+
 #browser-buttons .button:hover {
   opacity: 0.6;
 }
@@ -576,6 +574,7 @@ ul.item-list li.folder-up {
 .action {
   margin: 0 0 0 3px;
   height: 28px;
+  display: inline-block;
 }
 .action .ui-icon {
   /*font: inherit;*/
@@ -671,7 +670,6 @@ ul.item-list li.folder-up {
 .action .ui-icon-help {color: #254ABF;}
 
 .ui-icon-folder, .ui-icon-folder-open {color: #D2B073;}
-
 .jpeg .ui-icon, .jpg .ui-icon, .png .ui-icon, .gif .ui-icon, .bmp .ui-icon, .tiff .ui-icon {color: #4F9245;}
 
 .mp4 .ui-icon, .wmv .ui-icon, .m4a .ui-icon, .flv .ui-icon, .mov .ui-icon, .ogg .ui-icon, .webm .ui-icon {color: #566485;}
@@ -680,3 +678,5 @@ ul.item-list li.folder-up {
 .xls .ui-icon, .xlsx .ui-icon {color: #7BAC67;}
 .ppt .ui-icon, .pptx .ui-icon {color: #DB6319;}
 .pdf .ui-icon {color: #D00000;}
+
+#upload-options:empty {display: none;}
