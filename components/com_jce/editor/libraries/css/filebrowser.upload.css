@@ -22,137 +22,34 @@ div#upload-queue-block {
 	margin: 0;
 }
 
-#upload-queue {
-	list-style: outside none none;
-	padding: 0;
-	vertical-align: middle;
-	white-space: nowrap;
-}
-
-#upload-queue .queue-item > div {
-	float: left;
-	line-height: 28px;
-}
-
-#upload-queue .load .queue-item-name .file {
+.queue-item-loading .queue-item-name .ui-icon:before {
+	content: "";
+	width: 20px;
+	height: 20px;
+	display: inline-block;
+	margin-top: -3px;
 	background: url(../img/load.gif) no-repeat center left;
 }
 
-#upload-queue .error .queue-item-name .file {
-	background: url(../img/icons.png) no-repeat 0 -340px;
-}
-
-#upload-queue .complete .queue-item-name .file {
-	background: url(../img/icons.png) no-repeat 0 -520px;
-}
-
-.queue-item {
-	vertical-align: middle;
-	clear: both;
-	display: flex;
-	flex-wrap: wrap;
-	padding: 0;
-	margin: 5px 0;
-}
-
-.queue-item > *, .queue-item-name > * {
-	flex: 0 0 auto;
-	float: left;
-	margin: 0;
-	box-sizing: border-box;
-}
-
-.queue-item > div {
-	box-sizing: border-box;
-	width: 100%;
-}
-
 .ui-progress {margin: 5px 0; box-shadow: inherit; background-color: transparent; display: none;}
-.load .ui-progress {display: block;}
+.queue-item-loading .ui-progress {display: block;}
 .ui-alert {white-space: normal;margin: 5px 0;}
 
-#upload-queue .queue-item-name {
-	position: relative;
-	max-width: 100%;
-	cursor: default;
-	clear: both;
-	display: flex;
-	flex-wrap: wrap;
+.queue-item-size {
+		vertical-align: middle;
+		line-height: 28px;
+}
+
+.queue-item .queue-item-name .queue-item-extension {
 	padding: 0;
+	font-size: inherit;
+	cursor: inherit;
 	vertical-align: middle;
-
-	width: 80%;
-}
-
-#upload-queue.wf-uploader-html4 .queue-item-name {width: 95%;}
-
-#upload-queue .queue-item-name input {
-	box-sizing: border-box;
-	display: inline-block;
-	height: 28px;
-	line-height: 24px;
-	max-width: 100%;
-	padding: 5px 30px 5px 5px;
-	vertical-align: middle;
-	width: 100%;
-}
-
-.ie8 #upload-queue .queue-item-name input {
-	padding: 0 0 0 5px;
-}
-
-#upload-queue .queue-item-name .queue-item-input {
-	width: 95%;
-}
-
-#upload-queue .queue-item-extension {
-	color: #999;
-	position: absolute;
-	right: 0;
-	text-align: center;
-	top: 1px;
-	width: 30px;
-}
-
-#upload-queue .queue-item .file {
-	background-color: transparent;
-	height: 20px;
-	margin: 5px 0;
-	width: 5%;
-}
-
-#upload-queue .queue-item-actions {
-	width: 20%;
-	padding: 0 10px;
-	text-align: right;
-}
-
-#upload-queue .queue-item-actions  .queue-item-size {display: inline-block; vertical-align: middle;}
-
-#upload-queue.wf-uploader-html4 .queue-item-actions {width: 5%;}
-
-#upload-queue .queue-item-action {
-	border: 0 none;
-	vertical-align: middle;
-	display: inline-block;
-}
-
-#upload-queue .queue-item-status {
-	box-sizing: border-box;
-	clear: both;
+	line-height: 28px;
+	height: inherit;
 	margin: 0;
-	overflow: hidden;
-	line-height: 24px !important;
-}
-
-ul#upload-queue li.queue-item.exists {
-	background: url(../img/icons.png) no-repeat 0 -640px;
-}
-ul#upload-queue li.queue-item.exists.hastip {
-	cursor: help;
-}
-ul#upload-queue li span.tooltip {
-	position: absolute;
+	top: 0;
+	right: 5px;
 }
 
 .wf-uploader-container {
