@@ -183,8 +183,26 @@
 
             // Add multipart params
             $.each(o.multipart, function (name, value) {
-                formData.append(name, value);
+                if ($.type(value) === "object") {
+                    formData.append(value.name, value.value);
+                } else {
+                    formData.append(name, value);
+                }
             });
+
+            // add file specific data
+            if (file.data) {
+              $.each(file.data, function (name, value) {
+                  if ($.type(value) === "object") {
+                      formData.append(value.name, value.value);
+                  } else {
+                      formData.append(name, value);
+                  }
+              });
+            }
+
+            // add method
+            formData.append('method', 'upload');
 
             // add json-rpc id
             formData.append('id', uid());
@@ -221,8 +239,15 @@
                 if (name === o.data_name) {
                     return;
                 }
+                var k, v;
 
-                $(form).prepend($('<input type="hidden" name="' + name + '" value="' + value + '" />'));
+                if ($.type(value) === "object") {
+                    k = value.name, v = value.value;
+                } else {
+                    k = name, v = value;
+                }
+
+                $(form).prepend($('<input type="hidden" name="' + k + '" value="' + v + '" />'));
             });
 
             // add rpc id
@@ -580,10 +605,17 @@
         renameFile: function (file, name) {
             return this.updateFile(file, {'filename': name});
         },
-        upload: function (file) {
-            var self = this, o = this.options;
 
-            var data = $.extend({'method': 'upload', 'name': file.filename || ""}, o.data);
+        upload: function (file) {
+            var self = this, o = this.options, data;
+
+            if ($.type(o.data) === "object") {
+                data = $.extend({"name" : file.filename || ""}, o.data);
+            }
+
+            if ($.type(o.data) === "array") {
+                data = $.merge([{"name" : "name", "value" : file.filename || ""}], o.data);
+            }
 
             // create upload arguments
             var args = {
@@ -610,7 +642,6 @@
                 }
             };
 
-            // create new Transport and upload
             this.transport = new Transport(args);
             this.transport.upload(file);
 

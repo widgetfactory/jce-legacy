@@ -12,6 +12,50 @@
 
 (function($) {
 
+    function mapIcon(ext) {
+      if (/^(flv|mp4|m4v|webm|ogg|ogv|mov|wmv|avi)$/.test(ext)) {
+          return 'video';
+      }
+
+      if (/^(mp3|ogg|oga|webm)$/.test(ext)) {
+          return 'audio';
+      }
+
+      if (/^(jpg|jpeg|png|gif|png|svg|bmp|tiff)$/.test(ext)) {
+          return 'image';
+      }
+
+      if (/^(txt|htm|html)$/.test(ext)) {
+          return 'text';
+      }
+
+      if (/^(doc|docx)$/.test(ext)) {
+          return 'word';
+      }
+
+      if (/^(xls|xlsx)$/.test(ext)) {
+          return 'excel';
+      }
+
+      if (/^(ppt|pptx)$/.test(ext)) {
+          return 'powerpoint';
+      }
+
+      if (/^(rar|zip|tar|gz)$/.test(ext)) {
+          return 'zip';
+      }
+
+      if (/^(html|htm)$/.test(ext)) {
+          return 'code';
+      }
+
+      if (/^(txt|rtf|csv)$/.test(ext)) {
+          return 'text';
+      }
+
+      return ext;
+    }
+
     function UploadWidget(element, options) {
         this.element = element || $('<div />');
 
@@ -79,11 +123,13 @@
             // on Uploader init
             this.uploader.on('init', function() {
                 self._createDragDrop();
+                self._trigger('init');
             });
 
             // on add file
             this.uploader.on('fileadded', function(e, file) {
                 self._createQueue(file);
+                self._trigger('fileadded', file);
             });
 
             // on upload file
@@ -123,7 +169,7 @@
 
                 if (file) {
                     if (error.code < 600) {
-                        $(file.element).removeClass('load').addClass('error');
+                        $(file.element).removeClass('queue-item-loading').addClass('queue-item-error');
                     } else {
                         $(file.element).remove();
                     }
@@ -195,15 +241,14 @@
             }
 
             $('.ui-progress', file.element).hide();
-            $('<div class="ui-alert ui-alert-danger" />').html(message).appendTo(file.element);
+            $('<div class="ui-alert ui-alert-danger ui-width-1-1 ui-text-center" />').html(message).appendTo(file.element);
 
             //$.Modal.alert(message);
         },
 
         _onStart: function(file) {
             this._trigger('uploadstart', file);
-
-            $(file.element).addClass('load disabled').find('input[type="text"]').prop('disabled', true);
+            $(file.element).addClass('queue-item-loading').find('input[type="text"]').prop('disabled', true);
         },
         _isError: function(err) {
             if (err) {
@@ -220,7 +265,7 @@
             var self = this, file = o.file;
 
             // add success class
-            $(file.element).removeClass('load').addClass('complete');
+            $(file.element).removeClass('queue-item-loading').addClass('queue-item-complete');
 
             // trigger callback
             this._trigger('filecomplete', file);
@@ -291,14 +336,14 @@
             var file = this.currentFile;
 
             if (file) {
-                $(file.element).removeClass('load complete error').addClass(s.state || '');
+                $(file.element).removeClass('queue-item-loading queue-item-complete queue-item-error').addClass(s.state || '');
 
                 if (s.state && s.state === 'error') {
                     this.errors++;
 
                     if (s.message) {
                         $('.ui-progress', file.element).hide();
-                        $('<div class="ui-alert ui-alert-danger" />').html(s.message).appendTo(file.element);
+                        $('<div class="ui-alert ui-alert-danger ui-width-1-1 ui-text-center" />').html(s.message).appendTo(file.element);
                     }
                 }
             }
@@ -321,7 +366,6 @@
          */
         _renameFile: function(file, name) {
             this.uploader.renameFile(file, name);
-
             this._trigger('filerename', file);
         },
         /**
@@ -347,7 +391,7 @@
          * @param {String} file File to remove
          */
         _removeFile: function(file) {
-            this._trigger('fileDelete', file);
+            this._trigger('filedelete', file);
 
             $(file.element).remove();
 
@@ -372,14 +416,10 @@
             file.element = document.createElement('div');
 
             // status / delete
-            var remove = $('<a href="#" role="button" class="ui-button" />').attr({
+            var remove = $('<button class="ui-button ui-button-link" />').attr({
                 'title': $.Plugin.translate('delete', 'Delete')
             }).addClass('queue-item-action').click(function(e) {
                 e.preventDefault();
-
-                if ($(this).hasClass('disabled')) {
-                    return;
-                }
 
                 if (self.uploading) {
                     return self._stop(file);
@@ -388,21 +428,17 @@
                 return self._removeFile(file);
             }).append('<i class="ui-icon ui-icon-trash" />');
 
-            var type = /image\//.test(file.type) ? 'image' : 'file';
-
-            // spinner / icon
-            var spinner = $('<div />').addClass('file').addClass(type).addClass(file.extension.toLowerCase());
-
+            // extension
+            var ext     = file.extension.toLowerCase();
             // input
-            var input   = $('<div class="queue-item-input"><input type="text" value="' + title + '" /><div class="queue-item-extension">.' + file.extension + '</div></div>');
-
-            var name    = $('<div class="queue-item-name" />').append([spinner, input]);
+            var input   = $('<i class="ui-icon ui-icon-' + mapIcon(ext) + '" /><input type="text" value="' + title + '" class="ui-width-1-1" /><span class="queue-item-extension ui-text-muted ui-icon-none">.' + file.extension + '</span>');
+            var name    = $('<div class="queue-item-name ui-width-4-5 ui-form-icon ui-form-icon-both" />').append(input);
 
             var buttons = [remove];
 
             // add optional buttons
             $.each(self.options.buttons, function(name, props) {
-                var btn = $('<a href="#" role="button" title="' + props.title || name + '" class="" role="button" />').addClass(props['class']).click(function(e) {
+                var btn = $('<button class="ui-button ui-button-link" title="' + props.title || name + '" />').addClass(props['class']).click(function(e) {
                     if ($(this).hasClass('disabled')) {
                         e.preventDefault();
                         return;
@@ -421,13 +457,16 @@
 
             if (file.size) {
                 // size
-                size = $('<div class="queue-item-size" title="' + $.String.formatSize(file.size) + '" role="presentation" />').html($.String.formatSize(file.size));
+                size = $('<div class="queue-item-size ui-flex-item-auto ui-text-center" title="' + $.String.formatSize(file.size) + '" role="presentation" />').html($.String.formatSize(file.size));
             }
 
             // create actions container
-            var actions = $('<div class="queue-item-actions" />').appendTo(file.element).append(size).append(buttons);
+            var actions   = $('<div class="queue-item-actions ui-grid ui-grid-collapse ui-width-1-5 ui-text-right" />').appendTo(file.element).append(size).append(buttons);
+            var progress  = $('<div class="ui-progress ui-width-1-1"><div class="ui-progress-bar"></div></div>');
 
-            $('input[type="text"]', input).on('change keyup', function(e) {
+            $(file.element).addClass('queue-item ui-width-1-1 ui-grid ui-grid-collapse').appendTo($(self.element)).append([name, actions, progress]);
+
+            $('input[type="text"]', file.element).on('change keyup', function(e) {
                 var v = this.value;
                 // make web safe
                 v = $.String.safe(this.value, self.options.websafe_mode, self.options.websafe_spaces);
@@ -445,16 +484,12 @@
                 }
             }).change();
 
-            var progress = $('<div class="ui-progress"><div class="ui-progress-bar"></div></div>');
-
-            $(file.element).addClass('queue-item').appendTo($(self.element)).append([name, actions, progress]);
-
             self._trigger('fileSelect', file);
         },
         _stop: function(file) {
             this.uploader.stop();
 
-            $(file.element).removeClass('load');
+            $(file.element).removeClass('queue-item-loading');
         }
     };
 
