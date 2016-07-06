@@ -343,8 +343,6 @@ span.ui-slider {
 }
 .ui-constrain {
     position: relative;
-    font-size: 16px;
-    line-height: 30px;
     vertical-align: middle;
     width: 20px;
     text-align: center;
