@@ -20,38 +20,37 @@
         return this.each(function() {
             var cb = this, $elms = $(this).siblings('input[type="text"]');
 
+            $(this).on('constrain:update', function() {
+              $(this).parent().siblings('input[type="text"]').each(function() {
+                $(this).data('tmp', this.value);
+              });
+            });
+
             $(cb).addClass('ui-form-constrain').wrap('<i class="ui-constrain ui-icon-lock" />').click(function() {
                 $(this).parent().toggleClass('ui-icon-unlock', !this.checked);
             });
 
+            // set tmp values
             $elms.each(function() {
               $(this).data('tmp', this.value);
-            }).change(function() {
-              var a = this, b = $elms.not(this);
+            }).change(function(e) {
+              e.stopPropagation();
 
-              var w = $(a).val(), h = $(b).val();
+              var a = this, b = $(a).siblings('input[type="text"]'), cb = $(this).siblings('.ui-constrain').children(':checkbox');
 
-              if (w && h) {
+              var w = $(a).val(), h = $(b).val(), tw =  $(a).data('tmp');
+
+              if (w && h && tw) {
                   // if constrain is on
-                  if ($(cb).prop('checked')) {
-                      var tw = $(a).data('tmp');
+                  if ($(cb).is(':checked')) {
+                      var temp = ((h / tw) * w).toFixed(0);
+                      $(b).val(temp).data('tmp', temp);
 
-                      if (tw) {
-                          var temp = ((h / tw) * w).toFixed(0);
-                          $(b).val(temp).data('tmp', temp);
-
-                          $(cb).trigger('constrain:change', [$elms]);
-                      }
+                      $(cb).trigger('constrain:change', [$(this).siblings('input[type="text"]').andSelf()]);
                   }
               }
 
               $(a).data('tmp', w);
-            });
-
-            $(this).on('constrain:update', function() {
-              $elms.each(function() {
-                $(this).data('tmp', this.value);
-              });
             });
         });
     };
@@ -62,7 +61,7 @@
 
         $('.ui-repeatable-create', this).click(function(e) {
             // clone element
-            var el = $(self).clone(true);
+            var el = $(self).clone(true, true);
 
             // clear inputs
             $(el).find('input').val('');

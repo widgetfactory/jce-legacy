@@ -34,15 +34,21 @@
 .ui-form-icon input.color {
     padding-left: 28px !important
 }
-.ui-repeatable .ui-repeatable-create {
+
+/* Repeatable */
+.ui-repeatable .ui-repeatable-create, .ui-repeatable .ui-repeatable-delete {
     display: none;
 }
-.ui-repeatable:first-child .ui-repeatable-create {
+.ui-repeatable .ui-repeatable-create:first-child {
     display: block;
 }
-.ui-repeatable:first-child .ui-repeatable-delete {
-    display: none;
+.ui-repeatable  + .ui-repeatable .ui-repeatable-delete {
+    display: block;
 }
+.ui-repeatable  + .ui-repeatable .ui-repeatable-create {
+  display: none;
+}
+
 input.color, input.colour {
     width: 100px;
 }
