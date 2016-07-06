@@ -9,6 +9,33 @@
  */
 
 (function($, undef) {
+	var mimeTypes = {};
+
+	// Parses the default mime types string into a mimes lookup map
+	(function(data) {
+		var items = data.split(","),
+			i, y, ext;
+
+		for (i = 0; i < items.length; i += 2) {
+			ext = items[i + 1].split("|");
+			for (y = 0; y < ext.length; y++) {
+				mimeTypes[ext[y]] = items[i];
+			}
+		}
+	})(
+		"video,flv|mp4|m4v|webm|ogg|ogv|mov|wmv|avi," +
+		"audio,mp3|ogg|oga|webm," +
+		"image,jpg|jpeg|png|gif|png|svg|bmp|tiff," +
+		"text,txt|htm|html," +
+		"word,doc|docx," +
+		"excel,xls|xlsx," +
+		"powerpoint,ppt|pptx," +
+		"zip,rar|zip|tar|gz," +
+		"code,html|htm|xml," +
+		"text,txt|rtf|csv"
+	);
+
+	// Create a unique ID
 	var guid = (function() {
 		function s4() {
 			return Math.floor((1 + Math.random()) * 0x10000)
@@ -20,6 +47,15 @@
 				s4() + '-' + s4() + s4() + s4();
 		};
 	})();
+
+	// get mimetype from lookup map
+	function getMimeType(ext) {
+			ext = ext.toLowerCase();
+
+			ext = $.trim(ext);
+
+			return mimeTypes[ext] || ext;
+	}
 
 	var FileBrowser = function(element, options) {
 		var self = this;
@@ -164,9 +200,10 @@
 						e.target = n;
 
 						self._setSelectedItems(e, true);
-
-						var data = self._serializeItemData(p);
-						self._trigger('onFileClick', [p, data]);
+						// get serialized object
+						var data = self._serializeItemData(n);
+						// trigger event
+						self._trigger('onFileClick', [n, data]);
 
 						return true;
 					}
@@ -683,50 +720,6 @@
 			}
 
 			if (o.total.files) {
-				function mapIcon(ext) {
-					if (/^(flv|mp4|m4v|webm|ogg|ogv|mov|wmv|avi)$/.test(ext)) {
-							return 'video';
-					}
-
-					if (/^(mp3|ogg|oga|webm)$/.test(ext)) {
-							return 'audio';
-					}
-
-					if (/^(jpg|jpeg|png|gif|png|svg|bmp|tiff)$/.test(ext)) {
-							return 'image';
-					}
-
-					if (/^(txt|htm|html)$/.test(ext)) {
-							return 'text';
-					}
-
-					if (/^(doc|docx)$/.test(ext)) {
-							return 'word';
-					}
-
-					if (/^(xls|xlsx)$/.test(ext)) {
-							return 'excel';
-					}
-
-					if (/^(ppt|pptx)$/.test(ext)) {
-							return 'powerpoint';
-					}
-
-					if (/^(rar|zip|tar|gz)$/.test(ext)) {
-							return 'zip';
-					}
-
-					if (/^(html|htm)$/.test(ext)) {
-							return 'code';
-					}
-
-					if (/^(txt|rtf|csv)$/.test(ext)) {
-							return 'text';
-					}
-
-					return ext;
-				}
-
 				$.each(o.files, function(i, e) {
 					var data = [],
 						classes = [];
@@ -759,14 +752,11 @@
 						classes.push(e.classes);
 					}
 
-					/*if (self.options.allow_download) {
-							data.push('download="' + e.preview + '"');
-					}*/
-
 					var ext 	= $.String.getExt(e.name);
 					var name 	= $.String.stripExt(e.name);
+					var icon 	= ext.toLowerCase();
 
-					h += '<li class="ui-grid ui-grid-collapse ui-flex file ' + ext.toLowerCase() + ' ' + classes.join(' ') + '" title="' + e.name + '"' + data.join(' ') + '><label class="ui-width-0-10 ui-item-checkbox"><input type="checkbox" /></label><i class="ui-width-1-10 ui-icon ui-icon-file-o ui-icon-file-' + mapIcon(ext) + '-o file ' + ext + '"></i><a class="ui-flex-item-auto" href="#"><span class="ui-item-text">' + name + '</span><span class="ui-item-extension">.' + ext + '</span></a><span class="ui-width-2-10 ui-item-date">' + $.String.formatDate(e.properties.modified, self.options.date_format) + '</span><span class="ui-width-3-10 ui-item-size">' + $.String.formatSize(e.properties.size) + '</span></li>';
+					h += '<li class="ui-grid ui-grid-collapse ui-flex file ' + ext.toLowerCase() + ' ' + classes.join(' ') + '" title="' + e.name + '"' + data.join(' ') + '><label class="ui-width-0-10 ui-item-checkbox"><input type="checkbox" /></label><i class="ui-width-1-10 ui-icon ui-icon-file-o ui-icon-file-' + getMimeType(icon) + '-o file ' + icon + '"></i><a class="ui-flex-item-auto" href="#"><span class="ui-item-text">' + name + '</span><span class="ui-item-extension">.' + ext + '</span></a><span class="ui-width-2-10 ui-item-date">' + $.String.formatDate(e.properties.modified, self.options.date_format) + '</span><span class="ui-width-3-10 ui-item-size">' + $.String.formatSize(e.properties.size) + '</span></li>';
 				});
 
 			}
@@ -912,7 +902,7 @@
 
 			// get width
 			var sw = $status.width();
-			
+
 			// add "home" click
 			$('li:first', $pathway).click(function() {
 				self._changeDir('/');
@@ -925,7 +915,7 @@
 			var $count = $('<li class="count">( ' + this._foldercount + ' ' + this._translate('folders', 'folders') + ', ' + this._filecount + ' ' + this._translate('files', 'files') + ')</li>').appendTo($pathway);
 
 			// get base list width
-			var w = bw = $root.outerWidth(true) + $count.outerWidth(true);
+			var w = bw = $pathway.outerWidth(true);
 
 			if (dir) {
 				var x = 1,
@@ -1304,12 +1294,6 @@
 					this._modal['upload'] = $.Modal.upload($.extend({
 						elements: this._getDialogOptions('upload'),
 						open: function() {
-							// hide upload options if empty
-							$('#upload-options:empty').hide();
-
-							// Set hidden dir value to current dir
-							$('#upload-dir').val(dir);
-
 							/**
 							 * Private internal function
 							 * Check file name against list
@@ -1349,8 +1333,8 @@
 
 							// Initialize uploader
 							$('#upload-queue').uploader($.extend({
-								url: $('form:first').attr('action'),
-								field: $('input[name=file]:first'),
+								url		: $('form:first').attr('action'),
+								field	: $('input[type="file"]:first'),
 								websafe_mode: self.options.websafe_mode,
 								websafe_spaces: self.options.websafe_spaces,
 								websafe_textcase: self.options.websafe_textcase
@@ -1363,6 +1347,12 @@
 
 								self._addReturnedItem(o);
 								self._trigger('onUploadFile', null, file);
+
+							}).on('uploadwidget:uploadstart', function(e, file) {
+								// add file specific upload data
+								file.data = $(':input:enabled', file.element).serializeArray();
+								// disable fields
+								$(':input:enabled', file.element).prop('disabled', true);
 
 							}).on('uploadwidget:uploadcomplete', function(e, errors) {
 								$('#upload-submit').disabled = false;
@@ -1382,19 +1372,15 @@
 							self._trigger('onUploadOpen');
 						},
 						upload: function() {
-							var data = {
-									'action': 'upload',
-									'format': 'raw'
-								},
-								fields = $.merge($(':input', 'form').serializeArray(), $(':input', '#upload-body').serializeArray());
+							// get form data
+							var fields = $.merge($('form > :input:enabled').serializeArray(), $(':input:enabled', '#upload-options').serializeArray());
+							// set current directory
+							fields.push({"name" : "upload-dir", "value" : dir});
 
-							$.each(fields, function(i, field) {
-								data[field.name] = field.value;
-							});
+							self._trigger('onUpload', null, [fields]);
 
-							self._trigger('onUpload', null, data);
-
-							$('#upload-queue').trigger('uploadwidget:upload', data);
+							// trigger the upload, with data
+							$('#upload-queue').trigger('uploadwidget:upload', [fields]);
 
 							return false;
 						},
@@ -1561,9 +1547,7 @@
 									$(self._modal.rename).trigger('modal.close');
 								}
 							});
-
 						}
-
 					});
 					break;
 			}
@@ -1626,8 +1610,7 @@
 			var map = {
 				'folder_new': 'folder',
 				'upload': 'cloud-upload',
-				'help': 'question-circle',
-				'view_mode': 'th-list th-large'
+				'help': 'question-circle'
 			};
 
 			// normalise class name
@@ -1650,6 +1633,12 @@
 				$.each(icon.split(' '), function(i, k) {
 					$(action).prepend('<i class="ui-icon ui-icon-medium ui-icon-' + cls + ' ui-icon-' + k + '" />');
 				});
+
+				// stack icons
+				if (icon.indexOf(' ') >= 0) {
+						$('.ui-icon', action).first().addClass('ui-icon-stack ui-text-contrast').removeClass('ui-icon-medium');
+						$('<span class="ui-stack ui-stack-medium" />').prependTo(action).append($('.ui-icon', action));
+				}
 
 				if (o.name) {
 					$(action).click(function(e) {
@@ -2347,7 +2336,7 @@
 		 * Get a file or folder's properties
 		 */
 		_getItemDetails: function() {
-			var self = this;
+			var self = this, mime;
 
 			var item = $('li.selected.active', '#item-list');
 			var title = $.String.basename($(item).attr('title'));
@@ -2364,7 +2353,7 @@
 					$('.ui-comment-header', info).append('<div class="ui-comment-meta" id="info-dimensions">' + self._translate('dimensions', 'Dimensions') + ': ' + $(item).data('width') + ' x ' + $(item).data('height') + '</div>');
 
 					// create thumbnail preview
-					if (/\.(jpg|jpeg|png|gif|bmp|tif|tiff|webp)$/.test($(item).data('preview'))) {
+					if (mime && mime === "image") {
 						var img = new Image();
 
 						$('#info-preview').append($(img).attr('alt', self._translate('preview', 'Preview')));
@@ -2397,13 +2386,13 @@
 			$(self.element).next('span.loader').remove();
 
 			if (type == 'file') {
-				name = $.String.stripExt(title);
-				ext = $.String.getExt(title) + ' ';
+				name 	= $.String.stripExt(title);
+				ext 	= $.String.getExt(title);
 			}
 
 			// create properties list
 			var info = document.createElement('div');
-			$(info).addClass('ui-comment').append('<div class="ui-comment-header"><h5 class="ui-margin-remove ui-text-bold">' + name + '</h5><div class="ui-comment-meta">' + ext + self._translate(type, $.String.ucfirst(type)) + '</div><div class="ui-comment-meta" id="info-properties"><div></div>');
+			$(info).addClass('ui-comment').append('<div class="ui-comment-header"><h5 class="ui-margin-remove ui-text-bold">' + name + '</h5><div class="ui-comment-meta">' + ext + ' ' + self._translate(type, $.String.ucfirst(type)) + '</div><div class="ui-comment-meta" id="info-properties"><div></div>');
 
 			// additional data for file items
 			if ($(item).data('preview')) {
@@ -2465,23 +2454,8 @@
 			} else {
 				// create preview url
 				var preview = $(item).data('preview') || $.String.path($.Plugin.getURI(), $(item).data('url'));
-
-				// get file type from extension
-				var mime = (function(s) {
-					if (/\.(jpg|jpeg|png|gif|bmp|tif|tiff|webp)$/i.test(preview)) {
-						return "image";
-					}
-
-					if (/\.(avi|wmv|wm|asf|asx|wmx|wvx|mov|qt|mpg|mpeg|m4a|swf|dcr|rm|divx|mp4|ogv|ogg|webm|flv|f4v)$/.test(preview)) {
-						return "video";
-					}
-
-					if (/\.(mp3|oga|wav|aiff|ra|ram)$/.test(preview)) {
-						return "audio";
-					}
-
-					return false;
-				})(preview);
+				// get mime type
+				mime = getMimeType(ext);
 
 				// only process mime-types that can have dimensions or duration
 				if (mime) {
@@ -2511,7 +2485,6 @@
 						$.each(o, function(k, v) {
 							$(item).data(k, v);
 						});
-
 						callback();
 					}, function() {
 						$.JSON.request('getDimensions', [path], function(o) {
