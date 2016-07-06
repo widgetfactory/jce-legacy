@@ -773,6 +773,7 @@ abstract class WFInstall {
             $site . '/editor/libraries/js/link.full.js',
             $site . '/editor/libraries/js/manager.full.js',
             $site . '/editor/libraries/js/plugin.full.js',
+            $site . '/editor/libraries/js/link.min.js',
 
             $site . '/editor/libraries/css/reset.css',
             $site . '/editor/libraries/css/tips.css',
@@ -787,7 +788,11 @@ abstract class WFInstall {
             $site . '/editor/libraries/css/plugin.css',
             $site . '/editor/libraries/css/popup.css',
 
-            $site . '/editor/tiny_mce/plugins/inlinepopups/css/dialog.css'
+            $site . '/editor/tiny_mce/plugins/inlinepopups/css/dialog.css',
+
+            $site . '/editor/libraries/img/icons.png',
+            $site . '/editor/libraries/img/drag.png',
+            $site . '/editor/libraries/img/broken.png'
         );
 
         foreach ($files as $file) {
