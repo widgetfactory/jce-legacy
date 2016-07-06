@@ -175,11 +175,11 @@
           // show modal
           $(div).show().scrollTop(0);
 
+          $(div).addClass('ui-open').trigger('modal.open').attr('aria-hidden', false);
+
           $(div).on('modal.asset-loaded', function() {
             $(modal).css('top', ($(div).height() - $(modal).outerHeight()) / 2);
-          }).trigger('modal.asset-loaded');
-
-          $(div).addClass('ui-open').trigger('modal.open').attr('aria-hidden', false);
+          }).delay(10).trigger('modal.asset-loaded');
 
           // return modal div element
           return div;
@@ -327,15 +327,16 @@
           var div = $('<div />').attr('id', 'upload-body').append(
               '<div id="upload-queue-block" class="ui-placeholder">' +
               '   <div id="upload-queue"></div>' +
-              '   <input type="hidden" id="upload-dir" name="upload-dir" />' +
-              '   <input type="file" name="file" size="40" />' +
+              '   <input type="file" size="40" />' +
               '</div>' +
-              '<div id="upload-options"></div>'
+              '<div id="upload-options" class="ui-placeholder"></div>'
           );
 
-          if (options.elements.length) {
-              $('#upload-options').append(options.elements);
-          }
+          // add optional fields
+          $('#upload-options').append(options.elements);
+
+          // create backup function
+          options.upload = options.upload || $.noop;
 
           options = $.extend({
               'classes': 'ui-modal-dialog-large ui-modal-upload',
@@ -347,10 +348,8 @@
                   classes: 'ui-button-success'
               }, {
                   text: $.Plugin.translate('upload', 'Upload'),
-                  click: function () {
-                      if ($.isFunction(options.upload)) {
-                          options.upload.call();
-                      }
+                  click: function() {
+                      return options.upload.call();
                   },
                   id: 'upload-start',
                   icon: 'ui-icon-cloud-upload',
