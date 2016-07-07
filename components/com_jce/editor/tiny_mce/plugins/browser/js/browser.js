@@ -18,9 +18,14 @@
       var self = this,
         action = 'insert';
 
-      $('button#insert').click(function(e) {
-        BrowserDialog.insert();
+      $('#insert').click(function(e) {
         e.preventDefault();
+        self.insert();
+      });
+
+      $('#cancel').click(function(e) {
+        e.preventDefault();
+        tinyMCEPopup.close();
       });
 
       var win = tinyMCEPopup.window;
@@ -55,7 +60,6 @@
           if (src === '' && data.length) {
             self.selectFile(data[0]);
           }
-
           win.document.getElementById(callback).value = $('#src').val();
         }
 
@@ -79,20 +83,9 @@
     }
   };
 
-  var WFBrowserWidget = {
-    init: function(settings) {
-      // Create File Browser
-      $('#src').filebrowser();
-    }
-  };
+  $(document).ready(function() {
+      BrowserDialog.init();
+  });
 
-  if (typeof tinyMCEPopup !== "undefined") {
-    $(document).ready(function() {
-        BrowserDialog.init();
-    });
-  }
-
-  window.WFBrowserWidget  = WFBrowserWidget;
-  window.BrowserDialog    = BrowserDialog;
-
+  window.BrowserDialog = BrowserDialog;
 })(jQuery);
