@@ -174,7 +174,7 @@ main > div:first-child {
 #browser-buttons {}
 #browser-details-container {
   height: 200px;
-  height: calc(100% - 62px);
+  height: calc(100% - 58px);
   position: absolute;
   width: 100%;
 }
@@ -546,6 +546,7 @@ ul.item-list li.folder-up {
 
 #browser-buttons {
   border-left: 1px solid #ddd;
+  min-width: 28px;
 }
 #browser-buttons .button {
   border: 0 none;
@@ -558,6 +559,7 @@ ul.item-list li.folder-up {
   text-align: center;
   padding: 0;
   min-height: inherit;
+  display: block;
 }
 
 #browser-buttons .button:hover {
