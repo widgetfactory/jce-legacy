@@ -51,17 +51,17 @@ class WFElementBrowser extends WFElement {
         $attributes['type'] = 'text';
         $attributes['name'] = $control;
         $attributes['id'] = preg_replace('#[^a-z0-9_-]#i', '', $control_name . $name);
-        
+
         // pattern data attribute for editable select input box
         if ((string) $node->attributes()->parent) {
             $prefix = preg_replace(array('#^params#', '#([^\w]+)#'), '', $control_name);
-            
+
             $items = array();
-            
+
             foreach(explode(';', (string) $node->attributes()->parent) as $item) {
                 $items[] = $prefix . $item;
             }
-            
+
             $attributes['data-parent'] = implode(';', $items);
         }
 
@@ -76,20 +76,20 @@ class WFElementBrowser extends WFElement {
         }
 
         $html .= ' />';
-        
+
         $component = WFExtensionHelper::getComponent();
         // get params definitions
         $params = new WFParameter($component->params, '', 'preferences');
-        
+
         $width  = (int) $params->get('browser_width', 780);
         $height = (int) $params->get('browser_height', 560);
-        
+
         wfimport('admin.models.model');
         $model = new WFModel();
-        
+
         $link = $model->getBrowserLink($attributes['id'], $filter);
 
-        $html .= '<a href="' . $link . '" id="' . $attributes['id'] . '_browser' . '" class="browser" target="_blank" onclick="Joomla.modal(this, \'' . $link . '\', '. $width .', '. $height .');return false;" title="' . WFText::_('WF_BROWSER_TITLE') . '"><span class="browser"></span></a>';
+        $html .= '<a href="' . $link . '" id="' . $attributes['id'] . '_browser' . '" class="btn btn-link browser" target="_blank" onclick="Joomla.modal(this, \'' . $link . '\', '. $width .', '. $height .');return false;" title="' . WFText::_('WF_BROWSER_TITLE') . '"><span class="icon-image"></span></a>';
 
         return $html;
     }
