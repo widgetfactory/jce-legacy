@@ -34,7 +34,7 @@ class WFFileBrowser extends JObject {
     public $filesystem = 'joomla';
 
     /* @var string */
-    public $filetypes = 'images=jpg,jpeg,png,gif';
+    public $filetypes = 'jpg,jpeg,png,gif';
 
     /* @var array */
     public $upload = array(
@@ -181,9 +181,9 @@ class WFFileBrowser extends JObject {
             $wf = WFEditorPlugin::getInstance();
 
             $config = array(
-                'dir' => $this->get('dir'),
+                'dir'             => $this->get('dir'),
                 'upload_conflict' => $wf->getParam('editor.upload_conflict', 'overwrite'),
-                'filetypes' => $this->getFileTypes('array')
+                'filetypes'       => $this->getFileTypes()
             );
 
             $filesystem = WFFileSystem::getInstance($this->get('filesystem'), $config);
@@ -202,38 +202,46 @@ class WFFileBrowser extends JObject {
      * @access public
      * @return extension list
      */
-    public function getFileTypes($format = 'map') {
+    public function getFileTypes() {
         $list = $this->get('filetypes');
 
-        // Remove excluded file types (those that have a - prefix character) from the list
         $data = array();
 
-        foreach (explode(';', $list) as $group) {
+        // return standard list as array
+        if (strpos($list, "=") === false) {
+            return explode(",", $list);
+        }
+
+        foreach (explode(';', $value) as $group) {
             if (substr(trim($group), 0, 1) === '-') {
                 continue;
             }
-            // remove excluded file types (those that have a - prefix character) from the list
-            $data[] = preg_replace('#(,)?-([\w]+)#', '', $group);
+
+            $items = explode("=", $group);
+
+            $map = array_map(explode(",", $items[1]), function($item) {
+              if (substr(trim($item), 0, 1) !== '-') {
+                  return $item;
+              }
+            });
+
+            $data[$items[0]] = $map;
         }
 
-        $list = implode(';', $data);
-
-        switch ($format) {
-            case 'list':
-                return strtolower($this->listFileTypes($list));
-                break;
-            case 'array':
-                return explode(',', strtolower($this->listFileTypes($list)));
-                break;
-            default:
-            case 'map':
-                return $list;
-                break;
-        }
+        return $data;
     }
 
-    public function setFileTypes($list = 'images=jpg,jpeg,png,gif') {
+    public function setFileTypes($list = 'jpg,jpeg,png,gif') {
         $this->set('filetypes', $list);
+    }
+
+    private function cleanFileTypes($value) {
+      // get array values only
+      $values = array_values($value);
+      // convert to string
+      $string = implode(",", $values);
+      // return string
+      return $string;
     }
 
     /**
@@ -241,51 +249,33 @@ class WFFileBrowser extends JObject {
      * @param string $map The extensions map eg: images=jpg,jpeg,gif,png
      * @return string jpg,jpeg,gif,png
      */
-    private function listFileTypes($map) {
-        return preg_replace(array('/([\w]+)=([\w]+)/', '/;/'), array('$2', ','), $map);
+    private function getFileTypesAsList() {
+      $data = $this->getFileTypes();
+      return $this->cleanFileTypes($data);
     }
 
-    public function addFileTypes($types) {
-        $list = explode(';', $this->get('filetypes'));
+    public function addFileTypes($filetypes) {
+        $list = $this->get('filetypes');
 
-        foreach ($types as $group => $extensions) {
-            $list[] = $group . '=' . $extensions;
+        if (strpos($list, "=") === false) {
+          // convert to array if needed
+          if (is_string($list)) {
+            $list = explode(",", $list);
+          }
+          // combine
+          $list = array_unique(array_merge($list, $filetypes));
+          // convert to string
+          $list = implode(",", $list);
+        } else {
+          $list = explode(";", $list);
+          foreach ($types as $group => $extensions) {
+              $list[] = $group . '=' . $extensions;
+          }
+
+          $list = implode(";", $list);
         }
 
-        $this->set('filetypes', implode(';', $list));
-    }
-
-    /**
-     * Maps upload file types to an upload dialog list, eg: 'images', 'jpeg,jpg,gif,png'
-     * @return json encoded list
-     */
-    private function mapUploadFileTypes() {
-        $map = array();
-
-        // Get the filetype map
-        $list = $this->getFileTypes();
-
-        if ($list) {
-            $items = explode(';', $list);
-            $all = array();
-
-            // [images=jpeg,jpg,gif,png]
-            foreach ($items as $item) {
-                // ['images', 'jpeg,jpg,gif,png']
-                $kv = explode('=', $item);
-                $extensions = implode(';', preg_replace('/(\w+)/i', '*.$1', explode(',', $kv[1])));
-                $map[WFText::_('WF_FILEGROUP_' . $kv[0], WFText::_($kv[0])) . ' (' . $extensions . ')'] = $kv[1];
-
-                $all[] = $kv[1];
-            }
-
-            if (count($items) > 1) {
-                // All file types
-                $map[WFText::_('WF_FILEGROUP_ALL') . ' (*.*)'] = implode(',', $all);
-            }
-        }
-
-        return $map;
+        $this->set('filetypes', $list);
     }
 
     /**
@@ -383,7 +373,7 @@ class WFFileBrowser extends JObject {
         // get source dir from path eg: images/stories/fruit.jpg = images/stories
         $dir = $filesystem->getSourceDir($path);
 
-        $filetypes = explode(',', $this->getFileTypes('list'));
+        $filetypes = explode(",", $this->getFileTypesAsList());
         $name = '';
 
         if ($filter) {
@@ -1372,7 +1362,7 @@ class WFFileBrowser extends JObject {
 
         $defaults = array(
             'max_size'  => $size,
-            'filetypes' => $this->getFileTypes('list'),
+            'filetypes' => $this->getFileTypesAsList(),
             'elements'  => $elements
         );
 

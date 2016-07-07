@@ -17,7 +17,7 @@ wfimport('editor.libraries.classes.browser');
 
 class WFMediaManagerBase extends WFEditorPlugin {
 
-    protected $_filetypes = 'images=jpg,jpeg,png,gif';
+    protected $_filetypes = 'jpg,jpeg,png,gif';
 
     private static $browser = array();
 
@@ -100,8 +100,8 @@ class WFMediaManagerBase extends WFEditorPlugin {
         $document->addScriptDeclaration('FileBrowser.options=' . json_encode($this->getFileBrowser()->getProperties()) . ';');
     }
 
-    public function getFileTypes($format = 'array') {
-        return $this->getFileBrowser()->getFileTypes($format);
+    public function getFileTypes() {
+        return $this->getFileBrowser()->getFileTypes();
     }
 
     protected function setFileTypes($filetypes) {
