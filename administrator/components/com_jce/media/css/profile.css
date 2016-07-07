@@ -29,31 +29,31 @@ input#components-all, input#components-select, label[for="components-all"], labe
     display: inline;
     margin: 0 5px 0 0;
 }
-#jce a.ui-button span.icon-add, #jce a.ui-button span.icon-remove {
+.ui-jce a.ui-button span.icon-add, .ui-jce a.ui-button span.icon-remove {
     left: 0;
     margin-top: -10px;
     width: 20px;
     height: 20px;
     padding: 0;
 }
-#jce #search {
+.ui-jce #search {
     width: 200px;
 }
 
-#jce span.profiles-enable,  #jce span.profiles-disable {
+.ui-jce span.profiles-enable,  .ui-jce span.profiles-disable {
     background: url(../img/tick.png) no-repeat 0 0;
     width: 20px;
     height: 20px;
     display: inline-block;
     cursor: pointer;
 }
-#jce span.profiles-disable {
+.ui-jce span.profiles-disable {
     background: url(../img/error.png) no-repeat 0 0;
 }
-#jce span.profiles-enable.loading,  #jce span.profiles-disable.loading {
+.ui-jce span.profiles-enable.loading,  .ui-jce span.profiles-disable.loading {
     background : url("../../../../../components/com_jce/editor/libraries/img/load.gif") no-repeat center;
 }
-#jce input[type="radio"] + label {
+.ui-jce input[type="radio"] + label {
     display: inline;
 }
 
@@ -71,12 +71,12 @@ div#plugin_params h2 {
     padding: 0 0.1em
 }
 
-#jce #tabs h2 {
+.ui-jce #tabs h2 {
     margin: 0 0 .8em 8px;
     font-size: 2em;
 }
 
-#jce span.browser {
+.ui-jce span.browser {
     width: 20px;
     height: 20px;
     background: transparent url("../../../../../components/com_jce/editor/libraries/img/icons.png") no-repeat 0 -960px;
@@ -104,30 +104,30 @@ html[dir="rtl"] .ui-jce .ui-tabs-vertical .ui-tabs-panel {
     margin: 0 13em 0 0;
 }
 
-#jce #tabs-setup ul li span.list {
+.ui-jce #tabs-setup ul li span.list {
     width : 300px;
     display: inline-block;
 }
 
-#jce #tabs-setup ul li span.list div {
+.ui-jce #tabs-setup ul li span.list div {
     margin : 5px 0;
 }
 
-#jce #tabs-setup ul li span.list > div > label {
+.ui-jce #tabs-setup ul li span.list > div > label {
     margin-left : 6px;
 }
 
-#jce input.checkbox-list-toggle-all {
+.ui-jce input.checkbox-list-toggle-all {
     /*margin : 2px 6px;*/
 }
-#jce input.checkbox-list-toggle-all + label {
+.ui-jce input.checkbox-list-toggle-all + label {
     /*margin : 0 5px;*/
 }
 
-#jce #tabs-setup input.checkbox-list-toggle-all, #jce #tabs-setup input#components-select-all {
+.ui-jce #tabs-setup input.checkbox-list-toggle-all, .ui-jce #tabs-setup input#components-select-all {
 }
 
-#jce ul.checkbox-list {
+.ui-jce ul.checkbox-list {
     border: 1px solid #EEEEEE;
     height: 200px;
     overflow: auto;
@@ -139,11 +139,11 @@ html[dir="rtl"] .ui-jce .ui-tabs-vertical .ui-tabs-panel {
     min-width : 250px;
 }
 
-#jce ul.checkbox-list li {
+.ui-jce ul.checkbox-list li {
     padding : 5px 0;
 }
 
-#jce ul.users-list {
+.ui-jce ul.users-list {
     border: 1px solid #EEEEEE;
     height: 200px;
     overflow: auto;
@@ -155,11 +155,11 @@ html[dir="rtl"] .ui-jce .ui-tabs-vertical .ui-tabs-panel {
     min-width : 200px;
 }
 
-#jce ul.users-list li {
+.ui-jce ul.users-list li {
     margin : 5px 0 0 0;
 }
 
-#jce ul.users-list span.users-list-delete {
+.ui-jce ul.users-list span.users-list-delete {
     width : 20px;
     height : 20px;
     display: inline-block;
@@ -169,16 +169,16 @@ html[dir="rtl"] .ui-jce .ui-tabs-vertical .ui-tabs-panel {
     cursor: pointer;
 }
 
-#jce ul.checkbox-list li input[type="checkbox"] {
+.ui-jce ul.checkbox-list li input[type="checkbox"] {
     margin: 5px 5px 5px 0;
 }
 
-#jce ul.checkbox-list li label {
+.ui-jce ul.checkbox-list li label {
     margin : 0 10px;
     display: inline-block;
 }
 
-#jce ul.users-list li label {
+.ui-jce ul.users-list li label {
     border : 1px solid #eee;
     display: inline-block;
     padding: 5px 0;
@@ -189,27 +189,27 @@ html[dir="rtl"] .ui-jce .ui-tabs-vertical .ui-tabs-panel {
     user-select : none;
 }
 
-#jce #users-add {
+.ui-jce #users-add {
     float : right;
     margin: 5px 0;
 }
 
-#jce #users-add i.icon-add {
+.ui-jce #users-add i.icon-add {
     background: none;
 }
 
-#jce #users-add i.icon-add:before {
+.ui-jce #users-add i.icon-add:before {
     content : "";
 }
 
 /* Button Checklist */
-/*#jce div.buttonlist li {
+/*.ui-jce div.buttonlist li {
     border : 0 none;
     position: relative;
     display : inline;
     margin-left : 10px;
 }
-#jce div.buttonlist li span.checkbox {
+.ui-jce div.buttonlist li span.checkbox {
     left: -10px;
     position: absolute;
     top: -10px;
@@ -217,59 +217,59 @@ html[dir="rtl"] .ui-jce .ui-tabs-vertical .ui-tabs-panel {
 }*/
 
 
-#jce .buttonlist .mceIcon {
+.ui-jce .buttonlist .mceIcon {
     cursor: default;
 }
 
-#jce .buttonlist .mceButton, #jce .buttonlist .mceSplitButton {
+.ui-jce .buttonlist .mceButton, .ui-jce .buttonlist .mceSplitButton {
     margin : 0 10px 0 0;
     vertical-align: middle;
 }
 
-#jce ul.adminformlist li div.buttonlist {
+.ui-jce ul.adminformlist li div.buttonlist {
     display: inline-block;
     margin: 5px 0 0;
     vertical-align: middle;
 }
-#jce div.tabs-plugin-parameters {
+.ui-jce div.tabs-plugin-parameters {
     margin : 0;
 }
 
-#jce .ui-tabs-vertical .ui-tabs-panel {
+.ui-jce .ui-tabs-vertical .ui-tabs-panel {
     margin: 0;
 }
 
-#jce div.tabs-plugin-parameters h3 {
+.ui-jce div.tabs-plugin-parameters h3 {
     margin : 0 7px;
     line-height: 30px;
     background-color: #F0F0EE;
 }
 
-#jce div.tabs-plugin-parameters h3 + p, #jce div.tabs-plugin-parameters h3 + p + ul {
+.ui-jce div.tabs-plugin-parameters h3 + p, .ui-jce div.tabs-plugin-parameters h3 + p + ul {
     margin-left : 20px;
 }
 
-#jce div.tabs-plugin-parameters p {
+.ui-jce div.tabs-plugin-parameters p {
     font-size : 1em;
     margin : 5px 7px;
     padding: 10px 5px;
 }
 
-#jce div.tabs-plugin-parameters input[type="checkbox"], #jce div.tabs-plugin-parameters .ui-checkbox {
+.ui-jce div.tabs-plugin-parameters input[type="checkbox"], .ui-jce div.tabs-plugin-parameters .ui-checkbox {
     margin : 10px;
     background-color: #fff;
 }
 
-#jce div.tabs-plugin-parameters a[href^="http"] {
+.ui-jce div.tabs-plugin-parameters a[href^="http"] {
     cursor: pointer;
 }
 
-#jce table td.order input[type="text"] {
+.ui-jce table td.order input[type="text"] {
     max-width : 30px;
     margin : 0 10px;
 }
 
-#jce div.tab-pane.tabbable.tabs-left ul li > a:first-child {
+.ui-jce div.tab-pane.tabbable.tabs-left ul li > a:first-child {
     max-width: 100px;
     padding-bottom: 20px;
     padding-top: 20px;
@@ -283,7 +283,7 @@ html[dir="rtl"] .ui-jce .ui-tabs-vertical .ui-tabs-panel {
     box-shadow: inset -1px 0px 1px px rgba(0, 0, 0, 0.05);
 }
 
-#jce div.tab-pane.tabbable.tabs-left ul li.active > a {
+.ui-jce div.tab-pane.tabbable.tabs-left ul li.active > a {
     background-color : #fff;
     border-color : #eee #fff #eee #eee;
 
@@ -291,7 +291,7 @@ html[dir="rtl"] .ui-jce .ui-tabs-vertical .ui-tabs-panel {
     -webkit-box-shadow: none;
 }
 
-#jce #tabs ul li span.tabs-label {
+.ui-jce #tabs ul li span.tabs-label {
     margin : 5px 0;
     display : block;
 }
@@ -307,9 +307,10 @@ input#profile_description {
     }
 }
 
-a.browser {
-    display: inline-block;
-    margin : 8px 0;
+.ui-jce a.btn.browser {
+  margin: 0;
+  margin-left: -2.5em;
+  padding: 0.5em;
 }
 
 ul#profileAdditionalFeatures li input[type="checkbox"] {margin: 0px 10px 2px 0px}

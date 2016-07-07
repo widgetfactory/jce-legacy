@@ -12,7 +12,7 @@
 defined('_JEXEC') or die('RESTRICTED');
 ?>
 <form action="index.php" method="post" name="adminForm" id="adminForm" enctype="multipart/form-data" class="form-horizontal">
-    <div id="jce" class="loading">
+    <div class="ui-jce loading">
         <div class="progress progress-striped active">
             <div class="bar" style="width: 100%;"><?php echo JText :: _('WF_MESSAGE_LOAD');?></div>
         </div>

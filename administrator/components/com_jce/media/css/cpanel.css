@@ -7,7 +7,7 @@
  * is derivative of works licensed under the GNU General Public License or
  * other free or open source software licenses.
  */
-#jce {
+.ui-jce {
     border-radius: 10px 10px 10px 10px;
 }
 
@@ -78,18 +78,18 @@ ul.newsfeed.loading li {
 }
 ul#table_status {
 }
-#jce ul.adminformlist {
+.ui-jce ul.adminformlist {
     margin: 5px 5px 5px 0;
     display: inline-block;
 }
-#jce ul.adminformlist li a.updates {
+.ui-jce ul.adminformlist li a.updates {
    color : #fff;
    font-size : 11px;
    line-height: 16px;
    vertical-align: middle;
 }
 
-#jce ul.adminformlist li span.label {
+.ui-jce ul.adminformlist li span.label {
     padding : 5px;
     margin: 5px 0;
 }

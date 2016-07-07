@@ -12,7 +12,7 @@
 
 defined('_JEXEC') or die('RESTRICTED');
 ?>
-<div id="jce">
+<div class="ui-jce">
     <div class="row-fluid ui-grid">
 	<div class="lhs">
 		<div id="help-menu"><?php echo $this->model->renderTopics();?></div>

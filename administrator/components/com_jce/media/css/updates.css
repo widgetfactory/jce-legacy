@@ -17,11 +17,11 @@ body {
     height: 540px;
     padding: 0;
 }
-#jce {
+.ui-jce {
     height: 520px;
 }
 
-#jce button span.icon-update, #jce button span.icon-install {
+.ui-jce button span.icon-update, .ui-jce button span.icon-install {
     left: 5px;
     margin: 0;
     width: 20px;
@@ -30,22 +30,22 @@ body {
     top: 5px;
 }
 
-#jce button span {
+.ui-jce button span {
     display: inline-block;
     line-height: 20px;
     vertical-align: middle;
 }
 
-#jce button.check span.icon-update {
+.ui-jce button.check span.icon-update {
     background: url("../../../../../components/com_jce/editor/libraries/img/icons.png") no-repeat 0 -1040px;
 }
-#jce button.install span.icon-install {
+.ui-jce button.install span.icon-install {
     background: url("../../../../../components/com_jce/editor/libraries/img/icons.png") no-repeat 0 -480px;
 }
-#jce button.loading span.icon-update {
+.ui-jce button.loading span.icon-update {
     background: url("../../../../../components/com_jce/editor/libraries/img/load.gif") no-repeat 0 0;
 }
-#jce span.priority {
+.ui-jce span.priority {
     /*line-height: 20px;
     width: 100%;
     display: block;
@@ -58,42 +58,42 @@ body {
     width: 90%;
     font-size : 12px;
 }
-/*#jce span.priority.high {
+/*.ui-jce span.priority.high {
     background-color: #FFCCCC;
     color: #CC0000;
     border: 1px solid #CC0000;
 }
-#jce span.priority.medium {
+.ui-jce span.priority.medium {
     background-color: #FFFFCC;
     border: 1px solid #FFD700;
     color: #CCAC00;
 }
-#jce span.priority.low {
+.ui-jce span.priority.low {
     background-color: #BBDDFF;
     border: 1px solid #0000CD;
     color : #0000CD;
 }
-#jce span.priority.installed {
+.ui-jce span.priority.installed {
     background-color: #BBEEAA;
     border: 1px solid #008000;
     color : #008000;
 }*/
 
-#jce #updates-list div.header div:first-child span.checkbox {
+.ui-jce #updates-list div.header div:first-child span.checkbox {
     vertical-align: middle;
 }
 
-#jce .span1 input[type="checkbox"] {
+.ui-jce .span1 input[type="checkbox"] {
   margin: 0 0 4px -2px;
 }
 
-#jce .item.alert {padding: 0;}
+.ui-jce .item.alert {padding: 0;}
 
-#jce .item.loading .span1 input[type="checkbox"], #jce .item.error .span1 input[type="checkbox"], #jce .item.alert .span1 input[type="checkbox"] {
+.ui-jce .item.loading .span1 input[type="checkbox"], .ui-jce .item.error .span1 input[type="checkbox"], .ui-jce .item.alert .span1 input[type="checkbox"] {
     display: none;
 }
 
-#jce .item.loading .span1:after, #jce .item.alert .span1:after {
+.ui-jce .item.loading .span1:after, .ui-jce .item.alert .span1:after {
   content: "";
   display: block;
   width: 20px;
@@ -101,32 +101,32 @@ body {
   margin: 5px auto;
 }
 
-#jce .item.loading .span1:after {
+.ui-jce .item.loading .span1:after {
     background: url("../../../../../components/com_jce/editor/libraries/img/load.gif") no-repeat center center;
 }
-#jce .item.alert .span1:after {
+.ui-jce .item.alert .span1:after {
     background: url("../../../../../components/com_jce/editor/libraries/img/icons.png") no-repeat 0 -20px;
 }
-#jce .item.alert-error .span1:after {
+.ui-jce .item.alert-error .span1:after {
     background: url("../../../../../components/com_jce/editor/libraries/img/icons.png") no-repeat 0 -1060px;
 }
 
-#jce div#updates-list {
+.ui-jce div#updates-list {
     overflow: hidden;
     height : 100%;
     max-height : 440px;
 }
 
-#jce tr.selected {
+.ui-jce tr.selected {
     font-weight: bold;
 }
-#jce div.btn-group {
+.ui-jce div.btn-group {
     bottom: 10px;
     position: absolute;
     right: 8px;
 }
 
-#jce div.row-fluid.header {
+.ui-jce div.row-fluid.header {
     padding: 0;
     margin : 0;
     color: #000000;
@@ -135,17 +135,17 @@ body {
     line-height : 30px;
 }
 
-#jce div.row-fluid div {
+.ui-jce div.row-fluid div {
     vertical-align: middle;
     text-align: center;
     line-height : 30px;
 }
 
-#jce div.row-fluid div.span5 {
+.ui-jce div.row-fluid div.span5 {
     width : 47.5%
 }
 
-#jce div.row-fluid.body {
+.ui-jce div.row-fluid.body {
     line-height : 20px;
     height: 100%;
     max-height: 410px;
@@ -153,7 +153,7 @@ body {
     overflow-x : hidden;
 }
 
-#jce div.row-fluid.body div.item {
+.ui-jce div.row-fluid.body div.item {
     margin: 5px 0 0 0;
     position: relative;
     border : 1px solid #eee;
@@ -161,7 +161,7 @@ body {
     overflow : hidden;
 }
 
-#jce div.row-fluid.body div.item + div.info {
+.ui-jce div.row-fluid.body div.item + div.info {
     margin-top : -1px;
     border: 1px solid #eee;
     text-align: left;
@@ -173,7 +173,7 @@ body {
 }
 
 
-#jce div.row-fluid.body div.item.error {
+.ui-jce div.row-fluid.body div.item.error {
     background-color: #FFCCCC;
     border: 1px solid #CC0000;
     color: #CC0000;
@@ -185,21 +185,21 @@ body {
     margin-top : 2px;
 }
 
-#jce div.row-fluid.body div.item + div.error, #jce div.row-fluid.body div.item.error:first-child {
+.ui-jce div.row-fluid.body div.item + div.error, .ui-jce div.row-fluid.body div.item.error:first-child {
     text-align : center;
 }
 
-#jce div.row-fluid.body div.item.info.expand {
+.ui-jce div.row-fluid.body div.item.info.expand {
     max-height : 340px;
     overflow-y : scroll;
 }
 
-#jce div.row-fluid.body div.item.info p, #jce div.row-fluid.body div.item.info ul {
+.ui-jce div.row-fluid.body div.item.info p, .ui-jce div.row-fluid.body div.item.info ul {
     line-height: 22px;
     padding: auto;
 }
 
-#jce div.row-fluid.body div.item.info span.readmore, #jce div.row-fluid.body div.item.info span.readless {
+.ui-jce div.row-fluid.body div.item.info span.readmore, .ui-jce div.row-fluid.body div.item.info span.readless {
     bottom: 0;
     cursor: pointer;
     display: inline-block;
@@ -207,21 +207,21 @@ body {
     position: absolute;
     right: 0;
 }
-#jce div.row-fluid.body div.item.info span.readmore:after {
+.ui-jce div.row-fluid.body div.item.info span.readmore:after {
     margin : 0 2px;
     content : "▼";
 }
-#jce div.row-fluid.body div.item.info span.readless:after {
+.ui-jce div.row-fluid.body div.item.info span.readless:after {
     margin : 0 2px;
     content : "▲";
 }
 
-#jce div.row-fluid.body div.item span {
+.ui-jce div.row-fluid.body div.item span {
     margin: 5px 2px;
     position: relative;
 }
 
-#jce div.row-fluid.info {
+.ui-jce div.row-fluid.info {
     float : right;
     text-align: right;
 }
@@ -230,17 +230,17 @@ body {
     margin : auto;
 }
 
-#jce div.row-fluid.header {
+.ui-jce div.row-fluid.header {
     background: #eee;
     line-height : 30px;
     font-weight: bold;
 }
 
-#jce div.row-fluid.header div, #jce div.row-fluid.body div.item div {
+.ui-jce div.row-fluid.header div, .ui-jce div.row-fluid.body div.item div {
     border-left : 2px solid #fff;
     margin : 0;
 }
-#jce div.row-fluid.header div:first-child, #jce div.row-fluid.body div.item div:first-child {
+.ui-jce div.row-fluid.header div:first-child, .ui-jce div.row-fluid.body div.item div:first-child {
     border : 0 none;
     max-width: 40px;
 }
@@ -273,10 +273,10 @@ body {
     width: 5.80111%;
 }
 
-#jce.ie8 span.priority {
+.ui-jce.ie8 span.priority {
     width : 95%;
 }
 
-#jce div.row-fluid.body.scrolling > div {
+.ui-jce div.row-fluid.body.scrolling > div {
     margin-right: 2px;
 }

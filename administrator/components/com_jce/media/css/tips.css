@@ -1,4 +1,4 @@
-#jce .tooltip {
+.ui-jce .tooltip {
   position: absolute;
   z-index: 1030;
   display: block;
@@ -12,7 +12,7 @@
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
-#jce .tooltip .close {
+.ui-jce .tooltip .close {
     opacity: 1;
     color: #fff;
     padding: 0 5px;
@@ -23,32 +23,32 @@
     top: 5px;
 }
 
-#jce .tooltip.in {
+.ui-jce .tooltip.in {
   opacity: 0.8;
   filter: alpha(opacity=80);
 }
 
-#jce .tooltip.top {
+.ui-jce .tooltip.top {
   padding: 5px 0;
   margin-top: -3px;
 }
 
-#jce .tooltip.right {
+.ui-jce .tooltip.right {
   padding: 0 5px;
   margin-left: 3px;
 }
 
-#jce .tooltip.bottom {
+.ui-jce .tooltip.bottom {
   padding: 5px 0;
   margin-top: 3px;
 }
 
-#jce .tooltip.left {
+.ui-jce .tooltip.left {
   padding: 0 5px;
   margin-left: -3px;
 }
 
-#jce .tooltip-inner {
+.ui-jce .tooltip-inner {
   max-width: inherit;
   padding: 8px;
   color: #ffffff;
@@ -60,7 +60,7 @@
           border-radius: 4px;
 }
 
-#jce .tooltip-arrow {
+.ui-jce .tooltip-arrow {
   position: absolute;
   width: 0;
   height: 0;
@@ -68,7 +68,7 @@
   border-style: solid;
 }
 
-#jce .tooltip.top .tooltip-arrow {
+.ui-jce .tooltip.top .tooltip-arrow {
   bottom: 0;
   left: 50%;
   margin-left: -5px;
@@ -76,7 +76,7 @@
   border-width: 5px 5px 0;
 }
 
-#jce .tooltip.right .tooltip-arrow {
+.ui-jce .tooltip.right .tooltip-arrow {
   top: 50%;
   left: 0;
   margin-top: -5px;
@@ -84,7 +84,7 @@
   border-width: 5px 5px 5px 0;
 }
 
-#jce .tooltip.left .tooltip-arrow {
+.ui-jce .tooltip.left .tooltip-arrow {
   top: 50%;
   right: 0;
   margin-top: -5px;
@@ -92,7 +92,7 @@
   border-width: 5px 0 5px 5px;
 }
 
-#jce .tooltip.bottom .tooltip-arrow {
+.ui-jce .tooltip.bottom .tooltip-arrow {
   top: 0;
   left: 50%;
   margin-left: -5px;
@@ -100,4 +100,4 @@
   border-width: 0 5px 5px;
 }
 
-#jce .tooltip p {margin: 0;}
+.ui-jce .tooltip p {margin: 0;}

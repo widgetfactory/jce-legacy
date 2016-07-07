@@ -12,7 +12,7 @@
 defined('_JEXEC') or die('RESTRICTED');
 ?>
 <form action="index.php?option=com_jce&tmpl=component" method="post" name="adminForm" id="adminForm" class="form-horizontal">
-    <div id="jce">
+    <div class="ui-jce">
         <fieldset id="filter-bar" class="btn-toolbar">
             <div class="filter-search btn-group pull-left fltlft">
                 <input type="text" name="search" id="search" size="30" value="<?php echo $this->lists['search']; ?>" class="text_area" onchange="document.adminForm.submit();" placeholder="<?php echo WFText::_('WF_LABEL_SEARCH'); ?>" />

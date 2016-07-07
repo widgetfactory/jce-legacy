@@ -15,42 +15,42 @@ body {
     padding : 0;
 }
 
-#jce #users-list th:first-child {
+.ui-jce #users-list th:first-child {
     width : 20px;
     text-align: center;
 }
 
-#jce #users-list td:first-child {
+.ui-jce #users-list td:first-child {
     text-align: center;
     width : 20px;
 }
 
-#jce #users-list th:first-child + th, #jce #users-list td:first-child + td {
+.ui-jce #users-list th:first-child + th, .ui-jce #users-list td:first-child + td {
     width : 300px;
 }
 
-#jce #users-list th:first-child + th + th, #jce #users-list td:first-child + td + td {
+.ui-jce #users-list th:first-child + th + th, .ui-jce #users-list td:first-child + td + td {
     width : 230px;
 }
 
-#jce #users-list th:first-child + th + th + th, #jce #users-list td:first-child + td + td + td {
+.ui-jce #users-list th:first-child + th + th + th, .ui-jce #users-list td:first-child + td + td + td {
     width : 125px;
 }
 
-#jce > div.container + div.btn-group {
+.ui-jce > div.container + div.btn-group {
     position : absolute;
     right : 10px;
 }
 
-#jce > div.container {
+.ui-jce > div.container {
     height : 420px;
 }
 
-#jce > div.container thead, tbody {
+.ui-jce > div.container thead, tbody {
     display: block;
 }
 
-#jce > div.container tbody {
+.ui-jce > div.container tbody {
     max-height: 340px;
     overflow-x: hidden;
     overflow-y: auto;

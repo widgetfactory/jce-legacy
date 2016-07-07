@@ -92,7 +92,7 @@ ul#profileLayoutTable > li {
   width: 100%;
 }
 
-#jce.ie8 .sortableList .sortableListItem .sortableRow .sortableRowItem {
+.ui-jce.ie8 .sortableList .sortableListItem .sortableRow .sortableRowItem {
   float: left;
 }
 
@@ -130,19 +130,11 @@ ul#profileLayoutTable > li {
   top: 0;
   right: -20px;
 }
-.mceToolbar .sortableRowHandle .ui-icon {
-  margin: 8px 0 0;
-  cursor: move;
-  background-image: url("../../../../../components/com_jce/editor/libraries/jquery/css/images/ui-icons_222222_256x240.png");
-  height: 16px;
-  width: 16px;
-  background-repeat: no-repeat;
-  display: block;
-  overflow: hidden;
-  text-indent: -99999px;
-}
-.sortableRowHandle .ui-icon.ui-icon-arrowthick-2-n-s {
-  background-position: -128px -48px;
+.mceToolbar .sortableRowHandle span {
+  margin: 9px 0;
+  background: none;
+  padding: 0 1px;
+  vertical-align: middle;
 }
 .sortableContainerHandle {
   border: 1px solid #CCC;
@@ -167,26 +159,29 @@ ul#profileLayoutTable > li {
   display: inline-block;
   position: absolute;
   top: 0;
-  right: -42px;
+  right: -44px;
+  cursor: pointer;
 }
 html[dir="rtl"] .profileLayoutContainer .sortableOption {
   left: -20px;
   right: auto;
 }
+
 .profileLayoutContainer .sortableOption span {
-  width: 20px;
-  height: 20px;
-  display: inline-block;
-  cursor: pointer;
+  margin: 9px 0;
   vertical-align: middle;
+  display: none;
+  background: none;
+  padding: 0 1px;
 }
-.profileLayoutContainer .sortableOption span {
-  margin: 6px 0;
-  background: url("../../../../../components/com_jce/editor/libraries/img/icons.png") no-repeat 0 -300px;
-}
-.profileLayoutContainerCurrent .sortableOption span {
-  background: url("../../../../../components/com_jce/editor/libraries/img/icons.png") no-repeat 0 -180px;
-}
+
+.profileLayoutContainer .sortableOption:hover span {display: inline-block;}
+.profileLayoutContainer .sortableOption:hover span:first-child {display: none;}
+
+.profileLayoutContainerCurrent .sortableOption span + span {display: none;}
+.profileLayoutContainerCurrent .sortableOption:hover span:first-child {display: inline-block;}
+.profileLayoutContainerCurrent .sortableOption:hover span + span {display: none;}
+
 .sortableRemove.hidden {
   visibility: hidden;
 }

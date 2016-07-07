@@ -19,25 +19,6 @@ class WFViewProfiles extends WFView {
         wfimport('admin.models.editor');
 
         $options = array(
-            'combobox' => array('label' => WFText::_('WF_TOOLS_EDITABLESELECT_LABEL')),
-            'extensions' => array(
-                'labels' => array(
-                    'type_new' => WFText::_('WF_EXTENSION_MAPPER_TYPE_NEW'),
-                    'group_new' => WFText::_('WF_EXTENSION_MAPPER_GROUP_NEW'),
-                    'acrobat' => WFText::_('WF_FILEGROUP_ACROBAT'),
-                    'office' => WFText::_('WF_FILEGROUP_OFFICE'),
-                    'flash' => WFText::_('WF_FILEGROUP_FLASH'),
-                    'shockwave' => WFText::_('WF_FILEGROUP_SHOCKWAVE'),
-                    'quicktime' => WFText::_('WF_FILEGROUP_QUICKTIME'),
-                    'windowsmedia' => WFText::_('WF_FILEGROUP_WINDOWSMEDIA'),
-                    'silverlight' => WFText::_('WF_FILEGROUP_SILVERLIGHT'),
-                    'openoffice' => WFText::_('WF_FILEGROUP_OPENOFFICE'),
-                    'divx' => WFText::_('WF_FILEGROUP_DIVX'),
-                    'real' => WFText::_('WF_FILEGROUP_REAL'),
-                    'video' => WFText::_('WF_FILEGROUP_VIDEO'),
-                    'audio' => WFText::_('WF_FILEGROUP_AUDIO')
-                )
-            ),
             'colorpicker' => array(
                 'stylesheets' => (array) WFModelEditor::getStyleSheets(),
                 'labels' => array(

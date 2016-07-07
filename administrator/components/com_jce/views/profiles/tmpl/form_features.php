@@ -84,8 +84,8 @@ if (strpos($theme, '.') === false) {
                                   endfor;
                                   ?>
                                 </div>
-                                <div class="sortableRowHandle"><span class="ui-icon ui-icon-arrowthick-2-n-s"></span></div>
-                                <div class="sortableOption"></div>
+                                <div class="sortableRowHandle"><span class="icon-menu"></span></div>
+                                <div class="sortableOption" role="button"><span class="icon-trash"></span><span class="icon-plus-2"></span></div>
                             </div>
                           <?php endfor; ?>
                     </div>
@@ -125,8 +125,8 @@ if (strpos($theme, '.') === false) {
                                 endforeach;
                                 ?>
                               </div>
-                              <div class="sortableRowHandle"><span class="ui-icon ui-icon-arrowthick-2-n-s"></span></div>
-                              <div class="sortableOption"></div>
+                              <div class="sortableRowHandle"><span class="icon-menu"></span></div>
+                              <div class="sortableOption" role="button"><span class="icon-trash"></span><span class="icon-plus-2"></span></div>
                             </div>
                           <?php endfor; ?>
                     </div>

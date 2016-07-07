@@ -8,22 +8,22 @@
  * other free or open source software licenses.
  */
 
-#jce {
+.ui-jce {
     font-size: 12px;
     padding: 10px;
     background-color: #FFFFFF;
     position: relative;
 }
-#jce ul.nav.nav-tabs {
+.ui-jce ul.nav.nav-tabs {
     padding: 0;
 }
 .icon-48-logo {
     background-image: url("../img/logo.png");
 }
-form[name="adminForm"] #jce {
+form[name="adminForm"] .ui-jce {
     border-radius: 10px;
 }
-#jce.loading:after {
+.ui-jce.loading:after {
     content: "";
     border-radius: 10px 10px 10px 10px;
     height: 100%;
@@ -43,29 +43,29 @@ form[name="adminForm"] #jce {
     z-index: 1000;
     background: #FFF url('../../../../../components/com_jce/editor/tiny_mce/themes/advanced/skins/default/img/progress.gif') no-repeat center;
 }
-#jce .ui-addselect {
+.ui-jce .ui-addselect {
     background-color: #DDD;
 }
-#jce textarea, #jce fieldset textarea {
+.ui-jce textarea, .ui-jce fieldset textarea {
     padding: 2px;
     width: 300px;
 }
-#jce select.inputbox.levels, select.inputbox.users {
+.ui-jce select.inputbox.levels, select.inputbox.users {
     width: 200px;
 }
-#jce select {
+.ui-jce select {
     min-width: 50px;
 }
-#jce select[multiple] {
+.ui-jce select[multiple] {
     height: auto !important;
 }
-#jce label.radio input[type="radio"], #jce label.checkbox input[type="checkbox"], #jce label input[type="text"] {
+.ui-jce label.radio input[type="radio"], .ui-jce label.checkbox input[type="checkbox"], .ui-jce label input[type="text"] {
     margin: 4px 10px 0 0;
 }
 
 /* Parameters */
 
-#jce fieldset.adminform {
+.ui-jce fieldset.adminform {
     color: #000000;
     font-family: Verdana, Arial, sans-serif;
     font-size: 1em;
@@ -75,14 +75,14 @@ form[name="adminForm"] #jce {
     -moz-border-radius: 3px;
     -webkit-border-radius: 3px;
 }
-#jce ul.adminformlist {
+.ui-jce ul.adminformlist {
     display: inline-block;
     width: 100%;
 }
 
 /* Mission Control resets */
 
-#jce ul.adminformlist li label {
+.ui-jce ul.adminformlist li label {
     clear: none;
     float: none;
     width: auto;
@@ -92,24 +92,24 @@ form[name="adminForm"] #jce {
     min-width: 50px;
     vertical-align: middle;
 }
-#jce ul.adminformlist li label+ label {
+.ui-jce ul.adminformlist li label+ label {
     margin-left: 5px;
 }
-#jce ul.adminformlist, #jce dl.adminformlist, dl.adminformlist> dd, #jce ul.adminformlist> li {
+.ui-jce ul.adminformlist, .ui-jce dl.adminformlist, dl.adminformlist> dd, .ui-jce ul.adminformlist> li {
     list-style: none outside none !important;
     margin: 5px;
     padding: 0;
     display: inline-block;
 }
-#jce ul.adminformlist+ ul {
+.ui-jce ul.adminformlist+ ul {
     display: block;
     clear: left;
 }
-#jce dl.adminformlist dt {
+.ui-jce dl.adminformlist dt {
     margin: 5px;
     font-weight: bold;
 }
-#jce ul.adminformlist> li, #jce dl.adminformlist> dd {
+.ui-jce ul.adminformlist> li, .ui-jce dl.adminformlist> dd {
     vertical-align: middle;
     margin: 2px;
     float: left;
@@ -117,31 +117,31 @@ form[name="adminForm"] #jce {
     display: inline-block;
     width: 100%;
 }
-html[dir="rtl"] #jce ul.adminformlist> li, html[dir="rtl"] #jce dl.adminformlist> dd {
+html[dir="rtl"] .ui-jce ul.adminformlist> li, html[dir="rtl"] .ui-jce dl.adminformlist> dd {
     background-position: right;
 }
-#jce ul.adminformlist> li> div {
+.ui-jce ul.adminformlist> li> div {
     margin-left: 200px;
     clear: right;
     padding: 5px 0;
     min-height: 30px;
 }
-#jce ul.adminformlist> li> div h4 {
+.ui-jce ul.adminformlist> li> div h4 {
     margin-left: 10px;
 }
 
-/*#jce ul.adminformlist > li {
+/*.ui-jce ul.adminformlist > li {
     line-height: 30px;
 }*/
 
-#jce dl.adminformlist> dd {
+.ui-jce dl.adminformlist> dd {
     display: block;
     float: none;
 }
-#jce dl.adminformlist dd {
+.ui-jce dl.adminformlist dd {
     margin: 10px 2px;
 }
-#jce ul.adminformlist> li> label:first-child, #jce ul.adminformlist> li> h4:first-child, #jce ul.adminformlist> li> span:first-child, #jce dl.adminformlist> dd> label:first-child, #jce dl.adminformlist> dd> span:first-child {
+.ui-jce ul.adminformlist> li> label:first-child, .ui-jce ul.adminformlist> li> h4:first-child, .ui-jce ul.adminformlist> li> span:first-child, .ui-jce dl.adminformlist> dd> label:first-child, .ui-jce dl.adminformlist> dd> span:first-child {
     display: inline-block;
     margin: 0 5px;
     width: 200px;
@@ -152,35 +152,35 @@ html[dir="rtl"] #jce ul.adminformlist> li, html[dir="rtl"] #jce dl.adminformlist
     line-height: 30px;
     float: left;
 }
-html[dir="rtl"] #jce ul.adminformlist> li> label:first-child, html[dir="rtl"] #jce ul.adminformlist> li> h4:first-child, html[dir="rtl"] #jce ul.adminformlist> li> span:first-child, html[dir="rtl"] #jce dl.adminformlist> dd> label:first-child, html[dir="rtl"] #jce dl.adminformlist> dd> span:first-child {
+html[dir="rtl"] .ui-jce ul.adminformlist> li> label:first-child, html[dir="rtl"] .ui-jce ul.adminformlist> li> h4:first-child, html[dir="rtl"] .ui-jce ul.adminformlist> li> span:first-child, html[dir="rtl"] .ui-jce dl.adminformlist> dd> label:first-child, html[dir="rtl"] .ui-jce dl.adminformlist> dd> span:first-child {
     float: none;
 }
-#jce ul.adminformlist li input, #jce ul.adminformlist li textarea, #jce ul.adminformlist li select, #jce dl.adminformlist dd input, #jce dl.adminformlist dd textarea, #jce dl.adminformlist dd select {
+.ui-jce ul.adminformlist li input, .ui-jce ul.adminformlist li textarea, .ui-jce ul.adminformlist li select, .ui-jce dl.adminformlist dd input, .ui-jce dl.adminformlist dd textarea, .ui-jce dl.adminformlist dd select {
     vertical-align: middle;
     margin: 3px 0;
 }
-#content-box #jce .ui-widget {
+#content-box .ui-jce .ui-widget {
     font-size: 1em;
 }
-#jce td.ui-state-default {
+.ui-jce td.ui-state-default {
     text-align: right;
     width: 150px;
     vertical-align: middle;
 }
-#jce img.pluginicon {
+.ui-jce img.pluginicon {
     vertical-align: middle;
     line-height: 20px;
     padding: 0 3px 3px 0;
     text-align: right;
 }
-#jce ul.widget-checklist {
+.ui-jce ul.widget-checklist {
     list-style: none;
     margin: 0 !important;
     padding: 0;
     display: inline-block;
     min-width: 200px;
 }
-#jce ul.widget-checklist li {
+.ui-jce ul.widget-checklist li {
     line-height: 20px;
     width: 100%;
     margin: 1px 0;
@@ -194,68 +194,68 @@ html[dir="rtl"] #jce ul.adminformlist> li> label:first-child, html[dir="rtl"] #j
     -webkit-border-radius: 3px;
     background-color: #fff;
 }
-#jce ul.widget-checklist li label.checkbox {
+.ui-jce ul.widget-checklist li label.checkbox {
     padding: 0;
     margin: 0;
 }
-#jce ul.widget-checklist.sortable li, #jce ul.widget-checklist.sortable li label {
+.ui-jce ul.widget-checklist.sortable li, .ui-jce ul.widget-checklist.sortable li label {
     cursor: move;
 }
-#jce ul.widget-checklist li input {
+.ui-jce ul.widget-checklist li input {
     margin: 0 5px;
 }
-#jce ul.widget-checklist.sortable li label {
+.ui-jce ul.widget-checklist.sortable li label {
     margin: 0 0 0 20px;
 }
-#jce ul.widget-checklist li.ui-state-highlight {
+.ui-jce ul.widget-checklist li.ui-state-highlight {
     border: 1px dashed #ccc;
     height: 22px;
 }
 
 /* Formats */
 
-#jce ul.widget-checklist.sortable li label.widget-checklist-p {}
-#jce ul.widget-checklist.sortable li label.widget-checklist-address {
+.ui-jce ul.widget-checklist.sortable li label.widget-checklist-p {}
+.ui-jce ul.widget-checklist.sortable li label.widget-checklist-address {
     font-style: italic
 }
-#jce ul.widget-checklist.sortable li label.widget-checklist-pre {
+.ui-jce ul.widget-checklist.sortable li label.widget-checklist-pre {
     font-family: monospace
 }
-#jce ul.widget-checklist.sortable li label.widget-checklist-h1 {
+.ui-jce ul.widget-checklist.sortable li label.widget-checklist-h1 {
     font-weight: bolder;
     font-size: 1.8em
 }
-#jce ul.widget-checklist.sortable li label.widget-checklist-h2 {
+.ui-jce ul.widget-checklist.sortable li label.widget-checklist-h2 {
     font-weight: bolder;
     font-size: 1.5em
 }
-#jce ul.widget-checklist.sortable li label.widget-checklist-h3 {
+.ui-jce ul.widget-checklist.sortable li label.widget-checklist-h3 {
     font-weight: bolder;
     font-size: 1.17em
 }
-#jce ul.widget-checklist.sortable li label.widget-checklist-h4 {
+.ui-jce ul.widget-checklist.sortable li label.widget-checklist-h4 {
     font-weight: bolder;
     font-size: 1em
 }
-#jce ul.widget-checklist.sortable li label.widget-checklist-h5 {
+.ui-jce ul.widget-checklist.sortable li label.widget-checklist-h5 {
     font-weight: bolder;
     font-size: .83em
 }
-#jce ul.widget-checklist.sortable li label.widget-checklist-h6 {
+.ui-jce ul.widget-checklist.sortable li label.widget-checklist-h6 {
     font-weight: bolder;
     font-size: .75em
 }
-#jce ul.widget-checklist.sortable li label.widget-checklist-span {
+.ui-jce ul.widget-checklist.sortable li label.widget-checklist-span {
     display: inline;
     float: none;
     width: inherit;
 }
-#jce ul.widget-checklist.sortable li input {
+.ui-jce ul.widget-checklist.sortable li input {
     margin: 2px 5px;
     vertical-align: middle;
 }
 
-#jce div.loader {
+.ui-jce div.loader {
     background: #FFFFFF url("../../../../../components/com_jce/editor/tiny_mce/themes/advanced/skins/default/img/progress.gif") no-repeat center center;
     width: 100%;
     height: 100%;
@@ -264,7 +264,7 @@ html[dir="rtl"] #jce ul.adminformlist> li> label:first-child, html[dir="rtl"] #j
     top: 0;
     left: 0;
 }
-#jce span.widget-password {
+.ui-jce span.widget-password {
     width: 20px;
     height: 20px;
     display: inline-block;
@@ -273,7 +273,7 @@ html[dir="rtl"] #jce ul.adminformlist> li> label:first-child, html[dir="rtl"] #j
     cursor: pointer;
     vertical-align: middle;
 }
-#jce span.widget-password.locked {
+.ui-jce span.widget-password.locked {
     background: transparent url("../../../../../components/com_jce/editor/libraries/img/icons.png") no-repeat 0 -1120px;
 }
 /** IE Specific **/
@@ -298,16 +298,16 @@ input.ie_upload_input_file {
 
 /* Parameter Lists */
 
-dl.adminformlist dd.ie_adminformlist, #jce ul.adminformlist li.ie_adminformlist {
+dl.adminformlist dd.ie_adminformlist, .ui-jce ul.adminformlist li.ie_adminformlist {
     list-style: none outside none !important;
     margin: 5px;
     padding: 0;
 }
-#jce dl.adminformlist dd.ie_adminformlist {
+.ui-jce dl.adminformlist dd.ie_adminformlist {
     display: block;
     float: none;
 }
-#jce ul.adminformlist li.ie_adminformlist label.ie_adminformlist_child, #jce ul.adminformlist li.ie_adminformlist span.ie_adminformlist_child, #jce dl.adminformlist dd.ie_adminformlist label.ie_adminformlist_child, #jce dl.adminformlist dd.ie_adminformlist span.ie_adminformlist_child {
+.ui-jce ul.adminformlist li.ie_adminformlist label.ie_adminformlist_child, .ui-jce ul.adminformlist li.ie_adminformlist span.ie_adminformlist_child, .ui-jce dl.adminformlist dd.ie_adminformlist label.ie_adminformlist_child, .ui-jce dl.adminformlist dd.ie_adminformlist span.ie_adminformlist_child {
     display: inline-block;
     margin: 2px 5px;
     width: 200px;
@@ -317,7 +317,7 @@ dl.adminformlist dd.ie_adminformlist, #jce ul.adminformlist li.ie_adminformlist 
     vertical-align: top;
     font-weight: normal;
 }
-#jce ul.adminformlist li.ie_adminformlist, #jce dl.adminformlist dd.ie_adminformlist {
+.ui-jce ul.adminformlist li.ie_adminformlist, .ui-jce dl.adminformlist dd.ie_adminformlist {
     line-height: 24px;
     vertical-align: middle;
     margin: 2px;
@@ -338,10 +338,10 @@ dl.adminformlist dd.ie_adminformlist, #jce ul.adminformlist li.ie_adminformlist 
 body.ui-jce .ui-dialog-content.ui-widget-content {
     padding: 10px;
 }
-#jce a.dialog:hover, #jce a.dialog:active {
+.ui-jce a.dialog:hover, .ui-jce a.dialog:active {
     text-decoration: none;
 }
-#jce #accordian ul {
+.ui-jce #accordian ul {
     list-style: none;
     margin: 0;
     padding: 0;
@@ -349,15 +349,15 @@ body.ui-jce .ui-dialog-content.ui-widget-content {
 #toolbar span.icon-32-update span.icon-32-error {
     background: url('../img/error.png') no-repeat bottom right;
 }
-#jce #filter-bar div.upload-container {
+.ui-jce #filter-bar div.upload-container {
     float: right;
     display: inline-block;
     position: relative;
 }
-html[dir="rtl"] #jce #filter-bar div.upload-container {
+html[dir="rtl"] .ui-jce #filter-bar div.upload-container {
     float: left;
 }
-#jce #profiles-toolbar label[for="search"] {
+.ui-jce #profiles-toolbar label[for="search"] {
     margin: 0 5px;
 }
 html[dir="rtl"] div.ui-dialog-buttonset button.ui-button span.ui-button-text {
@@ -366,116 +366,116 @@ html[dir="rtl"] div.ui-dialog-buttonset button.ui-button span.ui-button-text {
 html[dir="rtl"] .ui-jce .ui-tabs .ui-tabs-nav li {
     float: right;
 }
-#jce input[name="order[]"] {
+.ui-jce input[name="order[]"] {
     width: 30px;
     display: block;
     margin: auto;
 }
-#jce a.saveorder.pull-right {
+.ui-jce a.saveorder.pull-right {
     float: none;
 }
-#jce td.order span.order-up, #jce td.order span.order-down {
+.ui-jce td.order span.order-up, .ui-jce td.order span.order-down {
     display: inline-block;
     float: left;
     margin: 5px 5px 0 0;
 }
-#jce td.order .btn-micro {
+.ui-jce td.order .btn-micro {
     font-size: 10px;
     line-height: 8px;
     padding: 1px 4px;
 }
-#jce td.order .btn span {
+.ui-jce td.order .btn span {
     display: none;
 }
-#jce td.order span.order-up {
+.ui-jce td.order span.order-up {
     margin-left: 15%;
 }
-#jce a.saveorder {
+.ui-jce a.saveorder {
     display: inline-block;
     float: none;
     vertical-align: middle;
 }
-#jce div.limit select {
+.ui-jce div.limit select {
     height: 24px;
 }
-#jce .smallsub {
+.ui-jce .smallsub {
     font-size: 0.9em;
     line-height: 12px;
     margin: 5px 0;
 }
-#jce #profiles-list td {
+.ui-jce #profiles-list td {
     vertical-align: middle;
 }
-#jce a.nolink {
+.ui-jce a.nolink {
     display: none;
 }
-#jce .tabs-left .tab-content {
+.ui-jce .tabs-left .tab-content {
     overflow: hidden;
 }
-#jce #profiles-list {
+.ui-jce #profiles-list {
     margin: 0;
 }
-#jce #profiles-list th:first-child {
+.ui-jce #profiles-list th:first-child {
     width: 20px;
 }
-#jce #profiles-list tr td:first-child i.icon-menu {
+.ui-jce #profiles-list tr td:first-child i.icon-menu {
     font-size: 13px;
 }
-#jce #profiles-list th:first-child+ th {
+.ui-jce #profiles-list th:first-child+ th {
     width: 20px;
 }
-#jce #profiles-list th:first-child+ th+ th+ th {
+.ui-jce #profiles-list th:first-child+ th+ th+ th {
     width: 5%;
     text-align: center;
 }
-#jce #profiles-list td:first-child+ td+ td+ td {
+.ui-jce #profiles-list td:first-child+ td+ td+ td {
     text-align: center;
 }
-#jce #profiles-list th:first-child+ th+ th+ th+ th {
+.ui-jce #profiles-list th:first-child+ th+ th+ th+ th {
     width: 150px;
     text-align: center;
 }
-#jce #profiles-list th:first-child+ th+ th+ th+ th+ th {
+.ui-jce #profiles-list th:first-child+ th+ th+ th+ th+ th {
     width: 1%;
 }
-#jce #profiles-list tr:first-child span.order-up, #jce #profiles-list tr:last-child span.order-down, #jce #profiles-list tr.last span.order-down {
+.ui-jce #profiles-list tr:first-child span.order-up, .ui-jce #profiles-list tr:last-child span.order-down, .ui-jce #profiles-list tr.last span.order-down {
     visibility: hidden;
 }
-#jce #profiles-list tr.ui-sortable-helper {
+.ui-jce #profiles-list tr.ui-sortable-helper {
     border: 1px solid #DDDDDD;
     background: #fff;
     opacity: 0.8;
     -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=80)";
 }
-#jce #profiles-list tr.busy {
+.ui-jce #profiles-list tr.busy {
     opacity: 0.5;
     -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=50)";
 }
-#jce #profiles-list tr.ui-sortable-helper td {
+.ui-jce #profiles-list tr.ui-sortable-helper td {
     border: 0 none;
 }
-#jce #profiles-list span.sortable-handle {
+.ui-jce #profiles-list span.sortable-handle {
     cursor: ns-resize;
     height: 14px;
 }
 #tabs .tab-disabled {
     display: none !important;
 }
-#jce table td.order {
+.ui-jce table td.order {
     width: inherit;
     text-align: center;
 }
-#jce #profiles-list th:first-child+ th {
+.ui-jce #profiles-list th:first-child+ th {
     width: 20px;
 }
-#jce #profiles-list th:first-child+ th+ th+ th {
+.ui-jce #profiles-list th:first-child+ th+ th+ th {
     width: 5%;
     text-align: center;
 }
-#jce #profiles-list td:first-child+ td+ td+ td {
+.ui-jce #profiles-list td:first-child+ td+ td+ td {
     text-align: center;
 }
-#jce #profiles-list th:first-child+ th+ th+ th+ th+ th {
+.ui-jce #profiles-list th:first-child+ th+ th+ th+ th+ th {
     width: 1%;
 }
 
@@ -487,37 +487,35 @@ html[dir="rtl"] .ui-jce .ui-tabs .ui-tabs-nav li {
         left: 5px !important;
     }
 }
-#jce .btn-group .btn {
+.ui-jce .btn-group .btn {
     margin: 0 0 0 -1px;
 }
-#jce input {
+.ui-jce input {
     margin: 0;
 }
-#jce #tabs> ul> li {
+.ui-jce #tabs> ul> li {
     padding: 0 2px;
 }
-#jce .sortable-handle .icon-th {
+.ui-jce .sortable-handle .icon-th {
     width: 5px;
 }
-#jce #profiles-list div.container {
+.ui-jce #profiles-list div.container {
     width: 100%;
 }
-#jce #profiles-list div.container div.pagination div.limit {
+.ui-jce #profiles-list div.container div.pagination div.limit {
     line-height: 24px;
     height: 24px;
 }
-#jce #profiles-list div.container #limit {
+.ui-jce #profiles-list div.container #limit {
     margin: 0 5px;
     vertical-align: middle;
 }
-#jce .tab-content {
+.ui-jce .tab-content {
     overflow: hidden;
 }
-#jce .icon-th:before, #jce .icon-search:before, #jce .icon-arrow-up:before, #jce .icon-remove:before, #jce .icon-user:before, #jce .icon-arrow-down:before, #jce .icon-arrow-up:before, #jce .icon-move:before {
-    font-size: 0;
-    content: "";
+.ui-jce .icon-th:before, .ui-jce .icon-search:before, .ui-jce .icon-arrow-up:before, .ui-jce .icon-remove:before, .ui-jce .icon-user:before, .ui-jce .icon-arrow-down:before, .ui-jce .icon-arrow-up:before, .ui-jce .icon-move:before {
 }
-#jce.ie9 .btn.loading i, #jce.ie8 .btn.loading i {
+.ui-jce.ie9 .btn.loading i, .ui-jce.ie8 .btn.loading i {
     background: transparent url("../../../../../components/com_jce/editor/libraries/img/load.gif") no-repeat center center;
     height: 20px;
     line-height: 20px;
@@ -525,7 +523,7 @@ html[dir="rtl"] .ui-jce .ui-tabs .ui-tabs-nav li {
     vertical-align: middle;
     width: 20px;
 }
-#jce .btn.loading i[class^="icon-"] {
+.ui-jce .btn.loading i[class^="icon-"] {
     background-position: -240px -24px;
     -webkit-animation: spinner 1s infinite linear;
     /* Safari 4+ */
@@ -568,7 +566,7 @@ html[dir="rtl"] .ui-jce .ui-tabs .ui-tabs-nav li {
         transform: rotate(360deg);
     }
 }
-#jce .progress {
+.ui-jce .progress {
     height: 25px;
     left: 50%;
     margin: 10px 0 10px -250px;
@@ -577,33 +575,33 @@ html[dir="rtl"] .ui-jce .ui-tabs .ui-tabs-nav li {
     z-index: 1001;
     display: none;
 }
-#jce .progress .bar {
+.ui-jce .progress .bar {
     line-height: 25px;
 }
-#jce.loading .progress {
+.ui-jce.loading .progress {
     display: block;
 }
-#jce span.editable-edit {
+.ui-jce span.editable-edit {
     margin: 10px 5px;
 }
-#jce tfoot .container .pagination {
+.ui-jce tfoot .container .pagination {
     text-align: center;
 }
-#jce tfoot .container .pagination .limit {
+.ui-jce tfoot .container .pagination .limit {
     float: none;
     margin: auto;
     height: 30px;
     line-height: 30px;
 }
-#jce tfoot .container .pagination .limit select {
+.ui-jce tfoot .container .pagination .limit select {
     margin: 0 5px;
     vertical-align: middle;
     max-width: 100px;
 }
-#jce tfoot .container .pagination .limit+ .limit {
+.ui-jce tfoot .container .pagination .limit+ .limit {
     display: none;
 }
-#jce #profiles-list .sortable-highlight {
+.ui-jce #profiles-list .sortable-highlight {
     border: 1px dashed #ccc;
     height: 60px;
 }
@@ -618,27 +616,27 @@ span.colorpicker_widget {
     border: 1px solid #ddd;
     box-sizing: border-box;
 }
-#jce .tooltip {
+.ui-jce .tooltip {
     min-width: 200px
 }
-#jce .tooltip .tooltip-inner h4 {
+.ui-jce .tooltip .tooltip-inner h4 {
     margin: 5px 0px;
 }
-#jce .tooltip .close {
+.ui-jce .tooltip .close {
     opacity: 1;
     color: #fff;
     padding: 0 5px;
     text-shadow: inherit;
 }
-#jce .tooltip .close:hover, #jce .tooltip .close:focus {
+.ui-jce .tooltip .close:hover, .ui-jce .tooltip .close:focus {
     color: #fff;
     opacity: 1;
 }
-#jce .ui-datalist {
+.ui-jce .ui-datalist {
     position: relative;
     display: inline-block;
 }
-#jce .ui-datalist input[type="text"] {
+.ui-jce .ui-datalist input[type="text"] {
     z-index: 1;
     position: relative;
     width: 190px;
@@ -646,16 +644,16 @@ span.colorpicker_widget {
     border-bottom-right-radius: 0;
     margin: 0;
 }
-#jce .ui-datalist input:focus+ select {
+.ui-jce .ui-datalist input:focus+ select {
     border-color: #66afe9
 }
-#jce .ui-datalist select:focus~ input {
+.ui-jce .ui-datalist select:focus~ input {
     border-color: #66afe9
 }
 :root .ui-datalist input[type="text"] {
     border-right-width: 0;
 }
-#jce .ui-datalist select {
+.ui-jce .ui-datalist select {
     z-index: 0;
     position: absolute;
     left: 0;
@@ -676,7 +674,7 @@ span.colorpicker_widget {
     bottom: 100%;
     right: inherit;
 }
-#jce .wf-colorpicker.tooltip {
+.ui-jce .wf-colorpicker.tooltip {
     margin: 0;
     padding: 0;
     font-size: 12px;
@@ -684,7 +682,7 @@ span.colorpicker_widget {
 .wf-colorpicker .ui-tabs {
     height: calc(100% - 49px);
 }
-#jce .wf-colorpicker> div {
+.ui-jce .wf-colorpicker> div {
     height: 100%;
     background: inherit;
     box-sizing: border-box;
@@ -743,12 +741,12 @@ span.colorpicker_widget {
 .wf-colorpicker .ui-icon-hashtag:before {
     content: "#";
 }
-#jce .wf-colorpicker #colorpicker_color {
+.ui-jce .wf-colorpicker #colorpicker_color {
     width: 50px;
     font-size: 14px;
     height: 24px;
 }
-#jce .tooltip.wf-colorpicker .close, #jce .tooltip.wf-colorpicker .close:hover {
+.ui-jce .tooltip.wf-colorpicker .close, .ui-jce .tooltip.wf-colorpicker .close:hover {
     position: absolute;
     right: 5px;
     color: #444;

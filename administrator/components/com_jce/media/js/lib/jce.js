@@ -33,21 +33,18 @@
         init: function () {
             var self = this;
 
-            // add ui-jce class to body
-            $('body').addClass('ui-jce');
-
             // IE
             if (!$.support.cssFloat) {
-                $('#jce').addClass('ie');
+                $('.ui-jce').addClass('ie');
 
                 // IE8 / 9
                 if (document.querySelector) {
                     // IE8
                     if (!$.support.leadingWhitespace) {
-                        $('#jce').addClass('ie8');
+                        $('.ui-jce').addClass('ie8');
                         // IE9
                     } else {
-                        $('#jce').addClass('ie9');
+                        $('.ui-jce').addClass('ie9');
                     }
                 }
             }
@@ -68,7 +65,7 @@
 
             // Tips
             $('.wf-tooltip, .hasTip').tips({
-                parent: '#jce'
+                parent: '.ui-jce'
             });
 
             // profiles list checkboxes
@@ -190,10 +187,10 @@
                 // set dependant parameters
                 self._setDependants();
             });
-            
+
             // remove loader
             $(document).ready(function () {
-                $('#jce').removeClass('loading');
+                $('.ui-jce').removeClass('loading');
             });
         },
         createDialog: function (el, o) {

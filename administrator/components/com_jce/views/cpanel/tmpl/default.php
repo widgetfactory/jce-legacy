@@ -11,7 +11,7 @@
  */
 defined('_JEXEC') or die('RESTRICTED');
 ?>
-<div id="jce" class="ui-corner-all">
+<div class="ui-jce">
     <ul id="cpanel">
         <?php echo implode("\n", $this->icons); ?>
     </ul>

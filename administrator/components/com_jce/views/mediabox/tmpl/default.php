@@ -14,11 +14,11 @@ defined('_JEXEC') or die('RESTRICTED');
 
 ?>
 <form action="index.php" method="post" name="adminForm" id="adminForm">
-    <div id="jce">
+    <div class="ui-jce">
     	<fieldset class="adminform panelform">
 			 <legend><?php echo JText :: _('WF_MEDIABOX_PARAMETERS');?></legend>
 		    <ul class="adminformlist">
-			<?php 
+			<?php
 				foreach ($this->params as $param) {
 					echo '<li>' . $param[0] . $param[1] . '</li>';
 				}

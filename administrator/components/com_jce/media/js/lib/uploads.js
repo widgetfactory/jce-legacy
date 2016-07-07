@@ -167,9 +167,9 @@
                         $form.removeAttr('target');
                         // append result
                         if (!document.getElementById(o.report)) {
-                            $('#jce').append('<div id="'+ o.report +'"></div>');
+                            $('.ui-jce').append('<div id="'+ o.report +'"></div>');
                         }
-                        $('div#' + o.report, '#jce').hide().html(result).fadeIn();
+                        $('div#' + o.report, '.ui-jce').hide().html(result).fadeIn();
                     }
                     if (o.button) {
                         var btn = document.getElementById(o.button);
