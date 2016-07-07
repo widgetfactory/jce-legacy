@@ -17,7 +17,7 @@ class WFFileBrowserPlugin extends WFMediaManager {
     /*
      * @var string
      */
-    protected $_filetypes = 'word=doc,docx;powerpoint=ppt,pptx;excel=xls,xlsx;image=gif,jpeg,jpg,png;acrobat=pdf;archive=zip,tar,gz;flash=swf;winrar=rar;quicktime=mov,mp4,qt;windowsmedia=wmv,asx,asf,avi;audio=wav,mp3,aiff;openoffice=odt,odg,odp,ods,odf;text=rtf,txt,csv';
+    protected $_filetypes = 'doc,docx,ppt,pptx,xls,xlsx,gif,jpeg,jpg,png,pdf,zip,tar,gz,swf,rar,mov,mp4,qt,wmv,asx,asf,avi,wav,mp3,aiff,odt,odg,odp,ods,odf,rtf,txt,csv';
 
     public function __construct($config = array()) {
         $config = array(
@@ -33,17 +33,17 @@ class WFFileBrowserPlugin extends WFMediaManager {
         $filter     = JRequest::getVar('filter', 'files');
 
         // clean filter value
-        $filter = (string) preg_replace('/[^\w_,]/i', '', $filter);
+        $filter     = (string) preg_replace('/[^\w_,]/i', '', $filter);
 
         if ($filter == 'images') {
-            $filetypes = 'images=jpg,jpeg,png,gif';
+            $filetypes = 'jpg,jpeg,png,gif';
         } else if ($filter === 'media') {
-            $filetypes = 'windowsmedia=avi,wmv,wm,asf,asx,wmx,wvx;quicktime=mov,qt,mpg,mpeg,m4a;flash=swf;shockwave=dcr;real=rm,ra,ram;divx=divx;video=mp4,ogv,ogg,webm,flv,f4v;audio=mp3,ogg,wav;silverlight=xap';
+            $filetypes = 'avi,wmv,wm,asf,asx,wmx,wvx,mov,qt,mpg,mpeg,m4a,swf,dcr,rm,ra,ram,divx,mp4,ogv,ogg,webm,flv,f4v,mp3,ogg,wav,xap';
         } else if ($filter === 'html') {
-            $filetypes = 'html=html,htm,txt';
+            $filetypes = 'html,htm,txt';
         } else {
             if (strpos($filter, ',') !== false) {
-                $filetypes = 'custom=' . $filter;
+                $filetypes = $filter;
             } else {
                 $filetypes = $this->get('_filetypes');
             }
@@ -78,19 +78,14 @@ class WFFileBrowserPlugin extends WFMediaManager {
 
             $element = JRequest::getCmd('element', JRequest::getCmd('fieldid', ''));
 
-            $options = array(
-                'plugin' => array(
-                    'root' => JURI::root(),
-                    'site' => JURI::base(true) . '/'
-                ),
-                'filebrowser' => $settings,
-                'element'     => $element
+            $settings['plugin'] = array(
+              'root' => JURI::root(),
+              'site' => JURI::base(true) . '/'
             );
 
-            $document->addScriptDeclaration('jQuery(document).ready(function($){$.WFBrowserWidget.init(' . json_encode($options) . ');});');
-
-        } else {
-            $document->addScriptDeclaration('BrowserDialog.settings=' . json_encode($settings) . ';');
+            $settings['element'] = $element;
         }
+
+        $document->addScriptDeclaration('BrowserDialog.settings=' . json_encode($settings) . ';');
     }
 }
