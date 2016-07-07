@@ -139,12 +139,12 @@ defined('_JEXEC') or die('RESTRICTED');
                     <div class="ui-navbar-content ui-navbar-center"><?php echo WFText::_('WF_LABEL_DETAILS'); ?></div>
                 </div>
                 <div id="browser-details-container" class="ui-grid ui-grid-collapse ui-flex">
-                    <div id="browser-details" class="ui-width-8-10">
+                    <div id="browser-details" class="ui-flex-item-auto">
                         <div id="browser-details-text"></div>
                         <div id="browser-details-comment"></div>
                     </div>
 
-                    <div id="browser-buttons" class="ui-width-2-10 ui-text-center"></div>
+                    <div id="browser-buttons" class="ui-text-center"></div>
                 </div>
                 <div id="browser-details-nav" class="ui-navbar">
                     <div class="ui-navbar-content ui-width-1-1 ui-padding-remove">
