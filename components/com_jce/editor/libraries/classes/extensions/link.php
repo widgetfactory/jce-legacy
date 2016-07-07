@@ -51,9 +51,6 @@ class WFLinkExtension extends WFExtension {
     public function display() {
         parent::display();
 
-        $document = WFDocument::getInstance();
-        $document->addScript(array('tree.min'), 'libraries');
-
         foreach ($this->extensions as $extension) {
             $extension->display();
         }
