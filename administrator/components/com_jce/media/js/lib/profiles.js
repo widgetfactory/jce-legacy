@@ -68,10 +68,10 @@
             $("select.editable, select.combobox").datalist();
 
             // Color Picker
-            $('input.color').colorpicker($.extend(this.options.colorpicker, {parent: '#jce'}));
+            $('input.color').colorpicker($.extend(this.options.colorpicker, {parent: '.ui-jce'}));
 
             // Extension Mapper
-            $('select.extensions, input.extensions, textarea.extensions').extensionmapper(this.options.extensions);
+            $('.extensions > input[type="text"][name]').extensionmapper();
 
             // Layout
             this.createLayout();
@@ -309,17 +309,11 @@
                 opacity: 0.8
             });
 
-            $('.sortableOption').hover(function() {
-                $(this).append('<span role="button"/>');
-            }, function() {
-                $(this).empty();
-            }).click(function() {
+            $('.sortableOption').click(function(e) {
                 var $parent = $(this).parents('.sortableListItem').first();
                 var $target = $('.sortableList', '#profileLayoutTable').not($parent.parent());
 
                 $parent.appendTo($target);
-
-                $(this).empty();
 
                 self.setRows();
                 self.setPlugins();
