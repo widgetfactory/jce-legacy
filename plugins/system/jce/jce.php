@@ -70,7 +70,7 @@ class PlgSystemJce extends JPlugin {
 
         // get form name.
         $name = $form->getName();
-        
+
         if ($version->isCompatible('3.6')) {
         	$valid = array(
             	'com_content.article',
@@ -85,7 +85,7 @@ class PlgSystemJce extends JPlugin {
         	// only allow some forms, see - https://github.com/joomla/joomla-cms/pull/8657
         	if (!in_array($name, $valid)) {
             	return true;
-        	}	
+        	}
         }
 
         $config = JFactory::getConfig();
@@ -132,6 +132,8 @@ class PlgSystemJce extends JPlugin {
 
             $document = JFactory::getDocument();
             $document->addScriptDeclaration('jQuery(document).ready(function($){$(".wf-media-input").removeAttr("readonly");});');
+
+            $document->addStyleSheet(JURI::root(true) . '/plugins/system/jce/css/media.css');
         }
 
         return true;
