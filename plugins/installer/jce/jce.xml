@@ -12,8 +12,4 @@
 	<files>
 		<filename plugin="jce">jce.php</filename>
 	</files>
-	<languages folder="language">
-		<language tag="en-GB">en-GB/en-GB.plg_installer_jce.ini</language>
-		<language tag="en-GB">en-GB/en-GB.plg_installer_jce.sys.ini</language>
-	</languages>
 </extension>
