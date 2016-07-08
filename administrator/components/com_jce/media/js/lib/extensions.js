@@ -20,23 +20,34 @@
           $(this).removeAttr('name').prop('disabled', true);
 
           function serialize() {
-            // get all checkboxes
-            var boxes = $(self).parent().find('input[type="checkbox"]');
+            var list = [];
 
-            var v1 = $(boxes).map(function() {
-              if (!this.checked) {
-                  return "-" + this.value;
+            $(self).parent().find('dl').each(function() {
+              // checkboxes
+              var v1 = $(this).find('input[type="checkbox"]').map(function() {
+                if (!this.checked) {
+                    return "-" + this.value;
+                }
+                return this.value;
+              }).get();
+              // custom values
+              var v2 = $(this).find('.extension-custom input').map(function() {
+                if (this.value !== "") {
+                    return this.value;
+                }
+              }).get();
+
+              var group = $(this).children('dt').data('extension-group') || "";
+              var items = $.merge(v1, v2).join(",");
+
+              if (group) {
+                  list.push(group + "=" + items);
+              } else {
+                  list.push(items);
               }
-              return this.value;
-            }).get();
+            });
 
-            var v2 = $(self).parent().find('.extension-custom input').map(function() {
-              if (this.value !== "") {
-                  return this.value;
-              }
-            }).get();
-
-            var v = $.merge(v1, v2).join(",");
+            var v = list.join(";");
 
             // set value to hidden input
             $input.val(v).addClass('isdirty');
@@ -46,7 +57,7 @@
 
           $(this).siblings('button').click(function(e) {
             e.preventDefault();
-            $(self).siblings('ul').slideToggle();
+            $(self).siblings('dl').slideToggle();
           });
 
           // get all checkboxes
@@ -81,6 +92,17 @@
               $(this).parent().remove();
               serialize();
           });
+
+          if ($('dt', $parent).length) {
+              $('dl', $parent).sortable({
+                "axis" : "y",
+                "items": "> dd",
+                "connectWith": ".extensions dl",
+                "update": function(event, ui) {
+                  serialize();
+                }
+              });
+          }
         });
     };
 })(jQuery);
