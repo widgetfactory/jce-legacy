@@ -97,7 +97,7 @@ class WFMediaManagerBase extends WFEditorPlugin {
         $view->assign('filebrowser', $browser);
 
         // set global options
-        $document->addScriptDeclaration('FileBrowser.options=' . json_encode($this->getFileBrowser()->getProperties()) . ';');
+        $document->addScriptDeclaration('FileBrowser.options=' . json_encode($browser->getProperties()) . ';');
     }
 
     public function getFileTypes() {
