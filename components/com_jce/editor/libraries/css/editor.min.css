@@ -123,6 +123,7 @@
     line-height: 18px;
     text-align: center;
     vertical-align: middle;
+    cursor: pointer;
 }
 .wf-editor-toggle i {
 	display: inline-block;
