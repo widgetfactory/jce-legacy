@@ -183,7 +183,7 @@ class WFFileBrowser extends JObject {
             $config = array(
                 'dir'             => $this->get('dir'),
                 'upload_conflict' => $wf->getParam('editor.upload_conflict', 'overwrite'),
-                'filetypes'       => $this->getFileTypes()
+                'filetypes'       => $this->listFileTypes()
             );
 
             $filesystem = WFFileSystem::getInstance($this->get('filesystem'), $config);
@@ -197,61 +197,72 @@ class WFFileBrowser extends JObject {
     }
 
     /**
-     * Return a list of allowed file extensions in selected format
-     *
+     * Return a list of allowed file extensions in specific format
      * @access public
-     * @return extension list
+     * @return formatted extension list
      */
-    public function getFileTypes() {
-        $list = $this->get('filetypes');
+    public function getFileTypes($format = 'map', $list = "") {
+        if (empty($list)) {
+            $list = $this->get('filetypes');
+        }
 
         $data = array();
 
-        // return standard list as array
-        if (strpos($list, "=") === false) {
-            return explode(",", $list);
-        }
-
-        foreach (explode(';', $value) as $group) {
-            if (substr(trim($group), 0, 1) === '-') {
+        foreach (explode(';', $list) as $group) {
+            // exclude group
+            if (strpos($group, "=") !== false && strpos($group, "-") === 0) {
                 continue;
             }
 
-            $items = explode("=", $group);
+            $parts = explode("=", $group);
+            // get extensions, eg: "jpg,gif,png"
+            $items = array_pop($parts);
+            // get type if available, eg: "images"
+            $type  = array_pop($parts);
 
-            $map = array_map(explode(",", $items[1]), function($item) {
-              if (substr(trim($item), 0, 1) !== '-') {
-                  return $item;
-              }
+            // re-map without excluded items
+            $items = array_filter(explode(",", $items), function($item) {
+              return substr(trim($item), 0, 1) !== '-';
             });
 
-            $data[$items[0]] = $map;
+            // no type
+            if (empty($type)) {
+                $data = $items;
+            } else {
+                // create flattened array, eg: ["jpg", "jpeg", "gif", "png"]
+                if ($format === "array" || $format === "list") {
+                    $data = array_merge($data, array_map("strtolower", $items));
+                // create associative array, eg:  or ["images" => ["jpg", "jpeg", "gif", "png"]]
+                } else {
+                    $data[$type] = $items;
+                }
+            }
         }
 
+        // return flattended list of extensions, eg: "jpg,jpeg,png,gif"
+        if ($format === "list") {
+            return implode(",", $data);
+        }
+
+        // return json encoded list, eg: {"images": ["jpg", "jpeg", "gif", "png"]}
+        if ($format === "json") {
+            return json_encode($data);
+        }
+        // return array
         return $data;
-    }
-
-    public function setFileTypes($list = 'jpg,jpeg,png,gif') {
-        $this->set('filetypes', $list);
-    }
-
-    private function cleanFileTypes($value) {
-      // get array values only
-      $values = array_values($value);
-      // convert to string
-      $string = implode(",", $values);
-      // return string
-      return $string;
     }
 
     /**
      * Converts the extensions map to a list
-     * @param string $map The extensions map eg: images=jpg,jpeg,gif,png
+     * @param string $list The extensions map eg: images=jpg,jpeg,gif,png
      * @return string jpg,jpeg,gif,png
      */
-    private function getFileTypesAsList() {
-      $data = $this->getFileTypes();
-      return $this->cleanFileTypes($data);
+    private function listFileTypes($list = "") {
+        return $this->getFileTypes("list", $list);
+    }
+
+    public function setFileTypes($list = 'jpg,jpeg,png,gif') {
+        $this->set('filetypes', $list);
     }
 
     public function addFileTypes($filetypes) {
@@ -298,7 +309,7 @@ class WFFileBrowser extends JObject {
         }
     }
 
-    function checkFeature($action, $type = null) {
+    public function checkFeature($action, $type = null) {
         $features = $this->get('features');
 
         if ($type) {
@@ -373,7 +384,8 @@ class WFFileBrowser extends JObject {
         // get source dir from path eg: images/stories/fruit.jpg = images/stories
         $dir = $filesystem->getSourceDir($path);
 
-        $filetypes = explode(",", $this->getFileTypesAsList());
+        $filetypes = $this->getFileTypes("array");
+
         $name = '';
 
         if ($filter) {
@@ -1362,7 +1374,7 @@ class WFFileBrowser extends JObject {
 
         $defaults = array(
             'max_size'  => $size,
-            'filetypes' => $this->getFileTypesAsList(),
+            'filetypes' => $this->listFileTypes(),
             'elements'  => $elements
         );
 
