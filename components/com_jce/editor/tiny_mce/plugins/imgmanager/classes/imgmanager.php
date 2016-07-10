@@ -16,7 +16,7 @@ wfimport('editor.libraries.classes.manager');
 
 class WFImageManagerPlugin extends WFMediaManager {
 
-    var $_filetypes = 'images=jpg,jpeg,png,gif';
+    public $_filetypes = 'jpg,jpeg,png,gif';
 
     /**
      * @access	protected
