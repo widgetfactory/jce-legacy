@@ -590,80 +590,86 @@ class WFModelEditor extends WFModelBase {
        *
        * @return string list
        */
-      public function getPlugins()
-      {
+      public function getPlugins() {
           static $plugins;
 
-      $wf = WFEditor::getInstance();
+          $wf = WFEditor::getInstance();
 
-      if (is_object($this->profile)) {
-          if (!is_array($plugins)) {
-              // get plugin items from profile
-              $items = explode(',', $this->profile->plugins);
+          if (is_object($this->profile)) {
+              if (!is_array($plugins)) {
+                  // get plugin items from profile
+                  $items = explode(',', $this->profile->plugins);
 
-              // core plugins
-              $core = array('core', 'autolink', 'cleanup', 'code', 'format', 'importcss', 'colorpicker');
+                  // core plugins
+                  $core = array('core', 'autolink', 'cleanup', 'code', 'format', 'importcss', 'colorpicker');
 
-              // add advlists plugin if lists are loaded
-              if (in_array('lists', $items)) {
-                  $items[] = 'advlist';
-              }
-
-              // Load wordcount if path is enabled
-              if ($wf->getParam('editor.path', 1)) {
-                  $items[] = 'wordcount';
-              }
-
-              // remove invalid items
-              $items = array_filter($items, function($item) {
-                  return is_file(WF_EDITOR_PLUGINS . '/' . $item . '/editor_plugin.js');
-              });
-
-              // reset index
-              $items = array_values($items);
-
-              // add plugin dependencies
-              self::addDependencies($items);
-
-              // add core plugins
-              $items = array_merge($core, $items);
-
-              // remove duplicates and empty values
-              $items = array_unique(array_filter($items));
-
-              // create plugins array
-              $plugins = array('core' => $items, 'external' => array());
-
-              // get installed plugins, eg: Media Manager
-              $installed = JPluginHelper::getPlugin('jce');
-
-              // check installed plugins are valid
-              foreach ($installed as $item) {
-                  // check for delimiter, only load "extensions"
-                  if (strpos($item->name, 'editor-') === false) {
-                      continue;
+                  // add advlists plugin if lists are loaded
+                  if (in_array('lists', $items)) {
+                      $items[] = 'advlist';
                   }
 
-                  // set path
-                  $item->path = JPATH_PLUGINS . '/jce/' . $item->name;
-                  // get plugin name
-                  $name = str_replace('editor-', '', $item->name);
+                  // Load wordcount if path is enabled
+                  if ($wf->getParam('editor.path', 1)) {
+                      $items[] = 'wordcount';
+                  }
 
-                  // get plugin relative path
-                  $path = str_replace(JPATH_SITE, JURI::root(true), $item->path);
+                  // remove invalid items
+                  $items = array_filter($items, function($item) {
+                      return is_file(WF_EDITOR_PLUGINS . '/' . $item . '/editor_plugin.js');
+                  });
 
-                  // get plugin file (uncompressed)
-                  $file = $item->path . '/editor_plugin.js';
+                  // reset index
+                  $items = array_values($items);
 
-                  // check file exists, add to array
-                  if (is_file($file)) {
-                      $plugins['external'][$name] = $path . '/editor_plugin.js';
+                  // add plugin dependencies
+                  self::addDependencies($items);
+
+                  // add core plugins
+                  $items = array_merge($core, $items);
+
+                  // remove duplicates and empty values
+                  $items = array_unique(array_filter($items));
+
+                  // create plugins array
+                  $plugins = array('core' => $items, 'external' => array());
+
+                  // get installed plugins, eg: Media Manager
+                  $installed = JPluginHelper::getPlugin('jce');
+
+                  // check installed plugins are valid
+                  foreach ($installed as $item) {
+                      // check for delimiter, only load "extensions"
+                      if (strpos($item->name, 'editor-') === false) {
+                          continue;
+                      }
+
+                      $name = str_replace('editor-', '', $item->name);
+
+                      // check it is in profile plugin list
+                      if (!in_array($name, $items)) {
+                          continue;
+                      }
+
+                      // set path
+                      $item->path = JPATH_PLUGINS . '/jce/' . $item->name;
+                      // get plugin name
+                      $name = str_replace('editor-', '', $item->name);
+
+                      // get plugin relative path
+                      $path = str_replace(JPATH_SITE, JURI::root(true), $item->path);
+
+                      // get plugin file (uncompressed)
+                      $file = $item->path . '/editor_plugin.js';
+
+                      // check file exists, add to array
+                      if (is_file($file)) {
+                          $plugins['external'][$name] = $path . '/editor_plugin.js';
+                      }
                   }
               }
           }
-      }
 
-      return $plugins;
+          return $plugins;
   }
 
   /**
