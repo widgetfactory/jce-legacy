@@ -119,7 +119,20 @@ class WFModelEditor extends WFModelBase {
         if (is_object($this->profile)) {
             jimport('joomla.filesystem.folder');
 
-            $settings = array_merge($settings, array('theme' => 'advanced', 'component_id' => $component_id, 'plugins' => $this->getPlugins()), $this->getToolbar());
+            $settings = array_merge($settings, array('theme' => 'advanced', 'component_id' => $component_id), $this->getToolbar());
+
+            // add plugins
+            $plugins = $this->getPlugins();
+
+            // add core plugins
+            if (!empty($plugins['core'])) {
+                $settings['plugins'] = array_values($plugins['core']);
+            }
+
+            // add external plugins
+            if (!empty($plugins['external'])) {
+                $settings['external_plugins'] = $plugins['external'];
+            }
 
             // Theme and skins
             $theme = array(
@@ -202,8 +215,6 @@ class WFModelEditor extends WFModelBase {
         } else {
             // CSS
             $this->addStyleSheet($this->getURL(true) . '/libraries/css/editor.min.css');
-            // get plugin styles
-            $this->getPluginStyles($settings);
         }
 
         // set compression
@@ -262,7 +273,7 @@ class WFModelEditor extends WFModelBase {
         // Remove empty values
         $settings = array_filter($settings, function ($value) {return $value !== "";});
         // encode as json string
-        $tinymce = json_encode($settings, JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES);
+        $tinymce = json_encode($settings, JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT);
 
         $this->addScriptDeclaration("try{WFEditor.init(" . $tinymce . ");}catch(e){console.debug(e);}");
 
@@ -405,7 +416,6 @@ class WFModelEditor extends WFModelBase {
             'etag' => md5($this->getVersion()),
             'base_url' => JURI::root(),
             'language' => $this->language,
-            //'language_load'		=> false,
             'directionality' => $language->isRTL() ? 'rtl' : 'ltr',
             'theme' => 'none',
             'plugins' => ''
@@ -521,148 +531,188 @@ class WFModelEditor extends WFModelBase {
     }
 
     /**
-     * Return a list of published JCE plugins
+     * Get dependencies for each plugin from its config.php file.
      *
-     * @access public
-     * @return string list
+     * @param string $plugin Plugin name
+     * @param string $path Optional pah to plugin folder
+     *
+     * @return mixed Array of dependencies or false
      */
-    public function getPlugins() {
-        jimport('joomla.filesystem.file');
+    protected static function getDependencies($plugin, $path)
+    {
+        $file = $path.'/'.$plugin.'/classes/config.php';
 
-        static $plugins;
+        // check if plugin has a config file
+        if (is_file($file)) {
+            include_once $file;
+            // create className
+            $classname = 'WF' . ucfirst($plugin) . 'PluginConfig';
 
-        if (is_object($this->profile)) {
-            if (!is_array($plugins)) {
-                $wf = WFEditor::getInstance();
-
-                $plugins = explode(',', $this->profile->plugins);
-                $core = array('autolink', 'cleanup', 'core', 'code', 'colorpicker', 'upload', 'format');
-                $plugins = array_unique(array_merge($core, $plugins));
-
-                // add formatselect
-                if (in_array('formatselect', $plugins) === false && strpos($this->profile->rows, 'formatselect') !== false) {
-                    $plugins[] = 'formatselect';
-                }
-
-                // add styleselect
-                if (in_array('styleselect', $plugins) === false && strpos($this->profile->rows, 'styleselect') !== false) {
-                    $plugins[] = 'styleselect';
-                }
-
-                // add fontselect
-                if (in_array('fontselect', $plugins) === false && strpos($this->profile->rows, 'fontselect') !== false) {
-                    $plugins[] = 'fontselect';
-                }
-
-                // add formatselect
-                if (in_array('fontsizeselect', $plugins) === false && strpos($this->profile->rows, 'fontsizeselect') !== false) {
-                    $plugins[] = 'fontsizeselect';
-                }
-
-                // add font colours
-                if (in_array('fontcolor', $plugins) === false && preg_match('#(forecolor|backcolor)#', $this->profile->rows)) {
-                    $plugins[] = 'fontcolor';
-                }
-
-                // add importcss
-                if (in_array('styleselect', $plugins) || in_array('fontselect', $plugins)) {
-                    $plugins[] = 'importcss';
-                }
-
-                // add hr
-                if (in_array('hr', $plugins) === false && strpos($this->profile->rows, 'hr') !== false) {
-                    $plugins[] = 'hr';
-                }
-
-                // add advlists plugin if lists are loaded
-                if (in_array('lists', $plugins)) {
-                    $plugins[] = 'advlist';
-                }
-
-                // Load wordcount if path is enabled
-                if ($wf->getParam('editor.path', 1)) {
-                    $plugins[] = 'wordcount';
-                }
-
-                // add legacy "charmap"
-                if (in_array('charmap', $plugins) === false && strpos($this->profile->rows, 'charmap') !== true) {
-                    $plugins[] = 'charmap';
-                }
-
-                foreach ($plugins as $k => $v) {
-                    if (in_array($v, $core)) {
-                        continue;
-                    }
-
-                    // check plugin is correctly installed and is a tinymce plugin, ie: it has an editor_plugin.js file
-                    if (!JFile::exists(WF_EDITOR_PLUGINS . '/' . $v . '/editor_plugin.js')) {
-                        unset($plugins[$k]);
-                    }
-                }
-
-                // remove empty values
-                $plugins = array_filter($plugins);
+            if (method_exists($classname, 'getDependencies')) {
+                return (array) $classname::getDependencies();
             }
         }
 
-        $plugins = array_values($plugins);
-
-        return $plugins;
+        return false;
     }
 
     /**
-     * Get all loaded plugins config options
+     * Add dependencies for each plugin to the main plugins array.
      *
-     * @access      public
-     * @param array   $settings passed by reference
+     * @param array $items Array of plugin names
+     * @param string $path Optional path to check, defaults to TinyMCE plugin path
      */
-    private function getPluginConfig(&$settings) {
-        $plugins = $settings['plugins'];
+    protected static function addDependencies(&$items, $path = '')
+    {
+        // set default path
+        if (empty($path)) {
+            $path = WF_EDITOR_PLUGINS;
+        }
 
-        if ($plugins && is_array($plugins)) {
-            foreach ($plugins as $plugin) {
-                $file = WF_EDITOR_PLUGINS . '/' . $plugin . '/classes/config.php';
+        $x = count($items);
 
-                if (file_exists($file)) {
-                    require_once ($file);
-                    // Create class name
-                    $classname = 'WF' . ucfirst($plugin) . 'PluginConfig';
+        // loop backwards through items
+        while ($x--) {
+            // get dependencies for each item
+            $dependencies = self::getDependencies($items[$x], $path);
 
-                    // Check class and method
-                    if (class_exists($classname) && method_exists($classname, 'getConfig')) {
-                        call_user_func_array(array($classname, 'getConfig'), array(&$settings));
-                    }
+            if (!empty($dependencies)) {
+                foreach ($dependencies as $dependency) {
+                    // add to beginning of items
+                    array_unshift($items, $dependency);
                 }
             }
         }
     }
 
-    /**
-     * Get all loaded plugins styles
-     *
-     * @access      public
-     * @param array   $settings passed by reference
-     */
-    private function getPluginStyles($settings) {
-        $plugins = $settings['plugins'];
+      /**
+       * Return a list of published JCE plugins.
+       *
+       * @return string list
+       */
+      public function getPlugins()
+      {
+          static $plugins;
 
-        if ($plugins && is_array($plugins)) {
-            foreach ($plugins as $plugin) {
-                $file = WF_EDITOR_PLUGINS . '/' . $plugin . '/classes/config.php';
+      $wf = WFEditor::getInstance();
 
-                if (file_exists($file)) {
-                    require_once ($file);
-                    // Create class name
-                    $classname = 'WF' . ucfirst($plugin) . 'PluginConfig';
+      if (is_object($this->profile)) {
+          if (!is_array($plugins)) {
+              // get plugin items from profile
+              $items = explode(',', $this->profile->plugins);
 
-                    // Check class and method
-                    if (class_exists($classname) && method_exists($classname, 'getStyles')) {
-                        call_user_func(array($classname, 'getStyles'));
-                    }
-                }
-            }
-        }
-    }
+              // core plugins
+              $core = array('core', 'autolink', 'cleanup', 'code', 'format', 'importcss', 'colorpicker');
+
+              // add advlists plugin if lists are loaded
+              if (in_array('lists', $items)) {
+                  $items[] = 'advlist';
+              }
+
+              // Load wordcount if path is enabled
+              if ($wf->getParam('editor.path', 1)) {
+                  $items[] = 'wordcount';
+              }
+
+              // remove invalid items
+              $items = array_filter($items, function($item) {
+                  return is_file(WF_EDITOR_PLUGINS . '/' . $item . '/editor_plugin.js');
+              });
+
+              // reset index
+              $items = array_values($items);
+
+              // add plugin dependencies
+              self::addDependencies($items);
+
+              // add core plugins
+              $items = array_merge($core, $items);
+
+              // remove duplicates and empty values
+              $items = array_unique(array_filter($items));
+
+              // create plugins array
+              $plugins = array('core' => $items, 'external' => array());
+
+              // get installed plugins, eg: Media Manager
+              $installed = JPluginHelper::getPlugin('jce');
+
+              // check installed plugins are valid
+              foreach ($installed as $item) {
+                  // check for delimiter, only load "extensions"
+                  if (strpos($item->name, 'editor-') === false) {
+                      continue;
+                  }
+
+                  // set path
+                  $item->path = JPATH_PLUGINS . '/jce/' . $item->name;
+                  // get plugin name
+                  $name = str_replace('editor-', '', $item->name);
+
+                  // get plugin relative path
+                  $path = str_replace(JPATH_SITE, JURI::root(true), $item->path);
+
+                  // get plugin file (uncompressed)
+                  $file = $item->path . '/editor_plugin.js';
+
+                  // check file exists, add to array
+                  if (is_file($file)) {
+                      $plugins['external'][$name] = $path . '/editor_plugin.js';
+                  }
+              }
+          }
+      }
+
+      return $plugins;
+  }
+
+  /**
+   * Get all loaded plugins config options.
+   *
+   * @param array   $settings passed by reference
+   */
+  private function getPluginConfig(&$settings)
+  {
+      $core = (array) $settings['plugins'];
+      $items = array();
+
+      // Core Tinymce plugins
+      foreach ($core as $plugin) {
+          $file = WF_EDITOR_PLUGINS .'/' . $plugin . '/classes/config.php';
+
+          if (is_file($file)) {
+              require_once ($file);
+              // add plugin name to array
+              $items[] = $plugin;
+          }
+      }
+
+      // Installed Tinymce plugins
+      if (array_key_exists('external_plugins', $settings)) {
+          $installed = (array) $settings['external_plugins'];
+
+          foreach ($installed as $plugin => $path) {
+              $file = $path . '/classes/config.php';
+
+              if (is_file($file)) {
+                  require_once ($file);
+                  // add plugin name to array
+                  $items[] = $plugin;
+              }
+          }
+      }
+
+      // loop through list and create/call method
+      foreach ($items as $plugin) {
+          // Create class name
+          $classname = 'WF'.ucfirst($plugin).'PluginConfig';
+
+          // Check class and method are callable, and call
+          if (class_exists($classname) && method_exists($classname, 'getConfig')) {
+              call_user_func_array(array($classname, 'getConfig'), array(&$settings));
+          }
+      }
+  }
 
     /**
      * Remove keys from an array
@@ -1015,8 +1065,8 @@ class WFModelEditor extends WFModelBase {
 
         // if a profile is set
         if ($this->profile) {
-            $themes = 'advanced';
-            $plugins = $this->getPlugins();
+            $themes   = 'advanced';
+            $plugins  = $this->getPlugins();
         }
 
         $themes = explode(',', $themes);
@@ -1047,14 +1097,19 @@ class WFModelEditor extends WFModelBase {
 
                 $core = array('autolink', 'cleanup', 'core', 'code', 'colorpicker', 'upload', 'format');
 
-                // Add plugins
-                foreach ($plugins as $plugin) {
+                // Add core plugins
+                foreach ($plugins['core'] as $plugin) {
                     // skip core plugins in production mode
                     if (self::$version && in_array($plugin, $core)) {
                         continue;
                     }
 
-                    $files[] = WF_EDITOR . "/tiny_mce/plugins/" . $plugin . "/editor_plugin" . $suffix . ".js";
+                    $files[] = WF_EDITOR_PLUGINS . "/" . $plugin . "/editor_plugin" . $suffix . ".js";
+                }
+
+                // add external plugins
+                foreach ($plugins['external'] as $plugin => $path) {
+                    $files[] = $path . "/" . $plugin . "/editor_plugin" . $suffix . ".js";
                 }
 
                 // add Editor file
@@ -1085,6 +1140,23 @@ class WFModelEditor extends WFModelBase {
                         }
                     }
 
+                    // Add core plugins
+                    foreach ($plugins['core'] as $plugin) {
+                        $content = WF_EDITOR_PLUGINS . '/' . $plugin . '/css/content.css';
+                        if (JFile::exists($content)) {
+                            $files[] = $content;
+                        }
+                    }
+
+                    // add external plugins
+                    foreach ($plugins['external'] as $plugin => $path) {
+                      $content = $path . '/' . $plugin . '/css/content.css';
+
+                      if (JFile::exists($content)) {
+                          $files[] = $content;
+                      }
+                    }
+
                     // load content styles dor each plugin if they exist
                     foreach ($plugins as $plugin) {
                         $content = WF_EDITOR_PLUGINS . '/' . $plugin . '/css/content.css';
@@ -1112,18 +1184,6 @@ class WFModelEditor extends WFModelBase {
 
                     if (isset($toolbar[1])) {
                         $files[] = WF_EDITOR_THEMES . '/' . $themes[0] . '/skins/' . $toolbar[0] . '/ui_' . $toolbar[1] . '.css';
-                    }
-
-                    // get external styles from config class for each plugin
-                    foreach ($plugins as $plugin) {
-                        $class = WF_EDITOR_PLUGINS . '/' . $plugin . '/classes/config.php';
-                        if (JFile::exists($class)) {
-                            require_once ($class);
-                            $classname = 'WF' . ucfirst($plugin) . 'PluginConfig';
-                            if (class_exists($classname) && method_exists(new $classname, 'getStyles')) {
-                                $files = array_merge($files, (array) call_user_func(array($classname, 'getStyles')));
-                            }
-                        }
                     }
                 }
 

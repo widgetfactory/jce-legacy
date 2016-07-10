@@ -49,7 +49,7 @@ class WFLanguageParser extends JObject {
      * @return  array   Data array.
      *
      * @since   2.4
-     * 
+     *
      * Based on JRegistryFormatINI::stringToObject
      * @copyright   Copyright (C) 2005 - 2013 Open Source Matters, Inc. All rights reserved.
      * @license     GNU General Public License version 2 or later; see LICENSE
@@ -227,7 +227,7 @@ class WFLanguageParser extends JObject {
                     foreach ($strings as $k => $v) {
                         // remove "
                         $v = str_replace('"', '', $v);
-                        
+
                         if (is_numeric($v)) {
                             $v = (float) $v;
                         } else {
@@ -311,7 +311,7 @@ class WFLanguageParser extends JObject {
             $plugins = $this->get('plugins');
 
             if (!empty($plugins)) {
-                foreach ($plugins as $plugin) {
+                foreach ($plugins['core'] as $plugin) {
                     // add English file
                     $ini = JPATH_SITE . '/language/en-GB/en-GB.com_jce_' . $plugin . '.ini';
 
@@ -322,6 +322,24 @@ class WFLanguageParser extends JObject {
                     // non-english language
                     if ($tag != 'en-GB') {
                         $ini = JPATH_SITE . '/language/' . $tag . '/' . $tag . '.com_jce_' . $plugin . '.ini';
+
+                        if (is_file($ini)) {
+                            $files[] = $ini;
+                        }
+                    }
+                }
+
+                foreach ($plugins['external'] as $plugin) {
+                    // add English file
+                    $ini = JPATH_ADMINISTRATOR . '/language/en-GB/en-GB.plg_jce_' . $plugin . '.ini';
+
+                    if (is_file($ini)) {
+                        $files[] = $ini;
+                    }
+
+                    // non-english language
+                    if ($tag != 'en-GB') {
+                        $ini = JPATH_ADMINISTRATOR . '/language/' . $tag . '/' . $tag . '.plg_jce_' . $plugin . '.ini';
 
                         if (is_file($ini)) {
                             $files[] = $ini;
@@ -359,7 +377,7 @@ class WFLanguageParser extends JObject {
 
             // Handle proxies
             header("Expires: " . gmdate("D, d M Y H:i:s", time() + $expires) . " GMT");
-            
+
             // get content hash
             $hash = md5($data);
 

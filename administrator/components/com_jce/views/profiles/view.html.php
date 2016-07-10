@@ -217,15 +217,6 @@ class WFViewProfiles extends WFView {
                 $language->load('com_jce', JPATH_SITE);
 
                 $language->load('plg_editors_jce', JPATH_ADMINISTRATOR);
-                $plugins = $model->getPlugins();
-
-                // load plugin languages
-                foreach ($plugins as $plugin) {
-                    if ($plugin->core == 0) {
-                        // Load Language for plugin
-                        $language->load('com_jce_' . $plugin->name, JPATH_SITE);
-                    }
-                }
 
                 // load the row from the db table
                 if ($cid[0]) {
@@ -541,12 +532,14 @@ class WFViewProfiles extends WFView {
                     }
                 }
 
+                $plugins = $model->getPlugins();
+
                 // assign references
-                $this->assignRef('lists', $lists);
-                $this->assignRef('profile', $row);
-                $this->assignRef('rows', $rows);
-                $this->assignRef('params', $params);
-                $this->assignRef('plugins', $plugins);
+                $this->assign('lists', $lists);
+                $this->assign('profile', $row);
+                $this->assign('rows', $rows);
+                $this->assign('params', $params);
+                $this->assign('plugins', $plugins);
 
                 // get options for various widgets
                 $options = $this->getOptions($params);

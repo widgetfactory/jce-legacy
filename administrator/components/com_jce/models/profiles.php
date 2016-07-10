@@ -53,10 +53,8 @@ class WFModelProfiles extends WFModel {
 
         $item = null;
 
-        $manifest = WF_EDITOR_PLUGINS . '/' . $plugin . '/' . $plugin . '.xml';
-
-        if (is_file($manifest)) {
-            $xml = WFXMLElement::load($manifest);
+        if (is_file($plugin->manifest)) {
+            $xml = WFXMLElement::load($plugin->manifest);
 
             // get the plugin xml file
             if ($xml) {
@@ -68,19 +66,17 @@ class WFModelProfiles extends WFModel {
         }
 
         foreach ($model->getExtensions() as $extension) {
-            $type = $extension->folder;
-
             // the plugin only supports some extensions, move along
-            if (!in_array($type, $supported)) {
+            if (!in_array($extension->folder, $supported)) {
                 continue;
             }
 
             // this extension only supports some plugins, move along
-            if (!empty($extension->plugins) && !in_array($plugin, $extension->plugins)) {
+            if (!empty($extension->plugins) && !in_array($plugin->name, $extension->plugins)) {
                 continue;
             }
 
-            $extensions[$type][] = $extension;
+            $extensions[$extension->folder][] = $extension;
         }
 
         return $extensions;
@@ -98,9 +94,9 @@ class WFModelProfiles extends WFModel {
         }
 
         // only need plugins with xml files
-        foreach ($model->getPlugins() as $plugin => $properties) {
-            if (is_file(JPATH_SITE . $properties->path . '/' . $plugin . '.xml')) {
-                $plugins[$plugin] = $properties;
+        foreach ($model->getPlugins() as $plugin) {
+            if (is_file($plugin->manifest)) {
+                $plugins[$plugin->name] = $plugin;
             }
         }
 

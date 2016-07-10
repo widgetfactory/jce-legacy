@@ -32,14 +32,33 @@ class WFElementFilesystem extends WFElement {
 
         // create a unique id
         $id = preg_replace('#([^a-z0-9_-]+)#i', '', $control_name . 'filesystem' . $name);
-        
+
         $attribs = array('class="parameter-nested-parent"');
 
         // path to directory
         $path = WF_EDITOR_EXTENSIONS . '/filesystem';
 
         $filter = '\.xml$';
-        $files  = JFolder::files($path, $filter, false, true, array('build.xml'));
+        $files  = JFolder::files($path, $filter, false, true);
+
+        // get all installed plugins
+        $installed = JPluginHelper::getPlugin('jce');
+
+        if (!empty($installed)) {
+            foreach ($installed as $p) {
+                // check for delimiter, only load "extensions"
+                if (strpos($p->name, 'filesystem-') !== false) {
+                    $path = JPATH_PLUGINS . '/jce/' . $p->name;
+
+                    // Joomla 1.5!!
+                    if (!defined('JPATH_PLATFORM')) {
+                        $path = JPATH_PLUGINS . '/jce';
+                    }
+
+                    $files[] = $path . '/' . $p->name . '.xml';
+                }
+            }
+        }
 
         $options = array();
 
@@ -47,15 +66,25 @@ class WFElementFilesystem extends WFElement {
             $options[] = JHTML::_('select.option', '', WFText::_('WF_OPTION_NOT_SET'));
         }
 
-        if (is_array($files)) {
-            foreach ($files as $file) {
-                // load language file
-                $language->load('com_jce_filesystem_' . basename($file, '.xml'), JPATH_SITE);
-                $xml        = WFXMLHelper::parseInstallManifest($file);
-                $options[]  = JHTML::_('select.option', basename($file, '.xml'), WFText::_($xml['name']));
+        foreach ($files as $file) {
+            if (strpos($file, 'build.xml') !== false) {
+                continue;
             }
+
+            $filename = basename($file, '.xml');
+            // get file name without extension type
+            $parts    = explode("-", $filename);
+            $filename = array_pop($parts);
+
+            // legacy
+            $language->load('com_jce_filesystem_' . $filename, JPATH_SITE);
+            // new
+            $language->load('plg_jce_filesystem_' . $filename, JPATH_SITE);
+
+            $xml        = WFXMLHelper::parseInstallManifest($file);
+            $options[]  = JHTML::_('select.option', $filename, WFText::_($xml['name']));
         }
-        
+
         // if a group is specified, setup to be an object
         if ((string) $node->attributes()->group) {
             $name = $control_name . '[filesystem][' . $name . ']';

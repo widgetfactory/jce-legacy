@@ -83,15 +83,22 @@ class WFExtension extends JObject {
             foreach ($installed as $p) {
 
                 // check for delimiter, only load "extensions"
-                if (strpos($p->name, '-') === false || strpos($p->name, 'tinymce-') !== false) {
+                if (strpos($p->name, '-') === false || strpos($p->name, 'editor-') !== false) {
                     continue;
                 }
 
                 // set path
                 $p->path = JPATH_PLUGINS . '/jce/' . $p->name;
+                
+                // Joomla 1.5
+                if (!defined('JPATH_PLATFORM')) {
+                    $p->path = JPATH_PLUGINS . '/jce';
+                }
 
                 // get type and name
-                list($p->folder, $p->extension) = preg_split('/-/', $p->name);
+                $parts = explode("-", $p->name);
+                $p->folder    = $parts[0];
+                $p->extension = $parts[1];
 
                 // load the correct type if set
                 if (!empty($types) && !in_array($p->folder, $types)) {

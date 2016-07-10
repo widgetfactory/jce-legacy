@@ -1,7 +1,6 @@
 <?php
 
 /**
- * @package   	JCE
  * @copyright 	Copyright (c) 2009-2016 Ryan Demmer. All rights reserved.
  * @license   	GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  * JCE is free software. This version may have been modified pursuant
@@ -25,12 +24,14 @@ defined('_JEXEC') or die('RESTRICTED');
     <tbody>
 <?php
 foreach ($this->extensions as $extension) :
-    $disabled = $extension->core ? ' disabled="disabled"' : '';
+    if ($extension->core) {
+        continue;
+    }
     ?>
             <tr>
-                <td width="20px" align="center"><input type="checkbox" name="pid[]" value="extension.<?php echo $extension->id; ?>"<?php echo $disabled; ?>/></td>
+                <td width="20px" align="center"><input type="checkbox" name="pid[]" value="extension.<?php echo $extension->id; ?>" /></td>
                 <td><?php echo WFText::_($extension->title); ?></td>
-                <td align="center"><?php echo WFText::_('WF_EXTENSIONS_' . strtoupper($extension->type) . '_TITLE'); ?></td>
+                <td align="center"><?php echo WFText::_('WF_EXTENSIONS_'.strtoupper($extension->type).'_TITLE'); ?></td>
                 <td align="center"><?php echo @$extension->version != '' ? $extension->version : '&nbsp;'; ?></td>
                 <td align="center"><?php echo @$extension->creationdate != '' ? $extension->creationdate : '&nbsp;'; ?></td>
                 <td>

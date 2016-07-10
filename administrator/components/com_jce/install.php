@@ -1082,6 +1082,7 @@ abstract class WFInstall {
             'editor'    => array('jce'),
             'system'    => array('jce'),
             'installer' => array('jce'),
+            'extension' => array('jce'),
             'quickicon' => array('jcefilebrowser'),
             'module'    => array('mod_jcefilebrowser')
         );
@@ -1145,7 +1146,7 @@ abstract class WFInstall {
                 }
 
                 // enable jce system and installer plugin
-                if ($folder == 'system' || $folder == 'installer') {
+                if ($folder == 'system' || $folder == 'installer' || $folder == 'extension') {
                     $plugin = JTable::getInstance('extension');
 
                     foreach ($element as $item) {
