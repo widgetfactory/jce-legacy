@@ -204,10 +204,10 @@ class WFModelEditor extends WFModelBase {
 
         $compress = array('javascript' => false, 'css' => false);
 
-        // set compression states
-        if ((int) $debug === 0) {
+        // set compression states - disabled for now....
+        /*if ((int) $debug === 0) {
             $compress = array('javascript' => (int) $wf->getParam('editor.compress_javascript', 0), 'css' => (int) $wf->getParam('editor.compress_css', 0));
-        }
+        }*/
 
         // set compression
         if ($compress['css']) {

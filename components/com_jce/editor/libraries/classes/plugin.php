@@ -197,8 +197,8 @@ class WFEditorPlugin extends JObject {
             'name'      => $name,
             'language'  => WFLanguage::getTag(),
             'direction' => WFLanguage::getDir(),
-            'compress_javascript' => $this->getParam('editor.compress_javascript', 0),
-            'compress_css' => $this->getParam('editor.compress_css', 0)
+            'compress_javascript' => 0,//$this->getParam('editor.compress_javascript', 0),
+            'compress_css' => 0//$this->getParam('editor.compress_css', 0)
         ));
 
         // set standalone mode
