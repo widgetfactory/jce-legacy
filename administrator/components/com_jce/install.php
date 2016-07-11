@@ -122,7 +122,7 @@ abstract class WFInstall {
                 self::legacyCleanup();
             }
 
-            $message = '<div id="jce"><style type="text/css" scoped="scoped">' . file_get_contents(dirname(__FILE__) . '/media/css/install.css') . '</style>';
+            $message = '<div class="ui-jce"><style type="text/css" scoped="scoped">' . file_get_contents(dirname(__FILE__) . '/media/css/install.css') . '</style>';
 
             $message .= '<h2>' . JText::_('WF_ADMIN_TITLE') . ' ' . $new_version . '</h2>';
             $message .= '<ul class="install">';
@@ -1110,16 +1110,13 @@ abstract class WFInstall {
             $installer = new JInstaller();
             $installer->setOverwrite(true);
 
+            $language = JFactory::getLanguage();
+
+            if (method_exists($installer, 'loadLanguage')) {
+                $installer->loadLanguage();
+            }
+
             if ($installer->install($source . '/' . $folder)) {
-
-                if (method_exists($installer, 'loadLanguage')) {
-                    $installer->loadLanguage();
-                }
-
-                if ($installer->message) {
-                    $result .= '<li class="success">' . JText::_($installer->message, $installer->message) . '</li>';
-                }
-
                 // enable quickicon
                 if ($folder == 'quickicon') {
                     $plugin = JTable::getInstance('extension');
@@ -1173,6 +1170,16 @@ abstract class WFInstall {
                 } else {
                     self::addIndexfiles(array($installer->getPath('extension_root')));
                 }
+                
+                // load plugin language file
+                if ($folder != 'module') {
+                  $language->load('plg_' . $folder . '_' . $item . '.sys.ini', JPATH_ADMINISTRATOR);
+                }
+
+                if ($installer->message) {
+                    $result .= '<li class="success">' . JText::_($installer->message, $installer->message) . '</li>';
+                }
+
             } else {
                 $result .= '<li class="error">' . JText::_($installer->message, $installer->message) . '</li>';
             }
