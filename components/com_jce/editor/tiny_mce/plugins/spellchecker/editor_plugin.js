@@ -130,7 +130,10 @@
             // Turn spellchecker on if required
             ed.onInit.add(function() {
                 if (t.native_spellchecker && ed.getParam('spellchecker_browser_state', 0)) {
-                    ed.execCommand('mceSpellCheck', false);
+                    //ed.execCommand('mceSpellCheck', false);
+
+                    var body = ed.getBody();
+                    body.spellcheck = t.active = !t.active;
                 }
             });
         },
