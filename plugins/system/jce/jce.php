@@ -71,19 +71,21 @@ class PlgSystemJce extends JPlugin {
         // get form name.
         $name = $form->getName();
 
-        $valid = array(
-            'com_content.article',
-            'com_categories.categorycom_content',
-            'com_templates.style',
-            'com_tags.tag',
-            'com_banners.banner',
-            'com_contact.contact',
-            'com_newsfeeds.newsfeed'
-        );
+        if (!$version->isCompatible('3.6')) {
+          $valid = array(
+              'com_content.article',
+              'com_categories.categorycom_content',
+              'com_templates.style',
+              'com_tags.tag',
+              'com_banners.banner',
+              'com_contact.contact',
+              'com_newsfeeds.newsfeed'
+          );
 
-        // only allow some forms, see - https://github.com/joomla/joomla-cms/pull/8657
-        if (!in_array($name, $valid)) {
-            return true;
+          // only allow some forms, see - https://github.com/joomla/joomla-cms/pull/8657
+          if (!in_array($name, $valid)) {
+              return true;
+          }
         }
 
         $config = JFactory::getConfig();
