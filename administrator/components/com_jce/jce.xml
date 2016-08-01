@@ -9,9 +9,9 @@
     <authorUrl>www.joomlacontenteditor.net</authorUrl>
     <version>@@version@@</version>
     <description>WF_ADMIN_DESC</description>
-    
+
     <scriptfile>install.script.php</scriptfile>
-	
+
     <files folder="components/com_jce">
         <folder>editor</folder>
         <folder>media</folder>
@@ -20,17 +20,17 @@
         <file>jce.php</file>
         <file>licence.txt</file>
     </files>
-	
+
 	<!-- Media Player -->
     <media folder="components/com_jce/editor/libraries" destination="jce">
         <folder>mediaplayer</folder>
     </media>
-	
+
     <languages folder="language/en-GB">
         <language tag="en-GB">en-GB.com_jce.xml</language>
         <language tag="en-GB">en-GB.com_jce.ini</language>
     </languages>
-	
+
 	<!-- SQL query files to execute on installation -->
     <install>
         <sql>
@@ -42,17 +42,17 @@
             <!--file charset="utf8" driver="postgresql">sql/postgresql.sql</file-->
         </sql>
     </install>
-	
+
     <administration>
         <menu view="cpanel" img="components/com_jce/media/img/menu/logo.png" link="option=com_jce">JCE</menu>
-		
+
         <submenu>
             <menu view="cpanel" img="components/com_jce/media/img/menu/jce-cpanel.png" link="option=com_jce">WF_MENU_CPANEL</menu>
             <menu view="config" img="components/com_jce/media/img/menu/jce-config.png" link="option=com_jce&amp;view=config">WF_MENU_CONFIG</menu>
             <menu view="profiles" img="components/com_jce/media/img/menu/jce-profiles.png" link="option=com_jce&amp;view=profiles">WF_MENU_PROFILES</menu>
             <menu view="installer" img="components/com_jce/media/img/menu/jce-install.png" link="option=com_jce&amp;view=installer">WF_MENU_INSTALL</menu>
         </submenu>
-		
+
         <files folder="administrator/components/com_jce">
             <folder>adapters</folder>
             <folder>classes</folder>
@@ -74,7 +74,7 @@
             <file>jce.php</file>
             <file>licence.txt</file>
         </files>
-		
+
         <languages folder="administrator/language/en-GB">
             <language tag="en-GB">en-GB.com_jce.ini</language>
             <language tag="en-GB">en-GB.com_jce.sys.ini</language>
@@ -82,10 +82,12 @@
             <language tag="en-GB">en-GB.plg_editors_jce.sys.ini</language>
             <language tag="en-GB">en-GB.plg_system_jce.ini</language>
             <language tag="en-GB">en-GB.plg_system_jce.sys.ini</language>
+            <language tag="en-GB">en-GB.plg_content_jce.ini</language>
+            <language tag="en-GB">en-GB.plg_content_jce.sys.ini</language>
             <language tag="en-GB">en-GB.plg_quickicon_jcefilebrowser.ini</language>
             <language tag="en-GB">en-GB.plg_quickicon_jcefilebrowser.sys.ini</language>
         </languages>
-		
+
     </administration>
     <updateservers>
         <server type="extension" priority="1" name="JCE Editor Updates"><![CDATA[https://www.joomlacontenteditor.net/index.php?option=com_updates&view=update&format=xml&id=1&file=extension.xml]]></server>
