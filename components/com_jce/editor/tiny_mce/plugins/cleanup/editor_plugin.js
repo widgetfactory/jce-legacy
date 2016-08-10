@@ -227,21 +227,6 @@
                         }
                     }
                 });
-
-                // fix style values
-                ed.serializer.addAttributeFilter('style', function (nodes, name) {
-                    var i = nodes.length, node, k, v;
-
-                    while (i--) {
-                        node = nodes[i], value = node.attr(name);
-
-                        value = ed.dom.serializeStyle(ed.dom.parseStyle(value), node.name);
-
-                        node.attr('style', value);
-                        node.attr('data-mce-style', value);
-                    }
-                });
-
             });
             // run cleanup with default settings
             if (ed.settings.validate === false && ed.settings.verify_html === false) {
