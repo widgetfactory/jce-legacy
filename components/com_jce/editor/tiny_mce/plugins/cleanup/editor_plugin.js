@@ -101,7 +101,7 @@
                                         re = value;
                                         break;
                                 }
-                                if (re) {                                    
+                                if (re) {
                                     // all tags
                                     if (tag == '*') {
                                         ed.parser.addAttributeFilter(attrib, function (nodes, name) {
@@ -225,6 +225,20 @@
                                 node.remove();
                             }
                         }
+                    }
+                });
+
+                // fix style values
+                ed.serializer.addAttributeFilter('style', function (nodes, name) {
+                    var i = nodes.length, node, k, v;
+
+                    while (i--) {
+                        node = nodes[i], value = node.attr(name);
+
+                        value = ed.dom.serializeStyle(ed.dom.parseStyle(value), node.name);
+
+                        node.attr('style', value);
+                        node.attr('data-mce-style', value);
                     }
                 });
 
