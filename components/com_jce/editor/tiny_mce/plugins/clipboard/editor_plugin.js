@@ -1325,7 +1325,7 @@
                 ed.dom.remove(dom.select('span:empty', o.node));
 
                 each(dom.select('span', o.node), function(n) {
-                    // remove span without children ed: <span></span>
+                    // remove span without children eg: <span></span>
                     if (!n.childNodes || n.childNodes.length === 0) {
                         dom.remove(n);
                     }
@@ -1343,8 +1343,9 @@
                 each(dom.select('p', o.node), function(n) {
                     var h = n.innerHTML;
 
-                    if (emptyRe.test(h)) {
-                        dom.remove(n);
+                    // remove paragraph without children eg: <p></p>
+                    if (!n.childNodes || n.childNodes.length === 0 || /^(\s|&nbsp;|\u00a0)?$/.test(h)) {
+                      dom.remove(n);
                     }
                 });
             }
