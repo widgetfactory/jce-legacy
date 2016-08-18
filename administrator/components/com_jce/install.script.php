@@ -46,7 +46,7 @@ class com_jceInstallerScript {
 
             $db->query();
         }
-        
+
         // remove packages
         self::removePackages();
     }
@@ -56,9 +56,9 @@ class com_jceInstallerScript {
     }
 
     public function postflight($type, $parent) {
-        
+
     }
-    
+
     /**
      * Check table contents
      * @return integer
@@ -79,14 +79,14 @@ class com_jceInstallerScript {
 
         return $db->loadResult();
     }
-    
+
     private static function getModule($name) {
         // Joomla! 2.5
         if (defined('JPATH_PLATFORM')) {
             $module = JTable::getInstance('extension');
             return $module->find(array('type' => 'module', 'element' => $name));
 
-            // Joomla! 1.5    
+            // Joomla! 1.5
         } else {
             $db = JFactory::getDBO();
             $query = 'SELECT id FROM #__modules' . ' WHERE module = ' . $db->Quote($name);
@@ -101,7 +101,7 @@ class com_jceInstallerScript {
         if (defined('JPATH_PLATFORM')) {
             $plugin = JTable::getInstance('extension');
             return $plugin->find(array('type' => 'plugin', 'folder' => $folder, 'element' => $element));
-            // Joomla! 1.5    
+            // Joomla! 1.5
         } else {
             $plugin = JTable::getInstance('plugin');
 
@@ -112,7 +112,7 @@ class com_jceInstallerScript {
             return $db->loadResult();
         }
     }
-    
+
     /**
      * Uninstall the editor
      * @return boolean
@@ -171,10 +171,10 @@ class com_jceInstallerScript {
         $requirements = array();
 
         // check PHP version
-        if (version_compare(PHP_VERSION, '5.2.4', '<')) {
+        if (version_compare(PHP_VERSION, '5.5', '<')) {
             $requirements[] = array(
                 'name' => 'PHP Version',
-                'info' => 'JCE Requires PHP version 5.2.4 or later. Your version is : ' . PHP_VERSION
+                'info' => 'JCE Requires PHP version 5.5 or later. Your version is : ' . PHP_VERSION
             );
         }
 
@@ -227,7 +227,7 @@ function com_install() {
 
         $installer      = JInstaller::getInstance();
         $requirements   = com_jceInstallerScript::checkRequirements();
-        
+
         if ($requirements !== true) {
             $installer->set('message', $requirements);
 
