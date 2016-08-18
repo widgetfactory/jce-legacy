@@ -171,10 +171,10 @@ class com_jceInstallerScript {
         $requirements = array();
 
         // check PHP version
-        if (version_compare(PHP_VERSION, '5.5', '<')) {
+        if (version_compare(PHP_VERSION, '5.6', '<')) {
             $requirements[] = array(
                 'name' => 'PHP Version',
-                'info' => 'JCE Requires PHP version 5.5 or later. Your version is : ' . PHP_VERSION
+                'info' => 'Your server is running PHP ' . PHP_VERSION . '. Although JCE might work with this version, PHP version 5.6 or later is recommended.'
             );
         }
 
@@ -230,12 +230,6 @@ function com_install() {
 
         if ($requirements !== true) {
             $installer->set('message', $requirements);
-
-            $installer->abort();
-
-            WFInstall::cleanupInstall();
-
-            return false;
         }
 
 
