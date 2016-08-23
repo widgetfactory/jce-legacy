@@ -10,7 +10,7 @@
 
 (function() {
     var cookie = tinymce.util.Cookie;
-    
+
     tinymce.create('tinymce.plugins.VisualBlocks', {
         init : function(ed, url) {
             var cssId;
@@ -19,18 +19,18 @@
             if (!window.NodeList) {
                 return;
             }
-            
+
             // get state from cookie
             var state = cookie.get('wf_visualblocks_state');
-            
+
             if (state && tinymce.is(state, 'string')) {
                 if (state == 'null') {
                     state = 0;
                 }
-                
+
                 state = parseFloat(state);
             }
-            
+
             state = ed.getParam('visualblocks_default_state', state);
 
             ed.addCommand('mceVisualBlocks', function() {
@@ -51,7 +51,7 @@
                 }
 
                 ed.controlManager.setActive('visualblocks', !linkElm.disabled);
-                
+
                 if (linkElm.disabled) {
                     cookie.set('wf_visualblocks_state', 0);
                 } else {
@@ -61,24 +61,22 @@
 
             ed.onSetContent.add(function() {
                 var dom = ed.dom, linkElm;
-                
+
                 if (cssId) {
                     linkElm = dom.get(cssId);
                     ed.controlManager.setActive('visualblocks', !linkElm.disabled);
                 }
-                
+
             });
 
             ed.addButton('visualblocks', {
-                title : 'visualblocks.desc', 
+                title : 'visualblocks.desc',
                 cmd : 'mceVisualBlocks'
             });
 
             ed.onInit.add(function() {
                 if (state) {
-                    ed.execCommand('mceVisualBlocks', false, null, {
-                        skip_focus : true
-                    });
+                    ed.execCommand('mceVisualBlocks', false, null);
                 }
             });
         },
@@ -93,9 +91,9 @@
             };
         }
     });
-    
+
     /*
-       Useful little script for creating images 
+       Useful little script for creating images
         var canvas = document.createElement('canvas');
         var ctx = canvas.getContext("2d");
 
