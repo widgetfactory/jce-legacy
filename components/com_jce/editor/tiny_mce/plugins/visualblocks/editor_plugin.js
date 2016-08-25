@@ -33,30 +33,34 @@
 
             state = ed.getParam('visualblocks_default_state', state);
 
+            function toggleVisualBlocks() {
+              var dom = ed.dom, linkElm;
+
+              if (!cssId) {
+                  cssId = dom.uniqueId();
+                  linkElm = dom.create('link', {
+                      id: cssId,
+                      rel : 'stylesheet',
+                      href : url + '/css/visualblocks.css'
+                  });
+
+                  ed.getDoc().getElementsByTagName('head')[0].appendChild(linkElm);
+              } else {
+                  linkElm = dom.get(cssId);
+                  linkElm.disabled = !linkElm.disabled;
+              }
+
+              ed.controlManager.setActive('visualblocks', !linkElm.disabled);
+
+              if (linkElm.disabled) {
+                  cookie.set('wf_visualblocks_state', 0);
+              } else {
+                  cookie.set('wf_visualblocks_state', 1);
+              }
+            }
+
             ed.addCommand('mceVisualBlocks', function() {
-                var dom = ed.dom, linkElm;
-
-                if (!cssId) {
-                    cssId = dom.uniqueId();
-                    linkElm = dom.create('link', {
-                        id: cssId,
-                        rel : 'stylesheet',
-                        href : url + '/css/visualblocks.css'
-                    });
-
-                    ed.getDoc().getElementsByTagName('head')[0].appendChild(linkElm);
-                } else {
-                    linkElm = dom.get(cssId);
-                    linkElm.disabled = !linkElm.disabled;
-                }
-
-                ed.controlManager.setActive('visualblocks', !linkElm.disabled);
-
-                if (linkElm.disabled) {
-                    cookie.set('wf_visualblocks_state', 0);
-                } else {
-                    cookie.set('wf_visualblocks_state', 1);
-                }
+              toggleVisualBlocks();
             });
 
             ed.onSetContent.add(function() {
@@ -76,7 +80,7 @@
 
             ed.onInit.add(function() {
                 if (state) {
-                    ed.execCommand('mceVisualBlocks', false, null);
+                    toggleVisualBlocks();
                 }
             });
         },
