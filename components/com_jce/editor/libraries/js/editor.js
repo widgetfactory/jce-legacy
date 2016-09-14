@@ -546,7 +546,13 @@ function jInsertEditorText(text, editor) {
             }
 
             // Convert to absolute
-            return ed.documentBaseURI.toAbsolute(url, s.remove_script_host);
+            url = ed.documentBaseURI.toAbsolute(url, s.remove_script_host);
+
+            if (s.protocol_relative) {
+                url = url.replace(/(http|https|ftp|ftps):\/\//, '://');
+            }
+
+            return url;
         },
         indent: function (h) {
             // simple indentation
