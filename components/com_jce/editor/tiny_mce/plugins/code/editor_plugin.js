@@ -10,8 +10,13 @@
  * other free or open source software licenses.
  */
 (function() {
-    var each = tinymce.each, JSON = tinymce.util.JSON, Node = tinymce.html.Node, Entities = tinymce.html.Entities;
-    var VK = tinymce.VK, BACKSPACE = VK.BACKSPACE, DELETE = VK.DELETE;
+    var each = tinymce.each,
+        JSON = tinymce.util.JSON,
+        Node = tinymce.html.Node,
+        Entities = tinymce.html.Entities;
+    var VK = tinymce.VK,
+        BACKSPACE = VK.BACKSPACE,
+        DELETE = VK.DELETE;
 
     tinymce.create('tinymce.plugins.CodePlugin', {
         init: function(ed, url) {
@@ -215,7 +220,9 @@
 
         },
         _removeCode: function(e) {
-            var ed = this.editor, s = ed.selection, n = s.getNode();
+            var ed = this.editor,
+                s = ed.selection,
+                n = s.getNode();
 
             if (ed.dom.is(n, '.mceItemScript, .mceItemStyle, .mceItemPhp, .mcePhp')) {
                 ed.undoManager.add();
@@ -235,7 +242,9 @@
             content = content.replace(/\{([^\}]+)\}/, '<span class="mceItemCurlyCode" data-mce-type="code-item">{$1}</span>');
         },
         _buildScript: function(n) {
-            var self = this, ed = this.editor, v, node, text, p;
+            var self = this,
+                ed = this.editor,
+                v, node, text, p;
 
             if (!n.parent)
                 return;
@@ -247,9 +256,7 @@
 
             p = JSON.parse(n.attr('data-mce-json')) || {};
 
-            if (!p.type) {
-                p.type = n.attr('data-mce-type') || 'text/javascript';
-            }
+            p.type = n.attr('data-mce-type') || p.type || 'text/javascript';
 
             node = new Node('script', 1);
 
@@ -285,7 +292,9 @@
             return true;
         },
         _buildStyle: function(n) {
-            var self = this, ed = this.editor, v, node, text, p;
+            var self = this,
+                ed = this.editor,
+                v, node, text, p;
 
             if (!n.parent)
                 return;
@@ -342,7 +351,9 @@
             return true;
         },
         _buildNoScript: function(n) {
-            var self = this, ed = this.editor, p, node;
+            var self = this,
+                ed = this.editor,
+                p, node;
 
             if (!n.parent)
                 return;
@@ -361,7 +372,10 @@
             return true;
         },
         _serializeSpan: function(n) {
-            var self = this, ed = this.editor, dom = ed.dom, v, k, p = {};
+            var self = this,
+                ed = this.editor,
+                dom = ed.dom,
+                v, k, p = {};
 
             if (!n.parent)
                 return;
@@ -392,7 +406,10 @@
             n.replace(span);
         },
         _serializeNoScript: function(n) {
-            var self = this, ed = this.editor, dom = ed.dom, v, k, p = {};
+            var self = this,
+                ed = this.editor,
+                dom = ed.dom,
+                v, k, p = {};
 
             if (!n.parent)
                 return;
