@@ -8,6 +8,7 @@ components/*
 plugins/editors/*
 plugins/system/*
 plugins/content/*
+plugins/installer/*
 plugins/quickicon/*
 administrator/modules/*
 
@@ -26,6 +27,9 @@ administrator/modules/*
 
 # content
 !plugins/content/jce
+
+# installer
+!plugins/installer/jce
 
 # module
 !administrator/modules/mod_jcefilebrowser
