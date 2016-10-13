@@ -1044,6 +1044,7 @@ abstract class WFInstall {
             'editor'    => array('jce'),
             'system'    => array('jce'),
             'content'   => array('jce'),
+            'installer' => array('jce'),
             'quickicon' => array('jcefilebrowser'),
             'module'    => array('mod_jcefilebrowser')
         );
@@ -1056,7 +1057,7 @@ abstract class WFInstall {
                 }
                 // Joomla! 1.5
             } else {
-                if ($folder == 'quickicon' || $folder == 'system' || $folder == 'content') {
+                if ($folder == 'quickicon' || $folder == 'system' || $folder == 'content' || $folder == 'installer') {
                     continue;
                 }
             }
