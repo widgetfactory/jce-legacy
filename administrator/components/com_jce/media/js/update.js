@@ -74,6 +74,8 @@
             // Array of priority values
             var priority = ['<span class="label label-important priority">' + this.translate('high') + '</span>', '<span class="label label-warning priority">' + this.translate('medium') + '</span>', '<span class="label label-info priority">' + this.translate('low') + '</span>'];
 
+            $('.header .checkbox', list).remove();
+
             $.getJSON("index.php?option=com_jce&view=updates&task=update&step=check", {}, function(r) {
                 $(btn).removeClass('loading');
                 $(btn).prop('disabled', false);
@@ -174,11 +176,7 @@
                                         return;
                                     }
 
-                                    if ($(this).hasClass('checked')) {
-                                        $(this).removeClass('checked');
-                                    } else {
-                                        $(this).addClass('checked');
-                                    }
+                                    $(this).toggleClass('checked');
 
                                     // disable any updates that this particular update overrides / negates eg: an equivalent patch or full version
                                     if (s.negates) {
@@ -188,18 +186,13 @@
                                             $('span[data-uid=' + s.negates + ']').removeClass('disabled');
                                         }
                                     }
-                                    
+
                                     var len = $('div.body span.checkbox.checked', list).length;
 
                                     if (len) {
                                         $('button#install-button').attr('disabled', '').prop('disabled', false);
-                                        
-                                        if (len == $('div.body span.checkbox', list).length) {
-                                        	$('div.header div:first-child span.checkbox', list).addClass('checked');
-                                        } else {
-                                        	$('div.header div:first-child span.checkbox', list).removeClass('checked');
-                                        }
-                                                                                
+                                        $('div.header div:first-child span.checkbox', list).toggleClass('checked', len == $('div.body span.checkbox:not(.alert)', list).length);
+
                                     } else {
                                         $('button#install-button').attr('disabled', 'disabled').prop('disabled', true);
                                         $('div.header div:first-child span.checkbox', list).removeClass('checked');
@@ -211,13 +204,13 @@
                                 $('div.body', list).append('<div class="item error">' + s.title + ' : ' + self.translate('auth_failed') + '</div>');
                             }
                         });
-                        
+
                         if (r.length > 1) {
-                            $('<span class="checkbox"></span>').appendTo($('div.header div:first', list)).click(function() {
+                            $('<span class="checkbox" />').appendTo($('div.header div:first', list)).click(function() {
                                 $('div.body span.checkbox', list).click();
                             });
                         }
-                        
+
                     } else {
                         $('div.body', list).append('<div class="item">' + self.translate('no_updates') + '</div>');
                     }
@@ -232,7 +225,8 @@
          * @param {Object} btn Button element
          */
         download: function(btn) {
-            var t = this, n = 1;
+            var t = this,
+                n = 1;
 
             // get all checked updates
             var s = $('#updates-list div.body div.item span.checkbox.checked');
@@ -249,7 +243,8 @@
             });
 
             $.each(s, function() {
-                var el = this, uid = $(this).data('uid');
+                var el = this,
+                    uid = $(this).data('uid');
 
                 $(el).removeClass('error').addClass('loader');
                 $.post("index.php?option=com_jce&view=updates&task=update&step=download", {
@@ -286,7 +281,8 @@
          * @param {Object} btn Button element
          */
         install: function(btn) {
-            var t = this, n = 0;
+            var t = this,
+                n = 0;
             var s = $('div.body div.item span.checkbox.checked.downloaded');
 
             /**
@@ -299,7 +295,9 @@
 
                 // any left?
                 if (updates.length) {
-                    var file = updates[0], id = file.id, el = $('span[data-uid=' + id + ']');
+                    var file = updates[0],
+                        id = file.id,
+                        el = $('span[data-uid=' + id + ']');
 
                     // double check to see it is a downloaded file
                     if ($(el).hasClass('downloaded')) {
