@@ -178,7 +178,7 @@
                 fontface;
 
             function parseCSS(stylesheet) {
-                self.classes.push("");
+                //self.classes.push("");
 
                 // IE style imports
                 each(stylesheet.imports, function(r) {
