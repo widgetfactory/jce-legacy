@@ -424,14 +424,17 @@ class WFModelEditor extends WFModelBase {
 
         $wf = WFEditor::getInstance();
 
-        $language = JFactory::getLanguage();
+        $user       = JFactory::getUser();
+        $params     = JComponentHelper::getParams('com_languages');
+        $locale     = $user->getParam('language', $params->get('site', 'en-GB'));
+
+        $language   = JLanguage::getInstance($locale);
 
         $settings = array(
             'token' => WFToken::getToken(),
             'etag' => md5($this->getVersion()),
             'base_url' => JURI::root(),
             'language' => $this->language,
-            //'language_load'		=> false,
             'directionality' => $language->isRTL() ? 'rtl' : 'ltr',
             'theme' => 'none',
             'plugins' => ''
