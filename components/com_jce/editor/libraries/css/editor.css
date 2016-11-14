@@ -33,6 +33,7 @@ textarea.wfEditor, textarea.wfNoEditor {
     line-height: 16px;
     position: relative;
     border: 1px solid #CCCCCC;
+    box-sizing: border-box;    
 }
 textarea.wfEditor:focus, textarea.wfNoEditor:focus {
     background: #FFFFFF none;
